@@ -1,0 +1,2 @@
+pipenv run mypy .
+pipenv run yapf --in-place --recursive .
