@@ -1,2 +1,7 @@
-pipenv run mypy .
-pipenv run yapf --in-place --recursive .
+SRC_DIR=core/
+
+pipenv run mypy $SRC_DIR
+pipenv run yapf --in-place --recursive $SRC_DIR
+pipenv run isort $SRC_DIR
+pipenv run pylint --rcfile=setup.cfg $SRC_DIR
+
