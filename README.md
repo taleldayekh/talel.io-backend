@@ -1,16 +1,16 @@
-## Codebase
+# Codebase
 
-### Development
+## Development
 
-#### Setup
+### Setup
 
-1. Clone repository  
+1. **Clone repository**  
 
    ```bash
    git clone git@github.com:taleldayekh/talel.io-backend.git
    ```
 
-2. Set Git Hooks path  
+2. **Set Git Hooks path**  
 
    This is necessary for using the hooks located in the `.githooks` directory.
 
@@ -18,7 +18,7 @@
    make set-githooks-path
    ```
 
-#### Code Style
+### Code Style
 
 To maintain consistency across the codebase, coding standards that conforms to the _*PEP 8*_ style guide are enforced with the help of:
 
@@ -32,7 +32,7 @@ To help detect errors and reduce bugs the following static code analysis tools a
 
 - [Pylint](https://github.com/PyCQA/pylint) for checking programming errors.
 
-#### Testing
+### Testing
 
 Tests are written using the [pytest](https://github.com/pytest-dev/pytest) framework and test coverage reports are generated with [pytest-cov](https://github.com/pytest-dev/pytest-cov) and uploaded to [codecov.io](https://codecov.io/).
 
