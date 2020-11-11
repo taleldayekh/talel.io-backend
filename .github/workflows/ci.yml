@@ -1,0 +1,36 @@
+name: qa
+
+on: pull_request
+
+jobs:
+  qa:
+    name: QA Workflow
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Pipenv
+        run: pip install pipenv
+
+      - name: Install dependencies
+        run: pipenv install --dev
+
+      - name: Lint
+        run: pipenv run pylint --rcfile=setup.cfg talel_io/
+
+      - name: Type check
+        run: pipenv run mypy talel_io/
+
+      - name: Test
+        run: pipenv run pytest --cov=./ --cov-report=xml
+
+      - name: Upload test coverage
+        uses: codecov/codecov-action@v1
+
