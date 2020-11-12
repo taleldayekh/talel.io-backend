@@ -1,4 +1,4 @@
-name: qa
+name: CI
 
 on: pull_request
 
@@ -23,13 +23,13 @@ jobs:
         run: pipenv install --dev
 
       - name: Lint
-        run: pipenv run pylint --rcfile=setup.cfg talel_io/
+        run: make lint
 
       - name: Type check
-        run: pipenv run mypy talel_io/
+        run: make type-check
 
       - name: Test
-        run: pipenv run pytest --cov=./ --cov-report=xml
+        run: make test-coverage
 
       - name: Upload test coverage
         uses: codecov/codecov-action@v1
