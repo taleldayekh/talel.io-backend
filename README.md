@@ -60,3 +60,11 @@ Tests are written using the [pytest](https://github.com/pytest-dev/pytest) frame
 make test
 ```
 
+## Continuous Integration and Continuous Deployment
+
+The Continuous Integration and Continuous Deployment pipelines for testing, building and releasing code runs using [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions) workflows. The CI pipeline runs whenever a pull request is created to merge with `develop` or `main` and the CD pipeline runs together with the CI pipeline when a pull request is created to merge with `main`.
+
+### CI
+
+### CD
+
