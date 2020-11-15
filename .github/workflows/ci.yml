@@ -26,6 +26,7 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
+          exit 1
 
       - name: Static Code Analysis
         run: |
