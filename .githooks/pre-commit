@@ -1,0 +1,9 @@
+# Hooks files needs to be made executable
+# by running chmod a+x <hooks-path>.
+SRC_DIR=talel_io/
+
+pipenv run mypy $SRC_DIR
+pipenv run yapf --in-place --recursive $SRC_DIR
+pipenv run isort $SRC_DIR
+pipenv run pylint --rcfile=setup.cfg $SRC_DIR
+

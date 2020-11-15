@@ -1,0 +1,36 @@
+name: Continuous Integration
+
+on:
+  pull_request:
+    branches: [develop, main]
+
+jobs:
+  qa:
+    name: Quality Assurance
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+
+      - name: Static Code Analysis
+        run: |
+          make lint
+          make type-check
+
+      - name: Test
+        run: make test-coverage
+
+      - name: Upload Test Coverage
+        uses: codecov/codecov-action@v1
+
