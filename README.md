@@ -1,3 +1,5 @@
+![CI](https://github.com/taleldayekh/talel.io-backend/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/taleldayekh/talel.io-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/taleldayekh/talel.io-backend)
+
 # Codebase
 
 ## Development
@@ -22,15 +24,31 @@
 
 To maintain consistency across the codebase, coding standards that conforms to the _*PEP 8*_ style guide are enforced with the help of:
 
-- [YAPF](https://github.com/google/yapf) for reformatting the code.
+- [YAPF](https://github.com/google/yapf) for reformatting the code.  
+  
+  ```bash
+  make fix
+  ```
 
-- [isort](https://github.com/PyCQA/isort) for sorting and separating imports.
+- [isort](https://github.com/PyCQA/isort) for sorting and separating imports.  
+  
+  ```bash
+  make fix
+  ```
 
 To help detect errors and reduce bugs the following static code analysis tools are used:
 
-- [mypy](https://github.com/python/mypy) for checking type errors.
+- [mypy](https://github.com/python/mypy) for checking type errors.  
+  
+  ```bash
+  make type-check
+  ```
 
-- [Pylint](https://github.com/PyCQA/pylint) for checking programming errors.
+- [Pylint](https://github.com/PyCQA/pylint) for checking programming errors.  
+  
+  ```bash
+  make lint
+  ```
 
 ### Testing
 
