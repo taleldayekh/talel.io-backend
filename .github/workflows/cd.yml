@@ -1,18 +1,32 @@
 name: Continuous Deployment
 
 on:
-  workflow_run:
-    workflows: ["Continuous Integration"]
-    branches: [main]
-    types:
-      - completed
+  push:
+    branches:
+      - main
 
 jobs:
-  hello_world:
-    name: Hello World
+  cd:
+    name: Deployment
     runs-on: ubuntu-latest
 
     steps:
-      - name: Hello World Example
-        run: echo "Hello World"
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Setup Python
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.9
+
+      - name: Install Dependencies
+        run: |
+          pip install pipenv
+          pipenv install --dev
+
+      - name: Test
+        run: make test
+
+      - name: Docker
+        run: echo "Create Docker image and deploy"
 
