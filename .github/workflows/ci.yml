@@ -4,12 +4,9 @@ on:
   pull_request:
     branches:
       - develop
-  push:
-    branches:
-      - main
 
 jobs:
-  qa:
+  ci:
     name: Quality Assurance
     runs-on: ubuntu-latest
 
@@ -26,8 +23,7 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
-          exit 1
-
+      
       - name: Static Code Analysis
         run: |
           make lint
