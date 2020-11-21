@@ -6,7 +6,8 @@
   - [Setup](#setup)
   - [Code Style](#code-style)
   - [Testing](#testing)
-  - [CI/CD](#ci/cd)
+  - [CI/CD](#ci-cd)
+- [Deployment Infrastructure](#deployment-infrastructure)
 
 # Codebase
 
@@ -71,4 +72,6 @@ make test
 ### CI/CD
 
 [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions) is used for _*Continuous Integration*_ and _*Continuous Deployment*_. The CI pipeline runs when a pull request is created to the `develop` branch and the CD pipeline runs when code is merged to the `main` branch.
+
+# Deployment Infrastructure
 
