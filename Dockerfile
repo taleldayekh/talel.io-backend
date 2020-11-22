@@ -1,14 +1,14 @@
 FROM python:3.9-alpine
 
-ARG FLASK_APP_PATH=/server/talel_io/playground/app.py
+ARG SRC_DIR=talel_io
 
-ENV FLASK_APP=${FLASK_APP_PATH}
+ENV FLASK_APP=playground/app.py
 
-WORKDIR /server
+WORKDIR /${SRC_DIR}
 
-COPY . /server
+COPY requirements.txt ${SRC_DIR} /${SRC_DIR}/
 
-# Pipenv is not used to install dependencies since the environment
+# Pipenv is not used for dependencies here since the environment
 # created by Pipenv won't be needed inside the Docker container.
 RUN pip install -r requirements.txt
 

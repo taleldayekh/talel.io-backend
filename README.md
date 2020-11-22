@@ -1,4 +1,4 @@
-![CI](https://github.com/taleldayekh/talel.io-backend/workflows/CI/badge.svg) [![codecov](https://codecov.io/gh/taleldayekh/talel.io-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/taleldayekh/talel.io-backend)
+![CI](https://github.com/taleldayekh/talel.io-backend/workflows/CI/badge.svg) ![CD](https://github.com/taleldayekh/talel.io-backend/workflows/CD/badge.svg) [![codecov](https://codecov.io/gh/taleldayekh/talel.io-backend/branch/develop/graph/badge.svg)](https://codecov.io/gh/taleldayekh/talel.io-backend)
 
 # Table of Contents
 
@@ -6,14 +6,12 @@
   - [Setup](#setup)
   - [Code Style](#code-style)
   - [Testing](#testing)
-  - [CI/CD](#ci-cd)
-- [Deployment Infrastructure](#deployment-infrastructure)
+  - [CI/CD](#cicd)
+- [Deployment](#deployment)
 
-# Codebase
+# Development
 
-## Development
-
-### Setup
+## Setup
 
 1. **Clone repository**  
 
@@ -23,21 +21,17 @@
 
 2. **Set Git Hooks path**  
 
-   This is necessary for using the hooks located in the `.githooks` directory.
+   This is necessary for using the hooks located in the `.githooks` directory. The path is added locally for the git config of this repository.
 
    ```bash
    make set-githooks-path
    ```
 
-### Code Style
+## Code Style
 
 To maintain consistency across the codebase, coding standards that conforms to the _*PEP 8*_ style guide are enforced with the help of:
 
 - [YAPF](https://github.com/google/yapf) for reformatting the code.  
-  
-  ```bash
-  make fix
-  ```
 
 - [isort](https://github.com/PyCQA/isort) for sorting and separating imports.  
   
@@ -59,7 +53,7 @@ To help detect errors and reduce bugs the following static code analysis tools a
   make lint
   ```
 
-### Testing
+## Testing
 
 Tests are written using the [pytest](https://github.com/pytest-dev/pytest) framework and test coverage reports are generated with [pytest-cov](https://github.com/pytest-dev/pytest-cov) and uploaded to [codecov.io](https://codecov.io/).
 
@@ -69,9 +63,21 @@ Tests are written using the [pytest](https://github.com/pytest-dev/pytest) frame
 make test
 ```
 
-### CI/CD
+**Run tests with coverage**
+
+Test coverage is only uploaded to Codecov in the CI pipeline.
+
+```bash
+make test-coverage
+```
+
+## CI/CD
 
 [GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions) is used for _*Continuous Integration*_ and _*Continuous Deployment*_. The CI pipeline runs when a pull request is created to the `develop` branch and the CD pipeline runs when code is merged to the `main` branch.
 
-# Deployment Infrastructure
+### CI
+
+### CD
+
+# Deployment
 
