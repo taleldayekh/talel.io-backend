@@ -6,8 +6,8 @@ on:
       - main
 
 jobs:
-  cd:
-    name: Deployment
+  test:
+    name: Test
     runs-on: ubuntu-latest
 
     steps:
@@ -27,6 +27,20 @@ jobs:
       - name: Test
         run: make test
 
-      - name: Docker
-        run: echo "Create Docker image and deploy"
+  build:
+    needs: test
+    runs-on: ubuntu-latest
 
+    steps:
+      - name: Login to Amazon ECR
+        id: login-ecr
+        uses: aws-actions/amazon-ecr-login@v1
+
+      - name: Build and Push Docker Image to Amazon ECR
+        env:
+          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REPOSITORY: talel.io-backend
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
