@@ -81,3 +81,14 @@ make test-coverage
 
 # Deployment
 
+## Infrastructure Diagram
+
+```
+╭──── AWS ECR ───╮
+│  Server Image  │
+│  Client Image  │
+╰────────────────╯
+```
+
+### AWS ECR (Elastic Container Registry)
+
