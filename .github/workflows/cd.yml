@@ -28,8 +28,9 @@ jobs:
         run: make test
 
   build:
-    needs: test
+    name: Build and Deploy
     runs-on: ubuntu-latest
+    needs: test
 
     steps:
       - name: Checkout Code
