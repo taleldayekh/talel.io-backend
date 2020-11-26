@@ -8,6 +8,9 @@
   - [Testing](#testing)
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
+  - [Infrastructure Diagram](#infrastructure-diagram)
+  - [AWS ECR](#aws-ecr)
+  - [AWS ECS](#aws-ecs)
 
 # Development
 
@@ -79,16 +82,24 @@ make test-coverage
 
 ### CD
 
+Runs all test suites before building the Docker image artifact of the application backend which is then pushed to and deployed on AWS.
+
 # Deployment
 
 ## Infrastructure Diagram
 
 ```
-╭──── AWS ECR ───╮
-│  Server Image  │
-│  Client Image  │
-╰────────────────╯
+╭─── AWS ECR ───╮
+│ Server Images │
+╰───────────────╯
+╭─── AWS ECR ───╮
+│ Client Images │
+╰───────────────╯
 ```
 
-### AWS ECR (Elastic Container Registry)
+## AWS ECR (Elastic Container Registry)
+
+The Docker image artifacts representing the application backend and frontend are hosted with [Amazon Elastic Container Registry](https://aws.amazon.com/ecr/). Each image has a separate registry which holds all versions of a given image.
+
+## AWS ECS (Elastic Container Service)
 
