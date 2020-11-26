@@ -9,8 +9,8 @@
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
   - [Infrastructure Diagram](#infrastructure-diagram)
-  - [AWS ECR](#aws-ecr)
-  - [AWS ECS](#aws-ecs)
+  - [AWS ECR](#aws-ecr-elastic-container-registry)
+  - [AWS ECS](#aws-ecs-elastic-container-service)
 
 # Development
 
