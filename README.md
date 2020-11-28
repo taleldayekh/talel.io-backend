@@ -89,12 +89,13 @@ Runs all test suites before building the Docker image artifact of the applicatio
 ## Infrastructure Diagram
 
 ```
-╭─── AWS ECR ───╮
-│ Server Images │
-╰───────────────╯
-╭─── AWS ECR ───╮
-│ Client Images │
-╰───────────────╯
+╭─── AWS ECR ───╮             ╭─── AWS ECS ───╮
+│ Server Images │ ──────────► │ ╭───────────╮ │
+╰───────────────╯             │ │           │ │
+                              │ │    EC2    │ │
+╭─── AWS ECR ───╮             │ │           │ │
+│ Client Images │ ──────────► │ ╰───────────╯ │
+╰───────────────╯             ╰───────────────╯
 ```
 
 ## AWS ECR (Elastic Container Registry)
