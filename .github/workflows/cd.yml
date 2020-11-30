@@ -62,7 +62,7 @@ jobs:
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: .aws/talelio-backend-task-def.json
+          task-definition: .aws/talelio-backend-task-definition.json
           container-name: talelio-backend-container
           image: ${{ steps.build-push-image.outputs.image }}
 
@@ -70,7 +70,7 @@ jobs:
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
-          service: talelio-service
+          service: talelio-backend-service
           cluster: talelio
           wait-for-service-stability: true
 
