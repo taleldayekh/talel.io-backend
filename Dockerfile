@@ -14,7 +14,5 @@ RUN pip install -r requirements.txt
 
 EXPOSE 5000
 
-ENTRYPOINT ["python"]
-
-CMD ["playground/app.py"]
+CMD ["python", "playground/app.py"]
 

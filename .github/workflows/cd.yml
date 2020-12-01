@@ -28,7 +28,7 @@ jobs:
         run: make test
 
   build:
-    name: Build and Deploy
+    name: Build and Deploy to AWS
     runs-on: ubuntu-latest
     needs: test
 
@@ -43,14 +43,14 @@ jobs:
           aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           aws-region: us-east-1
 
-      - name: Login to Amazon ECR
-        id: login-ecr
+      - name: Login to AWS ECR
+        id: ecr-login
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push Docker Image to Amazon ECR
-        id: build-push-image
+      - name: Run AWS ECR Image Push Commands
+        id: prepare-image
         env:
-          ECR_REGISTRY: ${{ steps.login-ecr.outputs.registry }}
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
           ECR_REPOSITORY: talel.io-backend
           IMAGE_TAG: ${{ github.sha }}
         run: |
@@ -58,15 +58,15 @@ jobs:
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
 
-      - name: Tag Image as Latest
+      - name: Add Image ID to AWS ECS Task Definition
         id: task-def
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: .aws/talelio-backend-task-definition.json
           container-name: talelio-backend-container
-          image: ${{ steps.build-push-image.outputs.image }}
+          image: ${{ steps.prepare-image.outputs.image }}
 
-      - name: Deploy Amazon ECS Task Definition
+      - name: Deploy AWS ECS Task Definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-def.outputs.task-definition }}
