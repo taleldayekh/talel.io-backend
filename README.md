@@ -104,3 +104,13 @@ The Docker image artifacts representing the application backend and frontend are
 
 ## AWS ECS (Elastic Container Service)
 
+[Amazon Elastic Container Service](https://aws.amazon.com/ecs/) orchestration platform manages and deploys the Docker containers by pulling the latest images from the ECR.
+
+The ECS cluster, which groups hardware resources, currently consists of one [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the backend and frontend containers run on this EC2 instance and their respective life cycles are controlled within the ECS through tasks and services.
+
+## Configurations
+
+### Tasks
+
+- talelio-backend-task
+

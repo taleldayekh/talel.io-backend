@@ -5,7 +5,7 @@ app = Flask(__name__)
 
 @app.route('/')
 def index() -> str:
-    return 'Hello talel.io'
+    return 'Welcome to talel.io'
 
 
 if __name__ == '__main__':
