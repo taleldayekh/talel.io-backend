@@ -66,7 +66,7 @@ Tests are written using the [pytest](https://github.com/pytest-dev/pytest) frame
 make test
 ```
 
-**Run tests with coverage**
+**Run tests and generate coverage XML file**
 
 Test coverage is only uploaded to Codecov in the CI pipeline.
 
@@ -80,6 +80,8 @@ make test-coverage
 
 ### CI
 
+Runs all test suites and lint tools.
+
 ### CD
 
 Runs all test suites before building the Docker image artifact of the application backend which is then pushed to and deployed on AWS.
@@ -89,28 +91,26 @@ Runs all test suites before building the Docker image artifact of the applicatio
 ## Infrastructure Diagram
 
 ```
-╭─── AWS ECR ───╮             ╭─── AWS ECS ───╮
-│ Server Images │ ──────────► │ ╭───────────╮ │
-╰───────────────╯             │ │           │ │
-                              │ │    EC2    │ │
-╭─── AWS ECR ───╮             │ │           │ │
-│ Client Images │ ──────────► │ ╰───────────╯ │
-╰───────────────╯             ╰───────────────╯
+╭── GitHub ──╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
+│            │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
+│     CD     │         ╰───────────────╯         │ │           │ │         │              │
+│  Pipeline  │                                   │ │    EC2    │ │ ──────► │ www.talel.io │
+│            │         ╭─── AWS ECR ───╮         │ │           │ │         │              │
+│            │ ──────► │ Client Images │ ──────► │ ╰───────────╯ │         ╰──────────────╯
+╰────────────╯         ╰───────────────╯         ╰───────────────╯
 ```
 
 ## AWS ECR (Elastic Container Registry)
 
-The Docker image artifacts representing the application backend and frontend are hosted with [Amazon Elastic Container Registry](https://aws.amazon.com/ecr/). Each image has a separate registry which holds all versions of a given image.
+The Docker image artifacts which represents the application backend and frontend are hosted with [Amazon Elastic Container Registry](https://aws.amazon.com/ecr/).
+
+Each image has its separate repository containing all versions of a given image. The lifecycle policy for the repositories is however set to only keep the latest version of an image.
 
 ## AWS ECS (Elastic Container Service)
 
-[Amazon Elastic Container Service](https://aws.amazon.com/ecs/) orchestration platform manages and deploys the Docker containers by pulling the latest images from the ECR.
+[Amazon Elastic Container Service](https://aws.amazon.com/ecs/) orchestration platform manages and deploys Docker containers based on the images from the ECR.
 
-The ECS cluster, which groups hardware resources, currently consists of one [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the backend and frontend containers run on this EC2 instance and their respective life cycles are controlled within the ECS through tasks and services.
+The _*talelio*_ ECS cluster (grouping of hardware resources) currently consists of one provisioned [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the backend and frontend containers run on this EC2 instance.
 
-## Configurations
-
-### Tasks
-
-- talelio-backend-task
+### Configurations
 
