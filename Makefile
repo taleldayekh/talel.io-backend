@@ -1,5 +1,8 @@
 SRC_DIR = talel_io/
 
+serve-api:
+	pipenv run flask run
+
 set-githooks-path:
 	git config core.hooksPath .githooks
 
@@ -18,4 +21,3 @@ test:
 
 test-coverage:
 	pipenv run pytest --cov=./ --cov-report=xml
-
