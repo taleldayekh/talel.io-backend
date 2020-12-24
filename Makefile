@@ -7,7 +7,7 @@ set-githooks-path:
 	git config core.hooksPath .githooks
 
 fix:
-	pipenv run yapf --in-place --recursive $(SRC_DIR) \
+	pipenv run yapf --in-place --recursive $(SRC_DIR) && \
 	pipenv run isort $(SRC_DIR)
 
 lint:
