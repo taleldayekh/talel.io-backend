@@ -1,10 +1,13 @@
 SRC_DIR = talel_io/
 
+serve-api:
+	pipenv run flask run
+
 set-githooks-path:
 	git config core.hooksPath .githooks
 
 fix:
-	pipenv run yapf --in-place --recursive $(SRC_DIR) \
+	pipenv run yapf --in-place --recursive $(SRC_DIR) && \
 	pipenv run isort $(SRC_DIR)
 
 lint:
@@ -18,4 +21,3 @@ test:
 
 test-coverage:
 	pipenv run pytest --cov=./ --cov-report=xml
-

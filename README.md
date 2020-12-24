@@ -2,6 +2,9 @@
 
 # Table of Contents
 
+- [Architecture](#architecture)
+  - [Architecture Layers](#architecture-layers)
+- [API](#api)
 - [Development](#development)
   - [Setup](#setup)
   - [Code Style](#code-style)
@@ -11,6 +14,30 @@
   - [Infrastructure Diagram](#infrastructure-diagram)
   - [AWS ECR](#aws-ecr-elastic-container-registry)
   - [AWS ECS](#aws-ecs-elastic-container-service)
+
+# Architecture
+
+## Architecture Layers
+
+```
+╭──────────────────────╮
+│  Presentation Layer  │
+╰──────────────────────╯
+           │
+           │
+           ▼
+╭──────────────────────╮
+│ Business Logic Layer │
+╰──────────────────────╯
+           ▲
+	   │
+	   │
+╭──────────────────────╮
+│    Database Layer    │
+╰──────────────────────╯
+```
+
+# API
 
 # Development
 
@@ -91,13 +118,13 @@ Runs all test suites before building the Docker image artifact of the applicatio
 ## Infrastructure Diagram
 
 ```
-╭── GitHub ──╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
-│            │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
-│     CD     │         ╰───────────────╯         │ │           │ │         │              │
-│  Pipeline  │                                   │ │    EC2    │ │ ──────► │ www.talel.io │
-│            │         ╭─── AWS ECR ───╮         │ │           │ │         │              │
-│            │ ──────► │ Client Images │ ──────► │ ╰───────────╯ │         ╰──────────────╯
-╰────────────╯         ╰───────────────╯         ╰───────────────╯
+╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
+│ Server CI/CD │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
+╰──────────────╯         ╰───────────────╯         │ │           │ │         │              │
+                                                   │ │    EC2    │ │ ──────► │ www.talel.io │
+╭─── GitHub ───╮         ╭─── AWS ECR ───╮         │ │           │ │         │              │
+│ Client CI/CD │ ──────► │ Client Images │ ──────► │ ╰───────────╯ │         ╰──────────────╯
+╰──────────────╯         ╰───────────────╯         ╰───────────────╯
 ```
 
 ## AWS ECR (Elastic Container Registry)
