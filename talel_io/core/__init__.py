@@ -9,6 +9,7 @@ def create_app() -> Flask:
     app = Flask(__name__)
     CORS(app)
 
-    app.register_blueprint(user_v1, url_prefix='/api/v1/user')
+    # app.register_blueprint(user_v1, url_prefix='/api/v1/user')
+    app.register_blueprint(user_v1)
 
     return app
