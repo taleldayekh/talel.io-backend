@@ -14,6 +14,10 @@
   - [Infrastructure Diagram](#infrastructure-diagram)
   - [AWS ECR](#aws-ecr-elastic-container-registry)
   - [AWS ECS](#aws-ecs-elastic-container-service)
+  - [AWS EC2](#aws-ec2)
+    - [NGINX](#nginx)
+    - [Gunicorn](#gunicorn)
+    - [Flask](#flask)
 
 # Architecture
 
@@ -55,6 +59,12 @@
 
    ```bash
    make set-githooks-path
+   ```
+
+3. **Install dependencies**  
+
+   ```bash
+   pipenv install --dev
    ```
 
 ## Code Style
@@ -115,9 +125,75 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
+TXT
+
 ## Infrastructure Diagram
 
 ```
+```
+
+## AWS ECR (Elastic Container Registry)
+
+TXT
+
+## AWS ECS (Elastic Container Service)
+
+TXT
+
+## AWS EC2
+
+```
+   ╭────────────────╮
+   │                │
+   │  www.talel.io  │
+   │                │
+   ╰────────────────╯
+    Req           ▲
+     │            │
+     │            │  
+     ▼           Res 
+╭──── EC2 Instance ────╮
+│ ╭───── Docker ─────╮ │
+│ │╭────────────────╮│ │
+│ ││      NGINX     ││ │
+│ │╰────────────────╯│ │
+│ ╰──────────────────╯ │
+│           ▲          │
+│           │          │
+│           ▼          │
+│ ╭───── Docker ─────╮ │
+│ │╭────────────────╮│ │
+│ ││    Gunicorn    ││ │
+│ │╰────────────────╯│ │
+│ │         ▲        │ │
+│ │	    │        │ │
+│ │         ▼        │ │
+│ │╭────────────────╮│ │
+│ ││ Flask REST API ││ │
+│ │╰────────────────╯│ │
+│ ╰──────────────────╯ │
+╰──────────────────────╯
+```
+
+### NGINX
+
+TXT
+
+### Gunicorn
+
+The Flask built in web server is meant for development only and is not suitable for handling concurrent requests in production. For production, the [Gunicorn WSGI web server](https://github.com/benoitc/gunicorn) is used to serve the Flask REST service Python code.
+
+Gunicorn runs behind NGINX.
+
+### Flask
+
+TXT
+
+
+
+
+
+<!-- ```
 ╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
 │ Server CI/CD │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
 ╰──────────────╯         ╰───────────────╯         │ │           │ │         │              │
@@ -139,5 +215,4 @@ Each image has its separate repository containing all versions of a given image.
 
 The _*talelio*_ ECS cluster (grouping of hardware resources) currently consists of one provisioned [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the backend and frontend containers run on this EC2 instance.
 
-### Configurations
-
+### Configurations -->
