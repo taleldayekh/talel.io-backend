@@ -2,7 +2,7 @@
 from flask import Flask
 from flask_cors import CORS
 
-from talel_io.interfaces.api.user.user_controller import user_v1
+from talelio_backend.interfaces.api.user.user_controller import user_v1
 
 
 def create_app() -> Flask:

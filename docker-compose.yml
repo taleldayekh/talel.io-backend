@@ -1,0 +1,16 @@
+version: "3.8"
+
+services:
+  nginx:
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - 80:80
+
+  talelio-backend:
+    build:
+      dockerfile: ./talelio_backend/Dockerfile
+      context: ./
+    ports:
+      - 5000:5000

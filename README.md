@@ -125,11 +125,16 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
-TXT
+The **talel.io backend** consists of dockerized services for the NGINX web server, REST API and database which gets deployed to AWS and runs on a EC2 instance. All services are defined in the [`docker-compose.yml` file](https://github.com/taleldayekh/talel.io-backend/blob/develop/docker-compose.yml) which automates the running of multiple containers with different configurations.
 
 ## Infrastructure Diagram
 
 ```
+╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮ API req ╭──────────────╮
+│              │         │               │         │╭─────────────╮│ ◄────── │              │
+│ Server CI/CD │ ──────► │ Server Images │ ──────► ││     EC2     ││         │ www.talel.io │
+│              │         │               │         │╰─────────────╯│ ──────► │              │
+╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
 ```
 
 ## AWS ECR (Elastic Container Registry)
@@ -194,14 +199,6 @@ TXT
 
 
 <!-- ```
-╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
-│ Server CI/CD │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
-╰──────────────╯         ╰───────────────╯         │ │           │ │         │              │
-                                                   │ │    EC2    │ │ ──────► │ www.talel.io │
-╭─── GitHub ───╮         ╭─── AWS ECR ───╮         │ │           │ │         │              │
-│ Client CI/CD │ ──────► │ Client Images │ ──────► │ ╰───────────╯ │         ╰──────────────╯
-╰──────────────╯         ╰───────────────╯         ╰───────────────╯
-```
 
 ## AWS ECR (Elastic Container Registry)
 
