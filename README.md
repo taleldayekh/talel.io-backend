@@ -12,6 +12,7 @@
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
   - [Infrastructure Diagram](#infrastructure-diagram)
+  - [Infrastructure Setup](#infrastructure-setup)
   - [AWS EC2](#aws-ec2-elastic-computing)
     - [NGINX](#nginx)
     - [Gunicorn](#gunicorn)
@@ -137,13 +138,28 @@ All services are defined in the [`docker-compose.yml`](./docker-compose.yml) fil
 ╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
 ```
 
+## Infrastructure Setup
+
 1. **GitHub**  
 
    TXT
 
 2. **AWS ECR (Elastic Container Registry)**  
 
-   TXT
+   ECR is the Docker image repository on AWS. Each image has its separate repository holding different versions of a given image. For **talel.io backend** the repositories are:
+
+   - talel.io-backend
+   - nginx
+
+   **Push Docker Image to ECR**
+
+   To push a local Docker image, select a repository and click **View push commands**. This will bring up all necessary steps and commands for authenticating, taging and pushing a local Docker image.
+
+   > The talel.io-backend and nginx images are automatically pushed to ECR in the CD pipeline.
+
+   **Configurations**
+
+   The **Lifecycle Policy** for each repository is set to only keep the latest version of an image.
 
 3. **AWS ECS (Elastic Container Service)**  
 
