@@ -12,5 +12,3 @@ services:
     build:
       dockerfile: ./talelio_backend/Dockerfile
       context: ./
-    ports:
-      - 5000:5000

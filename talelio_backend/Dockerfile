@@ -12,6 +12,6 @@ ADD ${SRC_DIR}/ /${APP_DIR}/${SRC_DIR}/
 # created by Pipenv won't be needed inside the Docker container.
 RUN pip install -r requirements.txt
 
-EXPOSE 5000
+EXPOSE 8000
 
-CMD ["python3", "-m", "talelio_backend.app"]
+CMD ["gunicorn", "talelio_backend.app:app", "-c", "./talelio_backend/config/gunicorn.conf.py"]

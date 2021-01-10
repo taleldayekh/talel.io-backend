@@ -12,9 +12,7 @@
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
   - [Infrastructure Diagram](#infrastructure-diagram)
-  - [AWS ECR](#aws-ecr-elastic-container-registry)
-  - [AWS ECS](#aws-ecs-elastic-container-service)
-  - [AWS EC2](#aws-ec2)
+  - [AWS EC2](#aws-ec2-elastic-computing)
     - [NGINX](#nginx)
     - [Gunicorn](#gunicorn)
     - [Flask](#flask)
@@ -125,7 +123,9 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
-The **talel.io backend** consists of dockerized services for the NGINX web server, REST API and database which gets deployed to AWS and runs on a EC2 instance. All services are defined in the [`docker-compose.yml` file](https://github.com/taleldayekh/talel.io-backend/blob/develop/docker-compose.yml) which automates the running of multiple containers with different configurations.
+The **talel.io backend** consists of dockerized services for the NGINX web server, REST API and database which gets deployed to AWS and runs on a EC2 instance.
+
+All services are defined in the [`docker-compose.yml`](./docker-compose.yml) file which automates the running of multiple containers with different configurations.
 
 ## Infrastructure Diagram
 
@@ -137,15 +137,19 @@ The **talel.io backend** consists of dockerized services for the NGINX web serve
 ╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
 ```
 
-## AWS ECR (Elastic Container Registry)
+1. **GitHub**  
 
-TXT
+   TXT
 
-## AWS ECS (Elastic Container Service)
+2. **AWS ECR (Elastic Container Registry)**  
 
-TXT
+   TXT
 
-## AWS EC2
+3. **AWS ECS (Elastic Container Service)**  
+
+   TXT
+
+## AWS EC2 (Elastic Computing)
 
 ```
    ╭────────────────╮
@@ -186,7 +190,7 @@ TXT
 
 ### Gunicorn
 
-The Flask built in web server is meant for development only and is not suitable for handling concurrent requests in production. For production, the [Gunicorn WSGI web server](https://github.com/benoitc/gunicorn) is used to serve the Flask REST service Python code.
+The Flask built in web server is meant for development only and is not suitable for handling concurrent requests in production. For production, a [Gunicorn WSGI application server](https://github.com/benoitc/gunicorn) is used to serve the Flask REST API service Python code.
 
 Gunicorn runs behind NGINX.
 
