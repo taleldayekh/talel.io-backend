@@ -1,4 +1,4 @@
-SRC_DIR = talel_io/
+SRC_DIR = talelio_backend/
 
 serve-api:
 	pipenv run flask run

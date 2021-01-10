@@ -1,7 +1,7 @@
 import pytest
 from _pytest.fixtures import FixtureRequest
 
-from talel_io.core import create_app
+from talelio_backend.core import create_app
 
 
 @pytest.fixture(scope='class')

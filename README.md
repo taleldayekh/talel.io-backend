@@ -12,8 +12,10 @@
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
   - [Infrastructure Diagram](#infrastructure-diagram)
-  - [AWS ECR](#aws-ecr-elastic-container-registry)
-  - [AWS ECS](#aws-ecs-elastic-container-service)
+  - [AWS EC2](#aws-ec2-elastic-computing)
+    - [NGINX](#nginx)
+    - [Gunicorn](#gunicorn)
+    - [Flask](#flask)
 
 # Architecture
 
@@ -55,6 +57,12 @@
 
    ```bash
    make set-githooks-path
+   ```
+
+3. **Install dependencies**  
+
+   ```bash
+   pipenv install --dev
    ```
 
 ## Code Style
@@ -115,17 +123,86 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
+The **talel.io backend** consists of dockerized services for the NGINX web server, REST API and database which gets deployed to AWS and runs on a EC2 instance.
+
+All services are defined in the [`docker-compose.yml`](./docker-compose.yml) file which automates the running of multiple containers with different configurations.
+
 ## Infrastructure Diagram
 
 ```
-╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮
-│ Server CI/CD │ ──────► │ Server Images │ ──────► │ ╭───────────╮ │         ╭──────────────╮
-╰──────────────╯         ╰───────────────╯         │ │           │ │         │              │
-                                                   │ │    EC2    │ │ ──────► │ www.talel.io │
-╭─── GitHub ───╮         ╭─── AWS ECR ───╮         │ │           │ │         │              │
-│ Client CI/CD │ ──────► │ Client Images │ ──────► │ ╰───────────╯ │         ╰──────────────╯
-╰──────────────╯         ╰───────────────╯         ╰───────────────╯
+╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮ API req ╭──────────────╮
+│              │         │               │         │╭─────────────╮│ ◄────── │              │
+│ Server CI/CD │ ──────► │ Server Images │ ──────► ││     EC2     ││         │ www.talel.io │
+│              │         │               │         │╰─────────────╯│ ──────► │              │
+╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
 ```
+
+1. **GitHub**  
+
+   TXT
+
+2. **AWS ECR (Elastic Container Registry)**  
+
+   TXT
+
+3. **AWS ECS (Elastic Container Service)**  
+
+   TXT
+
+## AWS EC2 (Elastic Computing)
+
+```
+   ╭────────────────╮
+   │                │
+   │  www.talel.io  │
+   │                │
+   ╰────────────────╯
+    Req           ▲
+     │            │
+     │            │  
+     ▼           Res 
+╭──── EC2 Instance ────╮
+│ ╭───── Docker ─────╮ │
+│ │╭────────────────╮│ │
+│ ││      NGINX     ││ │
+│ │╰────────────────╯│ │
+│ ╰──────────────────╯ │
+│           ▲          │
+│           │          │
+│           ▼          │
+│ ╭───── Docker ─────╮ │
+│ │╭────────────────╮│ │
+│ ││    Gunicorn    ││ │
+│ │╰────────────────╯│ │
+│ │         ▲        │ │
+│ │	    │        │ │
+│ │         ▼        │ │
+│ │╭────────────────╮│ │
+│ ││ Flask REST API ││ │
+│ │╰────────────────╯│ │
+│ ╰──────────────────╯ │
+╰──────────────────────╯
+```
+
+### NGINX
+
+TXT
+
+### Gunicorn
+
+The Flask built in web server is meant for development only and is not suitable for handling concurrent requests in production. For production, a [Gunicorn WSGI application server](https://github.com/benoitc/gunicorn) is used to serve the Flask REST API service Python code.
+
+Gunicorn runs behind NGINX.
+
+### Flask
+
+TXT
+
+
+
+
+
+<!-- ```
 
 ## AWS ECR (Elastic Container Registry)
 
@@ -139,5 +216,4 @@ Each image has its separate repository containing all versions of a given image.
 
 The _*talelio*_ ECS cluster (grouping of hardware resources) currently consists of one provisioned [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the backend and frontend containers run on this EC2 instance.
 
-### Configurations
-
+### Configurations -->

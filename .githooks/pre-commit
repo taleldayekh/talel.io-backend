@@ -1,6 +1,6 @@
 # Hooks files needs to be made executable
 # by running chmod a+x <hooks-path>.
-SRC_DIR=talel_io/
+SRC_DIR=talelio_backend/
 
 pipenv run mypy $SRC_DIR
 pipenv run yapf --in-place --recursive $SRC_DIR
