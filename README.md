@@ -127,9 +127,14 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
-The **talel.io backend** consists of dockerized services for the NGINX web server, REST API and database which gets deployed to AWS and runs on a EC2 instance.
+The **talel.io backend** consists of dockerized services for the NGINX web server and the REST API which are deployed to AWS in the CD pipeline and runs on a EC2 instance.
 
-All services are defined in the [`docker-compose.yml`](./docker-compose.yml) file which automates the running of multiple containers with different configurations.
+All services in the deployment setup can also be run locally with `docker-compose`:
+
+```bash
+docker-compose build
+docker-compose up
+```
 
 ## Infrastructure Diagram
 
@@ -149,34 +154,46 @@ TXT
 
 ### AWS ECR (Elastic Container Registry)
 
-[ECR](https://aws.amazon.com/ecr/) is the Docker image repository on AWS. Each image has its separate repository holding different versions of the given image. For **talel.io backend** the repositories are:
+[ECR](https://aws.amazon.com/ecr/) is the Docker image repository on AWS. Each image has a separate repository with different versions of the given image.
 
-- talel.io-backend
-- nginx
+The repositories for the **talel.io backend** are:
 
-**Push Docker Image to ECR**
+- **talel.io-backend**
+- **nginx**
 
-To push a local Docker image, select a repository and click **View push commands**. This will bring up all necessary steps and commands for authenticating, taging and pushing a local Docker image.
+**Push local Docker image to ECR**
 
-> The talel.io-backend and nginx images are automatically pushed to the ECR in the CD pipeline.
+Select a repository and click **View push commands**. This will bring up all necessary steps and commands for authenticating, tagging and pushing a local Docker image.
+
+> The **talel.io-backend** and **nginx** images are automatically pushed to ECR in the CD pipeline.
 
 **Configurations**
 
-The **Lifecycle Policy** for each repository is set to only keep the latest version of an image.
+The **Lifecycle Policy** for each repository is set to keep only the latest version of an image.
 
 ### AWS ECS (Elastic Container Service)
 
-[ECS](https://aws.amazon.com/ecs/) is the orchestration platform on AWS which manages and deploys Docker containers based on the images from the ECR.
+[ECS](https://aws.amazon.com/ecs/) is the orchestration platform on AWS which manages and deploys Docker containers based on the images from ECR.
 
-ECS is configured using three main components: a _*cluster*_, _*task definition*_ and _*service*_.
+ECS is configured with the three main components: _*cluster*_, _*task definition*_ and _*service*_.
 
 1. **Cluster (grouping of hardware resources)**  
 
-   The **talelio** ECS cluster currently consists of one provisioned [t2.micro EC2](https://aws.amazon.com/ec2/instance-types/t2/) instance. Both the **talel.io-backend** and **nginx** container run on this EC2 instance.
+   The entire backend lies on the **talelio** ECS cluster which currently consists of one provisioned [t2.micro EC2](https://aws.amazon.com/ec2/instance-type/t2/) instance. Both the **talel.io-backend** and **nginx** container runs on this EC2 instance.
+
+   **Configurations**
+
+   The **talelio** cluster has been setup with the following configurations:
+
+   TXT
 
 2. **Task definition**  
 
-   The task definition is a template for how a Docker container gets deployed on the EC2 instance. The talelio cluster have a **talelio-backend-task** and a **nginx-task**.
+   The task definition is a template for how a Docker container gets deployed to the EC2 instance. The **talelio** cluster have two task definitions, a [talelio-backend-task](.aws/talelio-backend-task-definition.json) and a [nginx-task](.aws/nginx-task-definition.json).
+
+3. **Service**  
+
+   TXT
 
 ## AWS EC2 (Elastic Computing)
 
