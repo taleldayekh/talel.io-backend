@@ -8,7 +8,7 @@ import pytest
 @pytest.mark.usefixtures('api_server')
 class TestUserGET:
     def test_get_user_returns_200(self) -> None:
-        res = self.api.get('api/v1/user/')
+        res = self.api.get('/')
         res_data = json.loads(res.get_data(as_text=True))
 
         assert res_data['message'] == 'talel.io API'
