@@ -17,6 +17,7 @@
     - [AWS ECR](#aws-ecr-elastic-container-registry)
     - [AWS ECS](#aws-ecs-elastic-container-service)
   - [AWS EC2](#aws-ec2-elastic-computing)
+    - [AWS Elastic IP and Namecheap DNS](#aws-elastic-ip-and-namecheap-dns)
     - [NGINX](#nginx)
     - [Gunicorn](#gunicorn)
     - [Flask](#flask)
@@ -231,6 +232,48 @@ ECS is configured with the three main components: _*cluster*_, _*task definition
 │ ╰──────────────────╯                           │
 ╰────────────────────────────────────────────────╯
 ```
+
+The following configurations needs to be considered for a working deployment setup with EC2.
+
+### AWS Elastic IP and Namecheap DNS
+
+The DNS connects the various **www.talel.io** / **talel.io** domain and subdomains with IP addresses.
+
+The **talel.io API** can be accessed via the subdomain **api.talel.io** which is connected to the EC2 instance with a static IP provided by **AWS Elastic IP**.
+
+**Configurations**
+
+1. **AWS Elastic IP**  
+
+   - Navigate to **EC2** -> **Network & Security** -> **Elastic IPs**.
+
+   - Click to **Allocate Elastic IP address**.
+
+   - Make sure **Amazon's pool of IPv4 addresses** is selected and click **Allocate**.
+
+   - Click on **Associate this Elastic IP address** to bind the Elastic IP address with an EC2 instance.
+
+   - Select the relevant EC2 instance and click **Associate**.
+
+   > An Elastic IP address is free of charge as long as **only that address** is associated with one running EC2 instance.
+
+2. **Namecheap DNS**  
+
+   The **talel.io** domain is registered on [Namecheap](https://www.namecheap.com) and the DNS settings on Namecheap needs to be adjusted to point to the EC2 instance.
+
+   - From **Domain List** click to manage the domain and select **Advanced DNS**.
+
+   - Under **HOST RECORDS** click to **ADD NEW RECORD**.
+
+   - Create a new **A Record** for the various hosts, i.e. `www` for **www.talel.io** and `api` for **api.talel.io**.
+
+   - Add the Elastic IP for the EC2 instance as **Value** for all relevant records.
+
+   > An A Record (Address Record) directs the domain to a server through its IPv4 address and controls what a domain name does when visited.
+
+
+
+---
 
 ### NGINX
 
