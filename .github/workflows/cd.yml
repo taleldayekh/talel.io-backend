@@ -26,8 +26,8 @@ jobs:
       - name: Test
         run: make test
 
-  deploy-nginx:
-    name: Deploy NGINX to AWS
+  deploy-talelio-backend-api:
+    name: Deploy talel.io Backend API to AWS
     runs-on: ubuntu-latest
     needs: test
 
@@ -46,74 +46,28 @@ jobs:
         id: ecr-login
         uses: aws-actions/amazon-ecr-login@v1
 
-      - name: Build and Push NGINX Image to AWS ECR
-        id: nginx-image
+      - name: Build and Push talel.io Backend API Image to AWS ECR
+        id: talelio-backend-api-image
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          ECR_REPOSITORY: nginx
-          IMAGE_TAG: ${{ github.sha }}
-        run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG nginx/
-          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Add Image ID to NGINX Task Definition
-        id: task-definition
-        uses: aws-actions/amazon-ecs-render-task-definition@v1
-        with:
-          task-definition: .aws/nginx-task-definition.json
-          container-name: nginx-container
-          image: ${{ steps.nginx-image.outputs.image }}
-
-      - name: Deploy NGINX Task Definition
-        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-        with:
-          task-definition: ${{ steps.task-definition.outputs.task-definition }}
-          service: nginx-service
-          cluster: talelio
-          wait-for-service-stability: true
-
-  deploy-talelio-backend:
-    name: Deploy talel.io Backend to AWS
-    runs-on: ubuntu-latest
-    needs: test
-
-    steps:
-      - name: Checkout Code
-        uses: actions/checkout@v2
-
-      - name: Configure AWS Credentials
-        uses: aws-actions/configure-aws-credentials@v1
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: us-east-1
-
-      - name: Login to AWS ECR
-        id: ecr-login
-        uses: aws-actions/amazon-ecr-login@v1
-
-      - name: Build and Push talel.io Backend Image to AWS ECR
-        id: talelio-backend-image
-        env:
-          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          ECR_REPOSITORY: talel.io-backend
+          ECR_REPOSITORY: talel.io-backend-api
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f talelio_backend/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-      - name: Add Image ID to talel.io Backend Task Definition
+      - name: Add Image ID to talel.io Backend API Task Definition
         id: task-definition
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
-          task-definition: .aws/talelio-backend-task-definition.json
-          container-name: talelio-backend-container
-          image: ${{ steps.talelio-backend-image.outputs.image }}
+          task-definition: .aws/talelio-backend-api-task-definition.json
+          container-name: talelio-backend-api-container
+          image: ${{ steps.talelio-backend-api-image.outputs.image }}
 
-      - name: Deploy talel.io Backend Task Definition
+      - name: Deploy talel.io Backend API Task Definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-definition.outputs.task-definition }}
-          service: talelio-backend-service
+          service: talelio-backend-api-service
           cluster: talelio
           wait-for-service-stability: true
