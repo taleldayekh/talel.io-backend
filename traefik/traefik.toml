@@ -1,0 +1,39 @@
+[log]
+  level = "DEBUG"
+
+# Specify that Traefik should listen on port 80 and 443,
+# web and websecure, and redirect from http to https.
+[entryPoints]
+  [entryPoints.web]
+    address = ":80"
+
+  [entryPoints.web.http.redirections.entryPoint]
+    to = "websecure"
+    scheme = "https"
+
+  [entryPoints.websecure]
+    address = ":443"
+
+[api]
+  debug = true
+
+# Configure Traefik to use ECS as provider and allow it
+# to only discover containers based on tags.
+[providers.ecs]
+  exposedByDefault = false
+  clusters = ["talelio"]
+  accessKeyId = "AWS_ACCESS_KEY_ID"
+  secretAccessKey = "AWS_SECRET_ACCESS_KEY"
+
+# Obtain Let's Encrypt generated certificates via a TLS
+# Challenge. The directory which holds the certificates
+# is also being mounted in the Traefik Dockerfile.
+[certificatesResolvers.letsencrypt.acme]
+  email = "TALEL_EMAIL_ACME"
+  storage = "/etc/letsencrypt/acme.json"
+  # caServer = "https://acme-staging-v02.api.letsencrypt.org/directory"
+
+  [certificatesResolvers.letsencrypt.acme.tlsChallenge]
+
+[providers.file]
+  filename = "/etc/traefik/traefik_dynamic.toml"
