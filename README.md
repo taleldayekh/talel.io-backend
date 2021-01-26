@@ -18,7 +18,7 @@
     - [AWS ECS](#aws-ecs-elastic-container-service)
   - [AWS EC2](#aws-ec2-elastic-computing)
     - [AWS Elastic IP and Namecheap DNS](#aws-elastic-ip-and-namecheap-dns)
-    - [NGINX](#nginx)
+    - [Traefik Reverse Proxy](#traefik-reverse-proxy)
     - [Gunicorn](#gunicorn)
     - [Flask](#flask)
 
@@ -206,40 +206,39 @@ ECS is configured with the three main components: _*cluster*_, _*task definition
    ╰────────────────╯
     Req           ▲
      │            │
-     │            │  
+     │            │
      ▼           Res 
-╭───────────────── EC2 Instance ─────────────────╮
-│ ╭───── Docker ─────╮      ╭───── Docker ─────╮ │
-│ │╭────────────────╮│      │╭────────────────╮│ │
-│ ││      NGINX     ││ ◄─── ││ SSL w/ Certbot ││ │
-│ │╰────────────────╯│      │╰────────────────╯│ │
-│ ╰──────────────────╯      ╰──────────────────╯ │
-│         ▲  ▲                       ▲           │
-│         │  │                       │           │
-│         │  │                       ▼           │
-│         │  ╰──────────────────► Volumes        │
-│         ▼                                      │
-│ ╭───── Docker ─────╮                           │
-│ │╭────────────────╮│                           │
-│ ││    Gunicorn    ││                           │
-│ │╰────────────────╯│                           │
-│ │         ▲        │                           │
-│ │         │        │                           │
-│ │         ▼        │                           │
-│ │╭────────────────╮│                           │
-│ ││ Flask REST API ││                           │
-│ │╰────────────────╯│                           │
-│ ╰──────────────────╯                           │
-╰────────────────────────────────────────────────╯
+╭─────────────── EC2 Instance ──────────────╮
+│ ╭───── Docker ─────╮                      │
+│ │╭────────────────╮│                      │
+│ ││    Traefik     ││ ──────────╮          │
+│ │╰────────────────╯│           │          │
+│ ╰──────────────────╯           │          │
+│           ▲                    │          │
+│           │                    │          │
+│           │                    │          │
+│           ▼                    ▼          │
+│ ╭───── Docker ─────╮   ╭────────────────╮ │
+│ │╭────────────────╮│   │ Docker Volumes │ │
+│ ││    Gunicorn    ││   ╰────────────────╯ │
+│ │╰────────────────╯│           ▲          │
+│ │         ▲        │           │          │
+│ │         │        │ ──────────╯          │
+│ │         ▼        │                      │
+│ │╭────────────────╮│                      │
+│ ││ Flask REST API ││                      │
+│ │╰────────────────╯│                      │
+│ ╰──────────────────╯                      │
+╰───────────────────────────────────────────╯
 ```
 
-The following configurations needs to be considered for a working deployment setup with EC2.
+The following configurations needs to be considered for a working deployment setup on the EC2 instance.
 
 ### AWS Elastic IP and Namecheap DNS
 
-The DNS connects the various **www.talel.io** / **talel.io** domain and subdomains with IP addresses.
+The DNS connects the various `www.talel.io` / `talel.io` domain and subdomains with IP addresses.
 
-The **talel.io API** can be accessed via the subdomain **api.talel.io** which is connected to the EC2 instance with a static IP provided by **AWS Elastic IP**.
+The **talel.io API** can be accessed via the subdomain `api.talel.io` which is connected to the EC2 instance with a static IP provided by **AWS Elastic IP**.
 
 **Configurations**
 
@@ -265,23 +264,45 @@ The **talel.io API** can be accessed via the subdomain **api.talel.io** which is
 
    - Under **HOST RECORDS** click to **ADD NEW RECORD**.
 
-   - Create a new **A Record** for the various hosts, i.e. `www` for **www.talel.io** and `api` for **api.talel.io**.
+   - Create a new **A Record** for the various hosts, i.e. `www` for `www.talel.io` and `api` for `api.talel.io`.
 
    - Add the Elastic IP for the EC2 instance as **Value** for all relevant records.
 
    > An A Record (Address Record) directs the domain to a server through its IPv4 address and controls what a domain name does when visited.
 
+### Traefik Reverse Proxy
 
+When a request is made to `api.talel.io` [Traefik](https://github.com/traefik/traefik) acts as a reverse proxy and redirects that request to the Flask REST API service served by Gunicorn.
 
----
+Traefik forwards everything over `HTTPS` and only exposes ports `80` and `443` for `HTTP` and `HTTPS` respectively as well as port `8080` for the built in [dashboard](https://doc.traefik.io/traefik/operations/dashboard/).
 
-### NGINX
+**Configurations**
 
-TXT
+The Traefik dockerized task runs as a service on the **talelio cluster**. It is not included in the CD pipeline as it is not expected to be redeployed frequently.
 
-### SSL with Certbot
+Any service that is deployed on ECS and configured with the correct Docker labels will automatically get picked up by Traefik.
 
-TXT - Elastic IP
+> The Traefik [static](/traefik/traefik.toml) and [dynamic](/traefik/traefik_dynamic.toml) configuration files are well-commented.
+
+1. **Traefik Static Configurations**  
+
+   These configurations are set once when the container is launched and in addition to specifying ports and HTTPS forwarding this is also where the ECS provider and TLS certificate generation is defined.
+
+   - **ECS Provider**  
+
+     Enables the use of Traefik in a ECS cluster.
+
+   - **TLS with Let's Encrypt**  
+
+     In the configurations a **Certificate Resolver** is defined which retrives a certificate and enables TLS for a domain. This happens when a **router** in the dynamic configurations requests a certificate for a domain.
+
+     Certificates are automatically renewed.
+
+     > ⚠️ If the `caServer` staging server was used for generating test certificates, generating production certificates might fail unless the files created during testing are manually deleted from the host.
+
+2. **Traefik Dynamic Configurations**  
+
+   TXT
 
 ### Gunicorn
 
