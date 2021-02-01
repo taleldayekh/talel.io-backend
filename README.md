@@ -12,15 +12,16 @@
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
   - [Infrastructure Diagram](#infrastructure-diagram)
-  - [Deployment Setup](#deployment-setup)
+  - [Deployment Stack](#deployment-stack)
     - [GitHub](#github)
     - [AWS ECR](#aws-ecr-elastic-container-registry)
     - [AWS ECS](#aws-ecs-elastic-container-service)
-  - [AWS EC2](#aws-ec2-elastic-computing)
-    - [AWS Elastic IP and Namecheap DNS](#aws-elastic-ip-and-namecheap-dns)
-    - [Traefik Reverse Proxy](#traefik-reverse-proxy)
-    - [Gunicorn](#gunicorn)
-    - [Flask](#flask)
+    - [AWS EC2](#aws-ec2-elastic-computing)
+      - [AWS Elastic IP and Namecheap DNS](#aws-elastic-ip-and-namecheap-dns)
+      - [Traefik Reverse Proxy](#traefik-reverse-proxy)
+      - [Gunicorn](#gunicorn)
+      - [Flask](#flask)
+      - [PostgreSQL DB](postgresql-db)
 
 # Architecture
 
@@ -147,7 +148,7 @@ docker-compose up
 ╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
 ```
 
-## Deployment Setup
+## Deployment Stack
 
 ### GitHub
 
@@ -199,37 +200,32 @@ ECS is configured with the three main components: _*cluster*_, _*task definition
 ## AWS EC2 (Elastic Computing)
 
 ```
-   ╭────────────────╮
-   │                │
-   │  www.talel.io  │
-   │                │
-   ╰────────────────╯
-    Req           ▲
-     │            │
-     │            │
-     ▼           Res 
-╭─────────────── EC2 Instance ──────────────╮
-│ ╭───── Docker ─────╮                      │
-│ │╭────────────────╮│                      │
-│ ││    Traefik     ││ ──────────╮          │
-│ │╰────────────────╯│           │          │
-│ ╰──────────────────╯           │          │
-│           ▲                    │          │
-│           │                    │          │
-│           │                    │          │
-│           ▼                    ▼          │
-│ ╭───── Docker ─────╮   ╭────────────────╮ │
-│ │╭────────────────╮│   │ Docker Volumes │ │
-│ ││    Gunicorn    ││   ╰────────────────╯ │
-│ │╰────────────────╯│           ▲          │
-│ │         ▲        │           │          │
-│ │         │        │ ──────────╯          │
-│ │         ▼        │                      │
-│ │╭────────────────╮│                      │
-│ ││ Flask REST API ││                      │
-│ │╰────────────────╯│                      │
-│ ╰──────────────────╯                      │
-╰───────────────────────────────────────────╯
+   ╭─────────────────╮
+   │                 │
+   │ talel.io client │
+   │                 │
+   ╰─────────────────╯
+       Req ↓ ↑ Res
+╭───────────────────── EC2 ─────────────────────╮
+│ ╭──── Container ────╮                         │
+│ │╭─────────────────╮│                         │
+│ ││ Traefik Reverse ││                         │
+│ ││      Proxy      ││                         │
+│ │╰─────────────────╯│                         │
+│ ╰───────────────────╯                         │
+│          ↓ ↑                                  │
+│ ╭──── Container ────╮                         │
+│ │╭─────────────────╮│                         │
+│ ││  Gunicorn WSGI  ││                         │
+│ ││   HTTP Server   ││   ╭──── Container ────╮ │
+│ │╰─────────────────╯│   │╭─────────────────╮│ │
+│ │        ↓ ↑        │ ← ││  PostgreSQL DB  ││ │
+│ │╭─────────────────╮│ → ││                 ││ │
+│ ││  Flask RESTful  ││   │╰─────────────────╯│ │
+│ ││       API       ││   ╰───────────────────╯ │
+│ │╰─────────────────╯│                         │
+│ ╰───────────────────╯                         │
+╰───────────────────────────────────────────────╯
 ```
 
 The following configurations needs to be considered for a working deployment setup on the EC2 instance.
@@ -270,7 +266,31 @@ The **talel.io API** can be accessed via the subdomain `api.talel.io` which is c
 
    > An A Record (Address Record) directs the domain to a server through its IPv4 address and controls what a domain name does when visited.
 
+### PostgreSQL DB
+
+The PostgreSQL container runs as an ECS Service with a mounted volume for persisting the db on the EC2 host.
+
+**Configurations**
+
+The directory in the container where PostgreSQL stores its data needs to be bind mounted in the ECS Task Definition.
+
+- In the `postgresql-task` Task Definition, scroll down to **Volumes** and click on **Add volume**.
+
+- Enter **talelio-postgresql** as **Name**.
+
+- Enter `/var/lib/talelio-postgresql` as **Source path**, this will be the location of the db on the EC2 host.
+
+- Under **Container Definitions** click on the **postgresql-container** and scroll down to **STORAGE AND LOGGING**.
+
+- Select **talelio-postgresql** as **Source volume**.
+
+- Enter `/var/lib/postgresql/data` as **Container path**, this is the path in the container where PostgreSQL creates the db.
+
 ### Traefik Reverse Proxy
+
+
+
+
 
 When a request is made to `api.talel.io` [Traefik](https://github.com/traefik/traefik) acts as a reverse proxy and redirects that request to the Flask REST API service served by Gunicorn.
 
