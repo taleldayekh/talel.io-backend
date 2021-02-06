@@ -3,9 +3,6 @@ SRC_DIR = talelio_backend/
 serve-api:
 	pipenv run flask run
 
-set-githooks-path:
-	git config core.hooksPath .githooks
-
 fix:
 	pipenv run yapf --in-place --recursive $(SRC_DIR) && \
 	pipenv run isort $(SRC_DIR)
@@ -21,3 +18,9 @@ test:
 
 test-coverage:
 	pipenv run pytest --cov=./ --cov-report=xml
+
+update-requirements:
+	pipenv lock -r > requirements.txt
+
+set-githooks-path:
+	git config core.hooksPath .githooks
