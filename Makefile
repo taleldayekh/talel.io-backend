@@ -1,7 +1,7 @@
 SRC_DIR = talelio_backend/
 
 serve-api:
-	pipenv run flask run
+	pipenv run python3 -m talelio_backend.app
 
 fix:
 	pipenv run yapf --in-place --recursive $(SRC_DIR) && \

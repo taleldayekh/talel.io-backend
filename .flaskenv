@@ -1,0 +1,1 @@
+FLASK_APP=talelio_backend.app
