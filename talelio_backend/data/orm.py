@@ -2,13 +2,14 @@ from sqlalchemy.orm import mapper
 from sqlalchemy.schema import Column, MetaData, Table
 from sqlalchemy.sql.sqltypes import Integer, String
 
-from talelio_backend.app_user.domain.user_model import User
+from talelio_backend.app_account.domain.account_model import Account
 
 metadata = MetaData()
 
-user_table = Table('user', metadata, Column('id', Integer, primary_key=True, autoincrement=True),
-                   Column('name', String))
+account_table = Table('account', metadata,
+                      Column('id', Integer, primary_key=True, autoincrement=True),
+                      Column('email', String), Column('password', String))
 
 
 def start_mappers() -> None:
-    mapper(User, user_table)
+    mapper(Account, account_table)
