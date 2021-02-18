@@ -65,11 +65,13 @@ Description of Business Logic Layer
 
 ### Repositories
 
-The repository pattern provides an abstraction over the data storage. This decouples the business logic layer from the database and allows for retrieving and storing domain model data from the database while hiding the details of data access.
+The repositories provides an abstraction over the data storage. They decouple the business logic layer from the database and allows for retrieving and storing domain model data while hiding database access details.
 
-The repositories collaborates with a **Unit of Work** (uow) which groups any database related functions and executes them as an _*atomic*_ unit. This is done in a context manager where all changes are either saved to the database or rolled back if anything fails.
+The repositories collaborates with a **Unit of Work** (uow) which groups any database related functions and executes them as an _*atomic*_ unit. This is done in a context manager where all changes either gets saved to the database or rolled back if anything fails.
 
 The uow is initialized by the API in the interface layer and passed to use-cases in the service layer.
+
+### ORMs
 
 
 

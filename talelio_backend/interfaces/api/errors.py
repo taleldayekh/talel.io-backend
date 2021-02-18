@@ -2,7 +2,7 @@ from typing import Dict, NewType, Tuple
 
 from flask import Flask, jsonify
 
-ErrorResponse = NewType('ErrorResponse', Dict[str, Dict[str, object]])
+ErrorResponseType = NewType('ErrorResponseType', Dict[str, Dict[str, object]])
 
 
 class APIError(Exception):
@@ -15,13 +15,13 @@ class APIError(Exception):
         self.message = message
 
     @property
-    def error_response(self) -> ErrorResponse:
-        return ErrorResponse(
+    def error_response(self) -> ErrorResponseType:
+        return ErrorResponseType(
             dict(error=dict(status=self.status_code, type=self.status_type, message=self.message)))
 
 
 def error_handlers(app: Flask) -> None:
-    def api_error(error: APIError) -> Tuple[ErrorResponse, int]:
+    def api_error(error: APIError) -> Tuple[ErrorResponseType, int]:
         error_response = jsonify(error.error_response)
         return error_response, error.status_code
 
