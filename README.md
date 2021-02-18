@@ -3,7 +3,15 @@
 # Table of Contents
 
 - [Architecture](#architecture)
-  - [Architecture Layers](#architecture-layers)
+  - [Architecture Layers Overview](#architecture-layers-overview)
+  - [Presentation Layer](#presentation-layer)
+  - [Business Logic Layer](#business-logic-layer)
+  - [Data Layer](#data-layer)
+
+
+
+
+
 - [API](#api)
 - [Development](#development)
   - [Setup](#setup)
@@ -23,27 +31,84 @@
       - [Flask](#flask)
       - [PostgreSQL DB](postgresql-db)
 
+
+
+
+
 # Architecture
+
+Describe DDD
+
+## Architecture Layers Overview
+
+Diagram of Architecture
+
+## Presentation Layer
+
+Description of Presentation Layer
+
+## Business Logic Layer
+
+Description of Business Logic Layer
+
+## Data Layer
+
+### Folder Structure
+
+```
+└── talelio_backend/
+    └── data/
+    ╵   └── orm.py
+    ╵   └── repositories.py
+    ╵   └── uow.py
+```
+
+### Repositories
+
+The repository pattern provides an abstraction over the data storage. This decouples the business logic layer from the database and allows for retrieving and storing domain model data from the database while hiding the details of data access.
+
+The repositories collaborates with a **Unit of Work** (uow) which groups any database related functions and executes them as an _*atomic*_ unit. This is done in a context manager where all changes are either saved to the database or rolled back if anything fails.
+
+The uow is initialized by the API in the interface layer and passed to use-cases in the service layer.
+
+
+
+
+
+
+
+
+
+<!-- Architecture
 
 ## Architecture Layers
 
+
 ```
-╭──────────────────────╮
-│  Presentation Layer  │
-╰──────────────────────╯
-           │
-           │
-           ▼
-╭──────────────────────╮
-│ Business Logic Layer │
-╰──────────────────────╯
-           ▲
-	   │
-	   │
-╭──────────────────────╮
-│    Database Layer    │
-╰──────────────────────╯
+          Presentation Layer
+          ╭── Business Logic Layer ──╮
+	  │ ╭──────────────────────╮ │
+	  │ │       Use Case       │ │
+	  │ ╰──────────────────────╯ │
+	  │ ╭──────────────────────╮ │
+     +	  │ │     Domain Model     │ │
+     |	  │ ╰──────────────────────╯ │
+     |	  ╰──────────────────────────╯
+     |
+     |    ╭─────── Data Layer ───────╮
+     |    │ ╭──────────────────────╮ │
+     |    │ │     Repositories     │ │
+     |    │ ╰──────────────────────╯ │
+     |    │ ╭──────────────────────╮ │
+     +----+ │         ORMs         │ │ 
+          │ ╰──────────────────────╯ │
+          │ ╭──────────────────────╮ │
+          │ │       Database       │ │
+          │ ╰──────────────────────╯ │
+          ╰──────────────────────────╯
 ```
+
+### Data Layer -->
 
 # API
 
