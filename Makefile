@@ -14,10 +14,16 @@ type-check:
 	pipenv run mypy $(SRC_DIR)
 
 test:
-	pipenv run pytest --cov=./
+	pipenv run python3 -m pytest --cov=. -v
 
-test-coverage:
-	pipenv run pytest --cov=./ --cov-report=xml
+test-unit:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/unit -v
+
+test-integration:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/integration -v
+
+test-e2e:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/e2e -v
 
 update-requirements:
 	pipenv lock -r > requirements.txt

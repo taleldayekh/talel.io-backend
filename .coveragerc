@@ -1,0 +1,5 @@
+[run]
+omit =
+    talelio_backend/tests/*
+    talelio_backend/migrations/*
+    *__init__.py
