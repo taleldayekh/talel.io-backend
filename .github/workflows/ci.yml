@@ -9,6 +9,19 @@ jobs:
   ci:
     name: Quality Assurance
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.1-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB: ${{ secrets.POSTGRES_DB }}
+
+    env:
+      SECRET_KEY: test
+      DB_URI: postgresql://${{ secrets.POSTGRES_USER }}:${{ secrets.POSTGRES_PASSWORD }}@localhost:5432/${{ secrets.POSTGRES_DB }}
 
     steps:
       - name: Checkout Code
@@ -17,7 +30,7 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.8
 
       - name: Install Dependencies
         run: |
@@ -29,9 +42,11 @@ jobs:
           make lint
           make type-check
 
-      - name: Test
-        run: make test-coverage
+      - name: Unit Tests
+        run: make test-unit
+
+      - name: E2E Tests
+        run: make test-e2e
 
       - name: Upload Test Coverage
         uses: codecov/codecov-action@v1
-

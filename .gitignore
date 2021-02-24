@@ -1,5 +1,12 @@
-# ide
-.vscode
-
 # python
 __pycache__
+
+# testing
+coverage.xml
+
+# env
+.env
+.env.production
+
+# ide
+.vscode

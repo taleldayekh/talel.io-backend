@@ -4,18 +4,23 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
+alembic = "*"
 flask = "*"
 flask-cors = "*"
 gunicorn = "*"
+psycopg2 = "*"
+sqlalchemy = "*"
+marshmallow = "*"
 
 [dev-packages]
-yapf = "*"
-pylint = "*"
 isort = "*"
 mypy = "*"
+pylint = "*"
 pytest = "*"
 pytest-cov = "*"
 python-dotenv = "*"
+sqlalchemy-stubs = "*"
+yapf = "*"
 
 [requires]
-python_version = "3.9"
+python_version = "3.8"

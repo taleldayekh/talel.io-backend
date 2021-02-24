@@ -1,10 +1,7 @@
 SRC_DIR = talelio_backend/
 
 serve-api:
-	pipenv run flask run
-
-set-githooks-path:
-	git config core.hooksPath .githooks
+	pipenv run python3 -m talelio_backend.app
 
 fix:
 	pipenv run yapf --in-place --recursive $(SRC_DIR) && \
@@ -17,7 +14,19 @@ type-check:
 	pipenv run mypy $(SRC_DIR)
 
 test:
-	pipenv run pytest --cov=./
+	pipenv run python3 -m pytest --cov=. -v -s
 
-test-coverage:
-	pipenv run pytest --cov=./ --cov-report=xml
+test-unit:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/unit -v -s
+
+test-integration:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/integration -v -s
+
+test-e2e:
+	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/e2e -v -s
+
+update-requirements:
+	pipenv lock -r > requirements.txt
+
+set-githooks-path:
+	git config core.hooksPath .githooks
