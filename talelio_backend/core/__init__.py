@@ -4,7 +4,7 @@ from flask import Flask
 from flask_cors import CORS  # type: ignore
 
 from talelio_backend.data.orm import start_mappers
-from talelio_backend.interfaces.api.account.account_controller import account_v1
+from talelio_backend.interfaces.api.account_controller import account_v1
 from talelio_backend.interfaces.api.errors import error_handlers
 
 start_mappers()

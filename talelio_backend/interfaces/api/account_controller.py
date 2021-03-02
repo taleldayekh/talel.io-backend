@@ -3,7 +3,8 @@ from typing import Tuple
 from flask import Blueprint, request
 from itsdangerous import SignatureExpired
 
-from talelio_backend.app_account.use_cases.register_account import (register_account,
+from talelio_backend.app_account.use_cases.register_account import (AccountRegistrationError,
+                                                                    register_account,
                                                                     send_registration_email)
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.interfaces.api.errors import APIError
@@ -33,3 +34,11 @@ def register_account_endpoint(token: str) -> Tuple[str, int]:
         return 'Success Message', 200
     except SignatureExpired as error:
         raise APIError(str(error), 400) from error
+    except AccountRegistrationError as error:
+        raise APIError(str(error), 400) from error
+
+
+# !
+@account_v1.route('/test', methods=['GET'])
+def test_endpoint() -> str:
+    return 'Hello World'

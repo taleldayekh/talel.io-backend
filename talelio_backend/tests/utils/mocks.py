@@ -1,5 +1,10 @@
+from os import getenv
 from types import TracebackType
-from typing import Any, Optional, Set, Type, TypeVar
+from typing import Any, Dict, Optional, Set, Type, TypeVar, Union, cast
+
+from itsdangerous import TimedJSONWebSignatureSerializer
+
+SECRET_KEY = cast(str, getenv('SECRET_KEY'))
 
 FakeUnitOfWorkType = TypeVar('FakeUnitOfWorkType', bound='FakeUnitOfWork')
 
@@ -36,3 +41,10 @@ class FakeUnitOfWork:
 
     def commit(self) -> None:
         self.committed = True
+
+
+def generate_verification_token(expire_sec: Union[int, None], data: Dict) -> str:
+    serializer = TimedJSONWebSignatureSerializer(SECRET_KEY, expire_sec)
+    token = serializer.dumps(data)
+
+    return str(token, 'utf-8')

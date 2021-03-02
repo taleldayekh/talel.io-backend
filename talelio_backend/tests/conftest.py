@@ -1,18 +1,20 @@
+from os import environ
 from typing import Generator
+from unittest.mock import patch
 
 import pytest
 from _pytest.fixtures import FixtureRequest
 
 from talelio_backend.core import create_app
-from talelio_backend.core.db import engine
-from talelio_backend.data.orm import metadata
+from talelio_backend.tests.utils.constants import EMAIL
 
 
 @pytest.fixture(scope='module', autouse=True)
-def test_db() -> Generator:
-    metadata.create_all(engine)
-    yield
-    metadata.drop_all(engine)
+def test_env_variables() -> Generator:
+    mock_env_variables = {'WHITELISTED_EMAILS': EMAIL}
+
+    with patch.dict(environ, mock_env_variables):
+        yield
 
 
 @pytest.fixture(scope='class')

@@ -7,12 +7,9 @@
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
-
-
-
-
-
 - [API](#api)
+  - [Account Resource Overview](#account-resource-overview)
+  - [Account Resource Details](#account-resource-details)
 - [Development](#development)
   - [Setup](#setup)
   - [Code Style](#code-style)
@@ -30,10 +27,6 @@
       - [Gunicorn](#gunicorn)
       - [Flask](#flask)
       - [PostgreSQL DB](postgresql-db)
-
-
-
-
 
 # Architecture
 
@@ -73,6 +66,19 @@ The uow is initialized by the API in the interface layer and passed to use-cases
 
 ### ORMs
 
+# API
+
+Details about the REST API
+
+## Account Resource Overview
+
+Overview of Account resource
+
+## Account Resource Details
+
+---
+<!--
+Even though the API provides endpoints for registering users, at the moment it is only meant to be accessed by one client. So in addition to requirecing authentication for obvious routes like... It also only allows whitelisted ips currently the one on GitHub pages.-->
 
 
 
