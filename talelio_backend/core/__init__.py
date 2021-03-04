@@ -16,7 +16,7 @@ def create_app() -> Flask:
                            'production' else 'talelio_backend.config.config.Development')
     app.register_blueprint(account_v1, url_prefix='/v1/account')
 
-    CORS(app)
+    CORS(app, resources={r'/*': app.config['CORS_ORIGIN_WHITELIST']})
     error_handlers(app)
 
     return app
