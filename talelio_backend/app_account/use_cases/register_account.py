@@ -1,6 +1,7 @@
 from os import getenv
 
 from talelio_backend.app_account.domain.account_model import Account
+from talelio_backend.core.auth import generate_password_hash
 from talelio_backend.data.uow import UnitOfWork
 
 
@@ -24,5 +25,6 @@ def register_account(uow: UnitOfWork, token: str) -> None:
         raise AccountRegistrationError('Email not whitelisted')
 
     with uow:
-        uow.account.add(Account(email, password))
+        password_hash = generate_password_hash(password)
+        uow.account.add(Account(email, password_hash))
         uow.commit()

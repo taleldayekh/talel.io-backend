@@ -22,7 +22,7 @@ def test_can_register_account() -> None:
 
     assert uow.committed
     assert account.email == EMAIL
-    assert account.password == PASSWORD
+    assert account.password
 
 
 def test_cannot_register_account_with_expired_registration_token() -> None:
