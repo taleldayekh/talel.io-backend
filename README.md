@@ -72,16 +72,96 @@ Details about the REST API
 
 ## Account Resource Overview
 
-Overview of Account resource
+| HTTP Method | Description        | Resource                                | Success Code | Failure Code |
+|-------------|--------------------|-----------------------------------------|--------------|--------------|
+| POST        | Registration email | /\<version\>/account/register           | 200          | 400          |
+| GET         | Created account    | /\<version\>/account/register/\<token\> | 200          | 400          |
 
 ## Account Resource Details
 
----
-<!--
-Even though the API provides endpoints for registering users, at the moment it is only meant to be accessed by one client. So in addition to requirecing authentication for obvious routes like... It also only allows whitelisted ips currently the one on GitHub pages.-->
+<details>
+<summary>POST registration email</summary>
 
+### Request
 
+```shell
+curl -X POST \
+https://api.talel.io/v1/account/register \
+-H "Content-Type: application/json" \
+-d '{"email": <string>, "password": <string>}'
+```
 
+### Success Response
+
+```shell
+200: OK
+
+Success Message
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "expected <key> key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+</details>
+
+<details>
+<summary>GET created account</summary>
+
+<br/>
+
+⚠️ The endpoint for creating an account is protected and can only be queried with tokens from whitelisted emails.
+
+### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/account/register/<token>
+```
+
+### Success Response
+
+```shell
+200: OK
+
+Success Message
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Invalid registration token",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Email not whitelisted",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+</details>
 
 
 
@@ -118,7 +198,9 @@ Even though the API provides endpoints for registering users, at the moment it i
 
 ### Data Layer -->
 
-# API
+
+
+
 
 # Development
 
