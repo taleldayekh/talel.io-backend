@@ -10,6 +10,7 @@
 - [API](#api)
   - [Account Resource Overview](#account-resource-overview)
   - [Account Resource Details](#account-resource-details)
+- [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
   - [Code Style](#code-style)
@@ -65,6 +66,8 @@ The repositories collaborates with a **Unit of Work** (uow) which groups any dat
 The uow is initialized by the API in the interface layer and passed to use-cases in the service layer.
 
 ### ORMs
+
+### Database
 
 # API
 
@@ -162,6 +165,8 @@ Success Message
 }
 ```
 </details>
+
+# Database Schema Migration
 
 
 
