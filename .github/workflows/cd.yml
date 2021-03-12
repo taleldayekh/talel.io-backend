@@ -9,6 +9,19 @@ jobs:
   test:
     name: Test
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:13.1-alpine
+        ports:
+          - 5432:5432
+        env:
+          POSTGRES_USER: test_user
+          POSTGRES_PASSWORD: test_password
+          POSTGRES_DB: test_db
+
+    env:
+      SECRET_KEY: test
+      DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
 
     steps:
       - name: Checkout Code
@@ -17,23 +30,35 @@ jobs:
       - name: Setup Python
         uses: actions/setup-python@v2
         with:
-          python-version: 3.9
+          python-version: 3.8
 
       - name: Install Dependencies
         run: |
           pip install pipenv
           pipenv install --dev
-      - name: Test
-        run: make test
+
+      - name: Unit Tests
+        run: make test-unit
+
+      - name: E2E Tests
+        run: make test-e2e
 
   deploy-talelio-backend-api:
     name: Deploy talel.io Backend API to AWS
     runs-on: ubuntu-latest
     needs: test
 
+    env:
+      DOTENV_PRODUCTION: ${{ secrets.DOTENV_PRODUCTION }}
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+
+      - name: Generate Production .ENV
+        run: |
+          touch .env
+          cat $DOTENV_PRODUCTION >> .env
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1

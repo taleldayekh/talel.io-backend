@@ -1,16 +1,14 @@
 # pylint: disable=E1101
-from os import getenv
+from os import environ
 from time import sleep
-from typing import cast
 from unittest.mock import patch
 
 import pytest
 from flask import json
-from itsdangerous import TimedJSONWebSignatureSerializer
 
 from talelio_backend.tests.utils.constants import ACCOUNT_BASE_URL, EMAIL, PASSWORD
+from talelio_backend.tests.utils.mocks import generate_verification_token
 
-SECRET_KEY = cast(str, getenv('SECRET_KEY'))
 account_registration_data = {'email': EMAIL, 'password': PASSWORD}
 
 
@@ -37,16 +35,13 @@ class TestAccountApiPOST:
 @pytest.mark.usefixtures('api_server')
 class TestAccountApiGET:
     def test_valid_register_account_api_request(self) -> None:
-        serializer = TimedJSONWebSignatureSerializer(SECRET_KEY, None)
-        token = str(serializer.dumps(account_registration_data), 'utf-8')
-
+        token = generate_verification_token(None, account_registration_data)
         res = self.api.get(f'{ACCOUNT_BASE_URL}/register/{token}')  # type: ignore
 
         assert res.status_code == 200
 
-    def test_cannot_register_account_with_expired_token(self) -> None:
-        serializer = TimedJSONWebSignatureSerializer(SECRET_KEY, 0)
-        token = str(serializer.dumps(account_registration_data), 'utf-8')
+    def test_cannot_register_account_with_expired_registration_token(self) -> None:
+        token = generate_verification_token(0, account_registration_data)
 
         # TODO: Replace sleep with mocked token expiration or a library like FreezeGun
         sleep(1)
@@ -55,3 +50,12 @@ class TestAccountApiGET:
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Invalid registration token'
+
+    @patch.dict(environ, {'WHITELISTED_EMAILS': ''})
+    def test_cannot_register_account_with_non_whitelisted_email(self) -> None:
+        token = generate_verification_token(None, account_registration_data)
+        res = self.api.get(f'{ACCOUNT_BASE_URL}/register/{token}')  # type: ignore
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Email not whitelisted'

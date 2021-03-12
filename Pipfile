@@ -9,8 +9,9 @@ flask = "*"
 flask-cors = "*"
 gunicorn = "*"
 psycopg2 = "*"
-sqlalchemy = "*"
+python-dotenv = "*"
 marshmallow = "*"
+sqlalchemy = "*"
 
 [dev-packages]
 isort = "*"
@@ -18,7 +19,6 @@ mypy = "*"
 pylint = "*"
 pytest = "*"
 pytest-cov = "*"
-python-dotenv = "*"
 sqlalchemy-stubs = "*"
 yapf = "*"
 

@@ -7,12 +7,10 @@
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
-
-
-
-
-
 - [API](#api)
+  - [Account Resource Overview](#account-resource-overview)
+  - [Account Resource Details](#account-resource-details)
+- [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
   - [Code Style](#code-style)
@@ -30,10 +28,6 @@
       - [Gunicorn](#gunicorn)
       - [Flask](#flask)
       - [PostgreSQL DB](postgresql-db)
-
-
-
-
 
 # Architecture
 
@@ -73,9 +67,124 @@ The uow is initialized by the API in the interface layer and passed to use-cases
 
 ### ORMs
 
+### Database
 
+# API
 
+Details about the REST API
 
+## Account Resource Overview
+
+| HTTP Method | Description        | Resource                                | Success Code | Failure Code |
+|-------------|--------------------|-----------------------------------------|--------------|--------------|
+| POST        | Registration email | /\<version\>/account/register           | 200          | 400          |
+| GET         | Created account    | /\<version\>/account/register/\<token\> | 200          | 400          |
+
+## Account Resource Details
+
+<details>
+<summary>POST registration email</summary>
+
+### Request
+
+```bash
+curl -X POST \
+https://api.talel.io/v1/account/register \
+-H "Content-Type: application/json" \
+-d '{"email": <string>, "password": <string>}'
+```
+
+### Success Response
+
+```bash
+200: OK
+
+Success Message
+```
+
+### Error Response
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "expected <key> key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+</details>
+
+<details>
+<summary>GET created account</summary>
+
+<br/>
+
+⚠️ The endpoint for creating an account is protected and can only be queried with tokens from whitelisted emails.
+
+### Request
+
+```bash
+curl -X GET \
+https://api.talel.io/v1/account/register/<token>
+```
+
+### Success Response
+
+```bash
+200: OK
+
+Success Message
+```
+
+### Error Response
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Invalid registration token",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Email not whitelisted",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+</details>
+
+# Database Schema Migration
+
+Database migrations is handled with [Alembic](https://github.com/sqlalchemy/alembic).
+
+Run Alembic in the command line whenever a model has been created or modified. This will generate a Python migration script which can be invoked to upgrade the database schema.
+
+1. **Autogenerate migration script**
+
+   ```bash
+   alembic revision --autogenerate -m "<message>"
+   ```
+
+2. **Perform migration**  
+
+   ```bash
+   alembic upgrade head
+   ```
+
+Above steps will auto-generate necessary SQL for transforming the database into the new version.
 
 
 
@@ -112,7 +221,9 @@ The uow is initialized by the API in the interface layer and passed to use-cases
 
 ### Data Layer -->
 
-# API
+
+
+
 
 # Development
 
