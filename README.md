@@ -87,7 +87,7 @@ Details about the REST API
 
 ### Request
 
-```shell
+```bash
 curl -X POST \
 https://api.talel.io/v1/account/register \
 -H "Content-Type: application/json" \
@@ -96,7 +96,7 @@ https://api.talel.io/v1/account/register \
 
 ### Success Response
 
-```shell
+```bash
 200: OK
 
 Success Message
@@ -104,7 +104,7 @@ Success Message
 
 ### Error Response
 
-```shell
+```bash
 400: BAD REQUEST
 
 {
@@ -126,14 +126,14 @@ Success Message
 
 ### Request
 
-```shell
+```bash
 curl -X GET \
 https://api.talel.io/v1/account/register/<token>
 ```
 
 ### Success Response
 
-```shell
+```bash
 200: OK
 
 Success Message
@@ -141,7 +141,7 @@ Success Message
 
 ### Error Response
 
-```shell
+```bash
 400: BAD REQUEST
 
 {
@@ -153,7 +153,7 @@ Success Message
 }
 ```
 
-```shell
+```bash
 400: BAD REQUEST
 
 {
@@ -167,6 +167,24 @@ Success Message
 </details>
 
 # Database Schema Migration
+
+Database migrations is handled with [Alembic](https://github.com/sqlalchemy/alembic).
+
+Run Alembic in the command line whenever a model has been created or modified. This will generate a Python migration script which can be invoked to upgrade the database schema.
+
+1. **Autogenerate migration script**
+
+   ```bash
+   alembic revision --autogenerate -m "<message>"
+   ```
+
+2. **Perform migration**  
+
+   ```bash
+   alembic upgrade head
+   ```
+
+Above steps will auto-generate necessary SQL for transforming the database into the new version.
 
 
 
