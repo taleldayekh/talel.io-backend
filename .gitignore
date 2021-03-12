@@ -8,5 +8,8 @@ coverage.xml
 .env
 .env.production
 
+# docker
+Dockerfile.prod
+
 # ide
 .vscode
