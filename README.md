@@ -172,7 +172,7 @@ Database migrations is handled with [Alembic](https://github.com/sqlalchemy/alem
 
 Run Alembic in the command line whenever a model has been created or modified. This will generate a Python migration script which can be invoked to upgrade the database schema.
 
-1. **Autogenerate migration script**
+1. **Auto-generate migration script**
 
    ```bash
    alembic revision --autogenerate -m "<message>"

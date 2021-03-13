@@ -55,11 +55,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Generate Production .ENV
-        run: |
-          touch .env
-          cat $DOTENV_PRODUCTION >> .env
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
@@ -78,7 +73,17 @@ jobs:
           ECR_REPOSITORY: talel.io-backend-api
           IMAGE_TAG: ${{ github.sha }}
         run: |
-          docker build -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG -f talelio_backend/Dockerfile .
+          docker build \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          --build-arg ENV=${{ secrets.ENV }} \
+          --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
+          --build-arg WHITELISTED_EMAILS=${{ secrets.WHITELISTED_EMAILS }} \
+          --build-arg EMAIL_USER=${{ secrets.EMAIL_USER }} \
+          --build-arg EMAIL_PASS=${{ secrets.EMAIL_PASS }} \
+          --build-arg EMAIL_SERVER=${{ secrets.EMAIL_SERVER }} \
+          --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
+          --build-arg DB_URI=${{ secrets.DB_URI }} \
+          -f talelio_backend/Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
       - name: Add Image ID to talel.io Backend API Task Definition
