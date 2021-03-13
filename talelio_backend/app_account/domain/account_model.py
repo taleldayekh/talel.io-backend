@@ -5,11 +5,15 @@ from typing import Dict, cast
 
 from itsdangerous import SignatureExpired, TimedJSONWebSignatureSerializer
 
+ENV = getenv('ENV')
 SECRET_KEY = cast(str, getenv('SECRET_KEY'))
 EMAIL_USER = cast(str, getenv('EMAIL_USER'))
 EMAIL_PASS = cast(str, getenv('EMAIL_PASS'))
 EMAIL_SENDER = cast(str, getenv('EMAIL_SENDER'))
 EMAIL_SERVER = cast(str, getenv('EMAIL_SERVER'))
+
+PROD_REGISTRATION_URL = 'https://api.talel.io/v1/account/register'
+DEV_REGISTRATION_URL = 'http://localhost:5000/v1/account/register'
 
 
 class Account:
@@ -46,7 +50,8 @@ class Account:
 
     def send_registration_email(self, token: str) -> None:
         subject = 'Test registration email'
-        content = f'http://localhost:5000/v1/account/register/{token}'
+        content = (f'{PROD_REGISTRATION_URL}/{token}'
+                   if ENV == 'production' else f'{DEV_REGISTRATION_URL}/{token}')
         message = self._compose_email_message(subject, content)
 
         with smtplib.SMTP_SSL(EMAIL_SERVER, 465) as smtp:

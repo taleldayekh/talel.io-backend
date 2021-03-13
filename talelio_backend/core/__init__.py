@@ -1,6 +1,5 @@
 from os import getenv
 
-from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS  # type: ignore
 
@@ -8,7 +7,6 @@ from talelio_backend.data.orm import start_mappers
 from talelio_backend.interfaces.api.account_controller import account_v1
 from talelio_backend.interfaces.api.errors import error_handlers
 
-load_dotenv()
 start_mappers()
 
 
