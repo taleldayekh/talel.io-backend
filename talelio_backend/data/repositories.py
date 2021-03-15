@@ -12,9 +12,12 @@ class BaseRepository:
             model = args[0]
             self.session.add(model)
 
-    def get(self) -> None:
+    def get(self, model: Any, **kwargs: Any) -> None:
         pass
 
 
 class AccountRepository(BaseRepository):
-    pass
+    def get(self, model: Any, **kwargs: Any) -> Any:
+        if 'email' in kwargs:
+            return self.session.query(model).filter_by(email=kwargs.get('email')).first()
+        return None

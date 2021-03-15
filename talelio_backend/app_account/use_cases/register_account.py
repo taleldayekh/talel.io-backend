@@ -25,6 +25,8 @@ def register_account(uow: UnitOfWork, token: str) -> None:
         raise AccountRegistrationError('Email not whitelisted')
 
     with uow:
+        if uow.account.get(Account, email=email) is not None:
+            raise AccountRegistrationError(f"Account with the email '{email}' already exists")
         password_hash = generate_password_hash(password)
         uow.account.add(Account(email, password_hash))
         uow.commit()
