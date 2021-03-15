@@ -16,12 +16,16 @@ class FakeRepository:
     def add(self, model: Any) -> None:
         self.fake_db.add(model)
 
-    def get(self) -> None:
+    def get(self, model: Any, **kwargs: Any) -> None:
         pass
 
 
 class FakeAccountRepository(FakeRepository):
-    pass
+    def get(self, model: Any, **kwargs: Any) -> Any:
+        if 'email' in kwargs:
+            for account in list(self.fake_db):
+                return True if account.email == kwargs.get('email') else None
+        return None
 
 
 class FakeUnitOfWork:
@@ -29,9 +33,9 @@ class FakeUnitOfWork:
 
     def __init__(self) -> None:
         self.committed = False
+        self.account = FakeAccountRepository()
 
     def __enter__(self: FakeUnitOfWorkType) -> FakeUnitOfWorkType:
-        self.account = FakeAccountRepository()
         return self
 
     def __exit__(self, exception_type: Optional[Type[BaseException]],

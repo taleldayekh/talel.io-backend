@@ -67,6 +67,10 @@ The uow is initialized by the API in the interface layer and passed to use-cases
 
 ### ORMs
 
+[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as the ORM (object relational mapper) that keeps the domain models database agnostic and not dependent on any particular database technology. By keeping the models ignorant of the persistence storage the database can easily be switched at any point in time.
+
+SQLAlchemy helps define schemas, map them to domain models and generate SQL based on the model objects.
+
 ### Database
 
 # API
@@ -159,6 +163,18 @@ Success Message
 {
   "error": {
     "message": "Email not whitelisted",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Account with the email '<email>' already exists",
     "status": 400,
     "type": "Bad Request"
   }

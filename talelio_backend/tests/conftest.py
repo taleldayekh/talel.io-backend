@@ -6,12 +6,12 @@ import pytest
 from _pytest.fixtures import FixtureRequest
 
 from talelio_backend.core import create_app
-from talelio_backend.tests.utils.constants import EMAIL
+from talelio_backend.tests.utils.constants import EMAIL_BIANCA, EMAIL_TALEL
 
 
 @pytest.fixture(scope='module', autouse=True)
 def test_env_variables() -> Generator:
-    mock_env_variables = {'WHITELISTED_EMAILS': EMAIL}
+    mock_env_variables = {'WHITELISTED_EMAILS': f'{EMAIL_TALEL},{EMAIL_BIANCA}'}
 
     with patch.dict(environ, mock_env_variables):
         yield

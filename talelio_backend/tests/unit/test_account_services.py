@@ -7,10 +7,10 @@ from itsdangerous import SignatureExpired
 
 from talelio_backend.app_account.use_cases.register_account import (AccountRegistrationError,
                                                                     register_account)
-from talelio_backend.tests.utils.constants import EMAIL, PASSWORD
+from talelio_backend.tests.utils.constants import EMAIL_TALEL, PASSWORD
 from talelio_backend.tests.utils.mocks import FakeUnitOfWork, generate_verification_token
 
-account_registration_data = {'email': EMAIL, 'password': PASSWORD}
+account_registration_data = {'email': EMAIL_TALEL, 'password': PASSWORD}
 
 
 def test_can_register_account() -> None:
@@ -21,7 +21,7 @@ def test_can_register_account() -> None:
     account = list(uow.account.fake_db)[0]
 
     assert uow.committed
-    assert account.email == EMAIL
+    assert account.email == EMAIL_TALEL
     assert account.password
 
 
@@ -42,4 +42,15 @@ def test_cannot_register_account_with_non_whitelisted_email() -> None:
     uow = FakeUnitOfWork()
 
     with pytest.raises(AccountRegistrationError, match='Email not whitelisted'):
+        register_account(uow, token)  # type: ignore
+
+
+def test_cannot_register_account_with_previously_registered_email() -> None:
+    token = generate_verification_token(None, account_registration_data)
+    uow = FakeUnitOfWork()
+
+    register_account(uow, token)  # type: ignore
+
+    with pytest.raises(AccountRegistrationError,
+                       match=f"Account with the email '{EMAIL_TALEL}' already exists"):
         register_account(uow, token)  # type: ignore
