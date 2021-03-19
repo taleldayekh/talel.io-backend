@@ -79,15 +79,19 @@ Details about the REST API
 
 ## Account Resource Overview
 
-| HTTP Method | Description        | Resource                                | Success Code | Failure Code |
-|-------------|--------------------|-----------------------------------------|--------------|--------------|
-| POST        | Registration email | /\<version\>/account/register           | 200          | 400          |
-| GET         | Created account    | /\<version\>/account/register/\<token\> | 200          | 400          |
+| HTTP Method | Description          | Resource                              | Success Code | Failure Code |
+|-------------|----------------------|---------------------------------------|--------------|--------------|
+| POST        | Account registration | /\<version\>/account/register         | 201          | 400          |
+| GET         | Verified account     | /\<version\>/account/verify/\<token\> | 200          | 400          |
 
 ## Account Resource Details
 
 <details>
-<summary>POST registration email</summary>
+<summary>POST account registration</summary>
+
+<br/>
+
+⚠️ Endpoint for registering account can only be successfully queried if email is included in whitelisted emails.
 
 ### Request
 
@@ -95,15 +99,25 @@ Details about the REST API
 curl -X POST \
 https://api.talel.io/v1/account/register \
 -H "Content-Type: application/json" \
--d '{"email": <string>, "password": <string>}'
+-d '{"email": <str>, "password": <str>, "username": <str>}'
 ```
 
 ### Success Response
 
 ```bash
-200: OK
+201: CREATED
 
-Success Message
+{
+  "id": <int>,
+  "verified": <bool>,
+  "email": <str>,
+  "user": {
+    "id": <int>,
+    "username" <str>,
+    "location" <str>,
+    "avatar_url": <str>
+  }
+}
 ```
 
 ### Error Response
@@ -113,7 +127,19 @@ Success Message
 
 {
   "error": {
-    "message": "expected <key> key",
+    "message": "expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Account with the '<emai>' email already exists",
     "status": 400,
     "type": "Bad Request"
   }
@@ -122,17 +148,13 @@ Success Message
 </details>
 
 <details>
-<summary>GET created account</summary>
-
-<br/>
-
-⚠️ The endpoint for creating an account is protected and can only be queried with tokens from whitelisted emails.
+<summary>GET verified account</summary>
 
 ### Request
 
 ```bash
 curl -X GET \
-https://api.talel.io/v1/account/register/<token>
+https://api.talel.io/v1/account/verify/<token>
 ```
 
 ### Success Response
@@ -140,7 +162,17 @@ https://api.talel.io/v1/account/register/<token>
 ```bash
 200: OK
 
-Success Message
+{
+  "id": <int>,
+  "verified": <bool>,
+  "email": <str>,
+  "user": {
+    "id": <int>,
+    "username": <str>,
+    "location": <str>,
+    "avatar_url": <str>
+  }
+}
 ```
 
 ### Error Response
@@ -150,7 +182,7 @@ Success Message
 
 {
   "error": {
-    "message": "Invalid registration token",
+    "message": "No registered account with the email '<email>'",
     "status": 400,
     "type": "Bad Request"
   }
@@ -162,19 +194,7 @@ Success Message
 
 {
   "error": {
-    "message": "Email not whitelisted",
-    "status": 400,
-    "type": "Bad Request"
-  }
-}
-```
-
-```bash
-400: BAD REQUEST
-
-{
-  "error": {
-    "message": "Account with the email '<email>' already exists",
+    "message": "Account already verified",
     "status": 400,
     "type": "Bad Request"
   }
