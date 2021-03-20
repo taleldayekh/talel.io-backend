@@ -1,6 +1,6 @@
 from os import getenv
 from types import TracebackType
-from typing import Any, Dict, Optional, Set, Type, TypeVar, Union, cast
+from typing import Any, Dict, Optional, Set, Type, TypeVar, cast
 
 from itsdangerous import TimedJSONWebSignatureSerializer
 
@@ -13,8 +13,10 @@ class FakeRepository:
     def __init__(self) -> None:
         self.fake_db: Set[Any] = set()
 
-    def add(self, model: Any) -> None:
+    def add(self, model: Any) -> Any:
         self.fake_db.add(model)
+
+        return model
 
     def get(self, model: Any, **kwargs: Any) -> None:
         pass
@@ -24,7 +26,7 @@ class FakeAccountRepository(FakeRepository):
     def get(self, model: Any, **kwargs: Any) -> Any:
         if 'email' in kwargs:
             for account in list(self.fake_db):
-                return True if account.email == kwargs.get('email') else None
+                return account if account.email == kwargs.get('email') else None
         return None
 
 
@@ -47,8 +49,8 @@ class FakeUnitOfWork:
         self.committed = True
 
 
-def generate_verification_token(expire_sec: Union[int, None], data: Dict) -> str:
-    serializer = TimedJSONWebSignatureSerializer(SECRET_KEY, expire_sec)
+def generate_verification_token(data: Dict[str, str]) -> str:
+    serializer = TimedJSONWebSignatureSerializer(SECRET_KEY)
     token = serializer.dumps(data)
 
     return str(token, 'utf-8')

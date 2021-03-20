@@ -139,7 +139,7 @@ https://api.talel.io/v1/account/register \
 
 {
   "error": {
-    "message": "Account with the '<emai>' email already exists",
+    "message": "Account with the '<email>' email already exists",
     "status": 400,
     "type": "Bad Request"
   }
