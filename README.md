@@ -109,6 +109,8 @@ https://api.talel.io/v1/account/register \
 
 {
   "id": <int>,
+  "created_at": <str>,
+  "updated_at": <str>,
   "verified": <bool>,
   "email": <str>,
   "user": {
@@ -164,6 +166,8 @@ https://api.talel.io/v1/account/verify/<token>
 
 {
   "id": <int>,
+  "created_at": <str>,
+  "updated_at": <str>,
   "verified": <bool>,
   "email": <str>,
   "user": {
