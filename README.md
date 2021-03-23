@@ -79,10 +79,10 @@ Details about the REST API
 
 ## Account Resource Overview
 
-| HTTP Method | Description          | Resource                              | Success Code | Failure Code |
-|-------------|----------------------|---------------------------------------|--------------|--------------|
-| POST        | Account registration | /\<version\>/account/register         | 201          | 400          |
-| GET         | Verified account     | /\<version\>/account/verify/\<token\> | 200          | 400          |
+| HTTP Method | Description          | Resource                               | Success Code | Failure Code |
+|-------------|----------------------|----------------------------------------|--------------|--------------|
+| POST        | Account registration | /\<version\>/accounts/register         | 201          | 400          |
+| GET         | Verified account     | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 ## Account Resource Details
 
@@ -97,7 +97,7 @@ Details about the REST API
 
 ```bash
 curl -X POST \
-https://api.talel.io/v1/account/register \
+https://api.talel.io/v1/accounts/register \
 -H "Content-Type: application/json" \
 -d '{"email": <str>, "password": <str>, "username": <str>}'
 ```
@@ -141,6 +141,18 @@ https://api.talel.io/v1/account/register \
 
 {
   "error": {
+    "message": "Email not whitelisted",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```bash
+400: BAD REQUEST
+
+{
+  "error": {
     "message": "Account with the '<email>' email already exists",
     "status": 400,
     "type": "Bad Request"
@@ -156,7 +168,7 @@ https://api.talel.io/v1/account/register \
 
 ```bash
 curl -X GET \
-https://api.talel.io/v1/account/verify/<token>
+https://api.talel.io/v1/accounts/verify/<token>
 ```
 
 ### Success Response
