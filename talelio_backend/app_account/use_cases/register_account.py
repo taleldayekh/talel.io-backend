@@ -31,6 +31,7 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         account_record = uow.account.add(account)
         uow.commit()
 
+        account_record = uow.account.get(Account, email=email)
         verification_token = account.generate_verification_token
         account.send_registration_email(verification_token)
 

@@ -14,8 +14,8 @@ EMAIL_PASS = cast(str, getenv('EMAIL_PASS'))
 EMAIL_SENDER = cast(str, getenv('EMAIL_SENDER'))
 EMAIL_SERVER = cast(str, getenv('EMAIL_SERVER'))
 
-PROD_VERIFICATION_URL = 'https://api.talel.io/v1/account/verify'
-DEV_VERIFICATION_URL = 'http://localhost:5000/v1/account/verify'
+PROD_VERIFICATION_URL = 'https://api.talel.io/v1/accounts/verify'
+DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'
 
 
 class Account:
