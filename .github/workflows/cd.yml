@@ -40,6 +40,9 @@ jobs:
       - name: Unit Tests
         run: make test-unit
 
+      - name: Integration Tests
+        run: make test-integration
+
       - name: E2E Tests
         run: make test-e2e
 
