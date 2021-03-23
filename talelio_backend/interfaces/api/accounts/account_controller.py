@@ -8,7 +8,7 @@ from talelio_backend.app_account.use_cases.register_account import (AccountRegis
                                                                     register_account,
                                                                     verify_account)
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.interfaces.api.account.account_serializers import AccountSchema
+from talelio_backend.interfaces.api.accounts.account_serializers import AccountSchema
 from talelio_backend.interfaces.api.errors import APIError
 
 account_v1 = Blueprint('account_v1', __name__)

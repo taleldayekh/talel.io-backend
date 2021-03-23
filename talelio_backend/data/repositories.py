@@ -7,10 +7,11 @@ class BaseRepository:
     def __init__(self, session: Session) -> None:
         self.session = session
 
-    def add(self, *args: Any) -> None:
-        if len(args) == 1:
-            model = args[0]
-            self.session.add(model)
+    def add(self, model: Any) -> Any:
+        self.session.add(model)
+        self.session.flush()
+
+        return model
 
     def get(self, model: Any, **kwargs: Any) -> None:
         pass

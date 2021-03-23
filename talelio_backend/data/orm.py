@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import registry, relationship
+from sqlalchemy.orm import registry, relationship  # type: ignore
 from sqlalchemy.schema import Column, MetaData, Table
 from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, Integer, String

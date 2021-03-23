@@ -1,6 +1,6 @@
 from marshmallow import Schema, fields
 
-from talelio_backend.interfaces.api.user.user_serializers import UserSchema
+from talelio_backend.interfaces.api.users.user_serializers import UserSchema
 
 
 class AccountSchema(Schema):
