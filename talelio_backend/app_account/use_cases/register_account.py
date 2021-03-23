@@ -53,4 +53,6 @@ def verify_account(uow: UnitOfWork, token: str) -> Account:
         setattr(account_record, 'verified', True)
         uow.commit()
 
+        account_record = uow.account.get(Account, email=email)
+
         return account_record
