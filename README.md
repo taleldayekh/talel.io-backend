@@ -8,8 +8,12 @@
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
 - [API](#api)
-  - [Account Resource Overview](#account-resource-overview)
-  - [Account Resource Details](#account-resource-details)
+  - [Accounts Resource Overview](#accounts-resource-overview)
+  - [Accounts Resource Details](#accounts-resource-details)
+  - [Users Resource Overview](#users-resource-overview)
+  - [Users Resource Details](#users-resource-details)
+  - [Projects Resource Overview](#projects-resource-overview)
+  - [Projects Resource Details](#projects-resource-details)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -77,17 +81,17 @@ SQLAlchemy helps define schemas, map them to domain models and generate SQL base
 
 Details about the REST API
 
-## Account Resource Overview
+## Accounts Resource Overview
 
-| HTTP Method | Description          | Resource                               | Success Code | Failure Code |
-|-------------|----------------------|----------------------------------------|--------------|--------------|
-| POST        | Account registration | /\<version\>/accounts/register         | 201          | 400          |
-| GET         | Verified account     | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
+| HTTP Method | Description    | Resource                               | Success Code | Failure Code |
+|-------------|----------------|----------------------------------------|--------------|--------------|
+| POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
+| GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
-## Account Resource Details
+## Accounts Resource Details
 
 <details>
-<summary>POST account registration</summary>
+<summary>POST - Create account</summary>
 
 <br/>
 
@@ -95,7 +99,7 @@ Details about the REST API
 
 ### Request
 
-```bash
+```shell
 curl -X POST \
 https://api.talel.io/v1/accounts/register \
 -H "Content-Type: application/json" \
@@ -104,27 +108,30 @@ https://api.talel.io/v1/accounts/register \
 
 ### Success Response
 
-```bash
+```shell
 201: CREATED
 
 {
-  "id": <int>,
-  "created_at": <str>,
-  "updated_at": <str>,
-  "verified": <bool>,
-  "email": <str>,
+  "id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": null,
+  "verified": false,
+  "email": talel@talel.talel,
   "user": {
-    "id": <int>,
-    "username" <str>,
-    "location" <str>,
-    "avatar_url": <str>
+    "id": 1,
+    "account_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "username" "taleldayekh",
+    "location" "",
+    "avatar_url": "default.jpg"
   }
 }
 ```
 
 ### Error Response
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -136,7 +143,7 @@ https://api.talel.io/v1/accounts/register \
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -148,7 +155,7 @@ https://api.talel.io/v1/accounts/register \
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -162,38 +169,41 @@ https://api.talel.io/v1/accounts/register \
 </details>
 
 <details>
-<summary>GET verified account</summary>
+<summary>GET - Verify account</summary>
 
 ### Request
 
-```bash
+```shell
 curl -X GET \
 https://api.talel.io/v1/accounts/verify/<token>
 ```
 
 ### Success Response
 
-```bash
+```shell
 200: OK
 
 {
-  "id": <int>,
-  "created_at": <str>,
-  "updated_at": <str>,
-  "verified": <bool>,
-  "email": <str>,
+  "id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": "1986-06-05 00:00:00.000000",
+  "verified": true,
+  "email": talel@talel.talel,
   "user": {
-    "id": <int>,
-    "username": <str>,
-    "location": <str>,
-    "avatar_url": <str>
+    "id": 1,
+    "account_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "username": taleldayekh,
+    "location": "",
+    "avatar_url": "default.jpg"
   }
 }
 ```
 
 ### Error Response
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -205,7 +215,7 @@ https://api.talel.io/v1/accounts/verify/<token>
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -216,7 +226,35 @@ https://api.talel.io/v1/accounts/verify/<token>
   }
 }
 ```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Invalid verification token",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
 </details>
+
+## Users Resource Overview
+
+| HTTP Method | Description | Resource | Success Code | Failure Code |
+|-------------|-------------|----------|--------------|--------------|
+
+## Users Resource Details
+
+## Projects Resource Overview
+
+| HTTP Method | Description                 | Resource                                 | Success Code | Failure Code |
+|-------------|-----------------------------|------------------------------------------|--------------|--------------|
+| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects |              |              |
+| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects |              |              |
+
+## Projects Resource Details
 
 # Database Schema Migration
 
