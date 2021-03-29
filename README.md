@@ -8,12 +8,9 @@
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
 - [API](#api)
-  - [Accounts Resource Overview](#accounts-resource-overview)
-  - [Accounts Resource Details](#accounts-resource-details)
-  - [Users Resource Overview](#users-resource-overview)
-  - [Users Resource Details](#users-resource-details)
-  - [Projects Resource Overview](#projects-resource-overview)
-  - [Projects Resource Details](#projects-resource-details)
+  - [Accounts Resource](#accounts-resource)
+  - [Users Resource](#users-resource)
+  - [Projects Resource](#projects-resource)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -81,21 +78,19 @@ SQLAlchemy helps define schemas, map them to domain models and generate SQL base
 
 Details about the REST API
 
-## Accounts Resource Overview
+## Accounts Resource
 
 | HTTP Method | Description    | Resource                               | Success Code | Failure Code |
 |-------------|----------------|----------------------------------------|--------------|--------------|
 | POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
 | GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
-## Accounts Resource Details
-
 <details>
 <summary>POST - Create account</summary>
 
 <br/>
 
-⚠️ Endpoint for registering account can only be successfully queried if email is included in whitelisted emails.
+⚠️ Endpoint for creating account can only be successfully queried if email is included in whitelisted emails.
 
 ### Request
 
@@ -240,21 +235,79 @@ https://api.talel.io/v1/accounts/verify/<token>
 ```
 </details>
 
-## Users Resource Overview
+## Users Resource
 
 | HTTP Method | Description | Resource | Success Code | Failure Code |
 |-------------|-------------|----------|--------------|--------------|
 
-## Users Resource Details
-
-## Projects Resource Overview
+## Projects Resource
 
 | HTTP Method | Description                 | Resource                                 | Success Code | Failure Code |
 |-------------|-----------------------------|------------------------------------------|--------------|--------------|
-| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects |              |              |
-| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects |              |              |
+| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects | 201          |              |
+| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects | 200          |              |
 
-## Projects Resource Details
+<details>
+<summary>POST - Create project for a user</summary>
+
+### Request
+
+```shell
+```
+
+### Success Response
+
+```shell
+201: CREATED
+
+{
+  "id": 1,
+  "user_id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": null,
+  "title": "Project Name",
+  "body": "## Hello World",
+  "html": "<h1>Hello World</h1>"
+}
+```
+
+### Error Response
+
+```shell
+```
+</details>
+
+<details>
+<summary>GET - Get all projects for a user</summary>
+
+### Request
+
+```shell
+```
+
+### Success Response
+
+```shell
+200: OK
+
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "title": "Project Name",
+    "body": "## Hello World",
+    "html": "<h1>Hello World</h1>
+  }
+]
+```
+
+### Error Response
+
+```shell
+```
+</details>
 
 # Database Schema Migration
 
