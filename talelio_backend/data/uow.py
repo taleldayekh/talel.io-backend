@@ -5,7 +5,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 from talelio_backend.core.db import default_session
-from talelio_backend.data.repositories import AccountRepository
+from talelio_backend.data.repositories import AccountRepository, ProjectRepository, UserRepository
 
 UnitOfWorkType = TypeVar('UnitOfWorkType', bound='UnitOfWork')
 
@@ -13,6 +13,8 @@ UnitOfWorkType = TypeVar('UnitOfWorkType', bound='UnitOfWork')
 class UnitOfWork:
     session: Session
     account: AccountRepository
+    user: UserRepository
+    project: ProjectRepository
 
     def __init__(self, session_factory: sessionmaker = default_session) -> None:
         self.session_factory = session_factory
@@ -20,6 +22,8 @@ class UnitOfWork:
     def __enter__(self: UnitOfWorkType) -> UnitOfWorkType:
         self.session = self.session_factory()
         self.account = AccountRepository(self.session)
+        self.user = UserRepository(self.session)
+        self.project = ProjectRepository(self.session)
 
         return self
 
