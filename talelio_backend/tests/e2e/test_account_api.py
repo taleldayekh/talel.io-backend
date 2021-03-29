@@ -109,3 +109,13 @@ class TestAccountApiGET(TestRequests):
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Account already verified'
+
+    def test_cannot_verify_account_with_invalid_token(self) -> None:
+        verification_token = generate_verification_token({'email': EMAIL_TALEL},
+                                                         'invalidsecretkey')
+
+        res = self.make_verify_request(verification_token)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Invalid verification token'

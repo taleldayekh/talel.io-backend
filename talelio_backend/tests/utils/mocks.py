@@ -49,8 +49,8 @@ class FakeUnitOfWork:
         self.committed = True
 
 
-def generate_verification_token(data: Dict[str, str]) -> str:
-    serializer = TimedJSONWebSignatureSerializer(SECRET_KEY)
+def generate_verification_token(data: Dict[str, str], secret_key: str = SECRET_KEY) -> str:
+    serializer = TimedJSONWebSignatureSerializer(secret_key)
     token = serializer.dumps(data)
 
     return str(token, 'utf-8')
