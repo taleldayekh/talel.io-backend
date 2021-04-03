@@ -2,8 +2,8 @@ from typing import Tuple
 
 from flask import Blueprint, jsonify, request
 
-from talelio_backend.app_user.use_cases.create_user_project import create_user_project
-from talelio_backend.app_user.use_cases.get_user_projects import get_user_projects
+from talelio_backend.app_project.use_cases.create_project import create_user_project
+from talelio_backend.app_project.use_cases.get_projects import get_user_projects
 from talelio_backend.core.exceptions import UserError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.interfaces.api.errors import APIError
