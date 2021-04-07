@@ -1,7 +1,11 @@
 import hashlib
 import string
 from random import choice
-from typing import Union
+from typing import Dict, Union
+
+import jwt
+
+from talelio_backend.constants import SECRET_KEY
 
 
 def generate_salt() -> str:
@@ -21,3 +25,11 @@ def check_password_hash(password: str, password_hash: str) -> bool:
     salt = password_hash.split(',')[1]
 
     return bool(generate_password_hash(password, salt) == password_hash)
+
+
+def generate_access_token(payload: Dict[str, str]) -> str:
+    return jwt.encode(payload, SECRET_KEY, algorithm='HS512')
+
+
+def verify_access_token() -> None:
+    pass
