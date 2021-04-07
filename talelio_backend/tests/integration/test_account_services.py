@@ -1,30 +1,15 @@
 from os import environ
-from typing import Union
 from unittest.mock import patch
 
 import pytest
 
-from talelio_backend.app_account.use_cases.register_account import (AccountRegistrationError,
-                                                                    AccountVerificationError,
-                                                                    register_account,
-                                                                    verify_account)
-from talelio_backend.tests.utils.constants import EMAIL_TALEL, PASSWORD, USERNAME_TALEL
-from talelio_backend.tests.utils.mocks import FakeUnitOfWork, generate_verification_token
-
-
-def account_registration_helper(uow: Union[FakeUnitOfWork, None] = None) -> FakeUnitOfWork:
-    with patch('talelio_backend.app_account.domain.account_model.smtplib.SMTP_SSL'):
-        if not uow:
-            uow = FakeUnitOfWork()
-
-        register_account(uow, EMAIL_TALEL, PASSWORD, USERNAME_TALEL)  # type: ignore
-
-        return uow
-
-
-def account_verification_helper(uow: FakeUnitOfWork) -> None:
-    verification_token = generate_verification_token({'email': EMAIL_TALEL})
-    verify_account(uow, verification_token)  # type: ignore
+from talelio_backend.app_account.use_cases.register_account import (AccountError,
+                                                                    AccountRegistrationError,
+                                                                    AccountVerificationError)
+from talelio_backend.tests.utils.constants import EMAIL_TALEL, USERNAME_TALEL
+from talelio_backend.tests.utils.helpers import (account_registration_helper,
+                                                 account_verification_helper)
+from talelio_backend.tests.utils.mocks import FakeUnitOfWork
 
 
 def test_can_register_account() -> None:
@@ -64,7 +49,7 @@ def test_can_verify_account() -> None:
 def test_cannot_verify_non_registered_account() -> None:
     uow = FakeUnitOfWork()
 
-    with pytest.raises(AccountVerificationError,
+    with pytest.raises(AccountError,
                        match=f"No registered account with the email '{EMAIL_TALEL}'"):
         account_verification_helper(uow)
 
