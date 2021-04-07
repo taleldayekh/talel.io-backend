@@ -3,7 +3,8 @@ from os import getenv
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_user.domain.user_model import User
 from talelio_backend.core.auth import generate_password_hash
-from talelio_backend.core.exceptions import AccountRegistrationError, AccountVerificationError
+from talelio_backend.core.exceptions import (AccountError, AccountRegistrationError,
+                                             AccountVerificationError)
 from talelio_backend.data.uow import UnitOfWork
 
 
@@ -39,7 +40,7 @@ def verify_account(uow: UnitOfWork, token: str) -> Account:
         account_record = uow.account.get(Account, email=email)
 
         if account_record is None:
-            raise AccountVerificationError(f"No registered account with the email '{email}'")
+            raise AccountError(f"No registered account with the email '{email}'")
 
         if account_record.verified:
             raise AccountVerificationError('Account already verified')

@@ -1,3 +1,7 @@
+class AccountError(Exception):
+    pass
+
+
 class AccountRegistrationError(Exception):
     pass
 
