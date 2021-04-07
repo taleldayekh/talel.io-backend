@@ -83,6 +83,7 @@ Details about the REST API
 | HTTP Method | Description    | Resource                               | Success Code | Failure Code |
 |-------------|----------------|----------------------------------------|--------------|--------------|
 | POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
+| POST        | Login          | /\<version\>/accounts/login            | 200          | 400, 401     |
 | GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 <details>
@@ -131,7 +132,7 @@ https://api.talel.io/v1/accounts/register \
 
 {
   "error": {
-    "message": "expected '<key>' key",
+    "message": "Expected '<key>' key",
     "status": 400,
     "type": "Bad Request"
   }
@@ -161,6 +162,56 @@ https://api.talel.io/v1/accounts/register \
   }
 }
 ```
+</details>
+
+<details>
+<summary>POST - Login</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/login \
+-H "Content-Type: application/json" \
+-d '{"email": <str>, "password": <str>}'
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "access_token": "eyJ0eX.eyJ1c2.2U4WpJ"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "Invalid username or password",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
+
 </details>
 
 <details>
