@@ -12,19 +12,6 @@ from talelio_backend.interfaces.api.projects.project_serializer import ProjectSc
 users_v1 = Blueprint('users_v1', __name__)
 
 
-@users_v1.route('/<string:username>/projects', methods=['GET'])
-def get_user_projects_endpoint(username: str) -> Tuple[str, int]:
-    try:
-        uow = UnitOfWork()
-
-        user_projects = get_user_projects(uow, username)
-        res_body = ProjectSchema(many=True).dump(user_projects)
-
-        return jsonify(res_body), 200
-    except UserError as error:
-        raise APIError(str(error), 400) from error
-
-
 @users_v1.route('/<string:username>/projects', methods=['POST'])
 def create_user_project_endpoint(username: str) -> Tuple[str, int]:
     try:
@@ -39,5 +26,18 @@ def create_user_project_endpoint(username: str) -> Tuple[str, int]:
         return res_body, 201
     except KeyError as error:
         raise APIError(f'Expected {error} key', 400) from error
+    except UserError as error:
+        raise APIError(str(error), 400) from error
+
+
+@users_v1.route('/<string:username>/projects', methods=['GET'])
+def get_user_projects_endpoint(username: str) -> Tuple[str, int]:
+    try:
+        uow = UnitOfWork()
+
+        user_projects = get_user_projects(uow, username)
+        res_body = ProjectSchema(many=True).dump(user_projects)
+
+        return jsonify(res_body), 200
     except UserError as error:
         raise APIError(str(error), 400) from error
