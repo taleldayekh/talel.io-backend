@@ -1,4 +1,5 @@
-ACCOUNT_BASE_URL = 'http://localhost:5000/v1/accounts'
+ACCOUNTS_BASE_URL = 'http://localhost:5000/v1/accounts'
+USERS_BASE_URL = 'http://localhost:5000/v1/users'
 
 EMAIL_TALEL = 'talel@talel.talel'
 USERNAME_TALEL = 'taleldayekh'
@@ -7,4 +8,6 @@ EMAIL_BIANCA = 'bianca@bianca.bianca'
 USERNAME_BIANCA = 'biancabasan'
 
 PASSWORD = 'password'
+
 INVALID_EMAIL = 'unknown@unknown.unknown'
+INVALID_USER = 'unknown'
