@@ -4,6 +4,7 @@ from unittest.mock import patch
 
 import pytest
 from _pytest.fixtures import FixtureRequest
+from flask.testing import FlaskClient
 
 from talelio_backend.core import create_app
 from talelio_backend.tests.utils.constants import EMAIL_BIANCA, EMAIL_TALEL
@@ -18,7 +19,8 @@ def test_env_variables() -> Generator:
 
 
 @pytest.fixture(scope='class')
-def api_server(request: FixtureRequest) -> None:
+def api_server(request: FixtureRequest) -> FlaskClient:
     app = create_app()
     app.config['TESTING'] = True
     request.cls.api = app.test_client()
+    return request.cls.api
