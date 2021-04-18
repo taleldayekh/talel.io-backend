@@ -36,6 +36,6 @@ def start_mappers() -> None:
         account_table,
         properties={'user': relationship(User, backref='account', uselist=False, lazy='joined')})
 
-    mapper(User, user_table, properties={'project': relationship(Project, backref='user')})
+    mapper(User, user_table, properties={'projects': relationship(Project, backref='user')})
 
     mapper(Project, project_table)

@@ -14,7 +14,7 @@ class UnitOfWork:
     session: Session
     account: AccountRepository
     user: UserRepository
-    project: ProjectRepository
+    projects: ProjectRepository
 
     def __init__(self, session_factory: sessionmaker = default_session) -> None:
         self.session_factory = session_factory
@@ -23,7 +23,7 @@ class UnitOfWork:
         self.session = self.session_factory()
         self.account = AccountRepository(self.session)
         self.user = UserRepository(self.session)
-        self.project = ProjectRepository(self.session)
+        self.projects = ProjectRepository(self.session)
 
         return self
 

@@ -15,9 +15,9 @@ def create_user_project(uow: UnitOfWork, username: str, title: str, body: str) -
         new_project = Project(title, body)
         new_project.convert_body_to_html
 
-        user_record.project.append(new_project)
+        user_record.projects.append(new_project)
         uow.commit()
 
-        project_record = uow.project.get(Project)
+        project_record = uow.projects.get(Project)
 
         return project_record

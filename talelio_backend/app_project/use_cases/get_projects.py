@@ -13,4 +13,4 @@ def get_user_projects(uow: UnitOfWork, username: str) -> List[Project]:
         if user_record is None:
             raise UserError(f"User '{username}' does not exist")
 
-        return user_record.project
+        return user_record.projects
