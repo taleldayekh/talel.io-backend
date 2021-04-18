@@ -112,7 +112,7 @@ https://api.talel.io/v1/accounts/register \
   "created_at": "1986-06-05 00:00:00.000000",
   "updated_at": null,
   "verified": false,
-  "email": talel@talel.talel,
+  "email": "talel@talel.talel",
   "user": {
     "id": 1,
     "account_id": 1,
@@ -304,6 +304,10 @@ https://api.talel.io/v1/accounts/verify/<token>
 ### Request
 
 ```shell
+curl -X POST \
+https://api.talel.io/v1/users/<username>/projects \
+-H "Content-Type: application/json" \
+-d '{"title": <str>, "body": <str>}'
 ```
 
 ### Success Response
@@ -325,6 +329,27 @@ https://api.talel.io/v1/accounts/verify/<token>
 ### Error Response
 
 ```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "User '<username>' does not exist",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
 ```
 </details>
 
@@ -334,6 +359,8 @@ https://api.talel.io/v1/accounts/verify/<token>
 ### Request
 
 ```shell
+curl -X GET \
+https://api.talel.io/v1/users/<username>/projects
 ```
 
 ### Success Response
@@ -357,6 +384,15 @@ https://api.talel.io/v1/accounts/verify/<token>
 ### Error Response
 
 ```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "User '<username>' does not exist",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
 ```
 </details>
 
