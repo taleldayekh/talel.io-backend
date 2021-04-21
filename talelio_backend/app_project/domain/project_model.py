@@ -1,4 +1,3 @@
-# pylint: disable=R0903
 from markdown import markdown
 
 
