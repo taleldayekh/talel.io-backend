@@ -1,27 +1,27 @@
 import pytest
 
-from talelio_backend.app_user.use_cases.authenticate_user import get_access_token
 from talelio_backend.core.exceptions import AccountError
-from talelio_backend.tests.integration.helpers import account_registration_helper
-from talelio_backend.tests.utils.constants import EMAIL_BIANCA, EMAIL_TALEL, PASSWORD
+from talelio_backend.tests.integration.helpers import (get_access_token_helper,
+                                                       register_account_helper)
+from talelio_backend.tests.mocks.data import FakeUnitOfWork
 
 
 def test_can_get_access_token_for_user() -> None:
-    uow = account_registration_helper()
-    access_token = get_access_token(uow, EMAIL_TALEL, PASSWORD)  # type: ignore
+    uow = register_account_helper()
+    access_token = get_access_token_helper(uow)
 
     assert access_token['access_token']
 
 
 def test_cannot_get_access_token_for_non_registered_user() -> None:
-    uow = account_registration_helper()
+    uow = FakeUnitOfWork()
 
     with pytest.raises(AccountError, match='Invalid username or password'):
-        get_access_token(uow, EMAIL_BIANCA, PASSWORD)  # type: ignore
+        get_access_token_helper(uow)
 
 
 def test_cannot_get_access_token_with_invalid_password() -> None:
-    uow = account_registration_helper()
+    uow = register_account_helper()
 
     with pytest.raises(AccountError, match='Invalid username or password'):
-        get_access_token(uow, EMAIL_TALEL, '')  # type: ignore
+        get_access_token_helper(uow, password='')

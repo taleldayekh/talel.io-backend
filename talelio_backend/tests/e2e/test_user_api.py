@@ -2,8 +2,8 @@ import pytest
 from flask import json
 
 from talelio_backend.tests.e2e.helpers import RequestHelper
+from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
 from talelio_backend.tests.utils.constants import INVALID_USER, USERNAME_TALEL
-from talelio_backend.tests.utils.mock_data import talelio_client_project, talelio_server_project
 
 
 @pytest.mark.usefixtures('populate_db_account')

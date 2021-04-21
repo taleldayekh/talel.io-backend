@@ -156,7 +156,19 @@ https://api.talel.io/v1/accounts/register \
 
 {
   "error": {
-    "message": "Account with the '<email>' email already exists",
+    "message": "Account with the email '<email>' already exists",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Account with the username '<username>' already exists",
     "status": 400,
     "type": "Bad Request"
   }
@@ -295,8 +307,8 @@ https://api.talel.io/v1/accounts/verify/<token>
 
 | HTTP Method | Description                 | Resource                                 | Success Code | Failure Code |
 |-------------|-----------------------------|------------------------------------------|--------------|--------------|
-| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects | 201          |              |
-| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects | 200          |              |
+| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects | 201          | 400          |
+| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects | 200          | 400          |
 
 <details>
 <summary>POST - Create project for a user</summary>
