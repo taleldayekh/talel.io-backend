@@ -6,8 +6,9 @@ from flask.testing import FlaskClient
 
 from talelio_backend.core.db import engine
 from talelio_backend.data.orm import metadata
+from talelio_backend.tests.mocks.accounts import talel_registration_data
+from talelio_backend.tests.mocks.projects import talelio_server_project
 from talelio_backend.tests.utils.constants import ACCOUNTS_BASE_URL, USERNAME_TALEL, USERS_BASE_URL
-from talelio_backend.tests.utils.mock_data import talel_registration_data, talelio_server_project
 
 
 @pytest.fixture(scope='class', autouse=True)
