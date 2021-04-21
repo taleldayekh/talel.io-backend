@@ -5,9 +5,9 @@ import pytest
 from flask import json
 
 from talelio_backend.tests.e2e.helpers import RequestHelper
+from talelio_backend.tests.mocks.accounts import bianca_registration_data, talel_registration_data
 from talelio_backend.tests.utils.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL,
-                                                   PASSWORD, USERNAME_BIANCA)
-from talelio_backend.tests.utils.mock_data import bianca_registration_data, talel_registration_data
+                                                   PASSWORD, USERNAME_BIANCA, USERNAME_TALEL)
 from talelio_backend.tests.utils.mocks import generate_verification_token
 
 talel_login_data = {
@@ -48,6 +48,20 @@ class TestRegisterAccount(RequestHelper):
         assert res.status_code == 400
         assert res_data['error'][
             'message'] == f"Account with the email '{EMAIL_TALEL}' already exists"
+
+    def test_cannot_register_account_with_already_registered_username(self) -> None:
+        registration_data = {
+            'email': INVALID_EMAIL,
+            'password': PASSWORD,
+            'username': USERNAME_TALEL
+        }
+
+        res = self.register_account_request(registration_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error'][
+            'message'] == f"Account with the username '{USERNAME_TALEL}' already exists"
 
 
 class TestVerifyAccount(RequestHelper):

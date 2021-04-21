@@ -18,6 +18,10 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         if uow.account.get(Account, email=email) is not None:
             raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
+        if uow.user.get(User, username=username):
+            raise AccountRegistrationError(
+                f"Account with the username '{username}' already exists")
+
         password_hash = generate_password_hash(password)
         user = User(username)
         account = Account(email, password_hash, user)
