@@ -1,9 +1,10 @@
 from typing import Dict
 
 from talelio_backend.app_account.domain.account_model import Account
-from talelio_backend.core.auth import check_password_hash, generate_access_token
 from talelio_backend.core.exceptions import AccountError
 from talelio_backend.data.uow import UnitOfWork
+from talelio_backend.identity_and_access.authentication import (check_password_hash,
+                                                                generate_access_token)
 
 
 def get_access_token(uow: UnitOfWork, email: str, password: str) -> Dict[str, str]:

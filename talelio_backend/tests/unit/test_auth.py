@@ -1,4 +1,5 @@
-from talelio_backend.core.auth import check_password_hash, generate_password_hash
+from talelio_backend.identity_and_access.authentication import (check_password_hash,
+                                                                generate_password_hash)
 from talelio_backend.tests.constants import PASSWORD
 
 SALT = 'talel'

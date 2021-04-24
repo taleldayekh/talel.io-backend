@@ -2,10 +2,10 @@ from os import getenv
 
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_user.domain.user_model import User
-from talelio_backend.core.auth import generate_password_hash
 from talelio_backend.core.exceptions import (AccountError, AccountRegistrationError,
                                              AccountVerificationError)
 from talelio_backend.data.uow import UnitOfWork
+from talelio_backend.identity_and_access.authentication import generate_password_hash
 
 
 def register_account(uow: UnitOfWork, email: str, password: str, username: str) -> Account:
