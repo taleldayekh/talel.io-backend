@@ -1,3 +1,7 @@
+class AuthorizationError(Exception):
+    pass
+
+
 class AccountError(Exception):
     pass
 
