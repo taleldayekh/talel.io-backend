@@ -4,11 +4,11 @@ from unittest.mock import patch
 import pytest
 from flask import json
 
+from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL, PASSWORD,
+                                             USERNAME_BIANCA, USERNAME_TALEL)
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.accounts import bianca_registration_data, talel_registration_data
-from talelio_backend.tests.utils.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL,
-                                                   PASSWORD, USERNAME_BIANCA, USERNAME_TALEL)
-from talelio_backend.tests.utils.mocks import generate_verification_token
+from talelio_backend.tests.utils import generate_verification_token
 
 talel_login_data = {
     'email': talel_registration_data['email'],

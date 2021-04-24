@@ -7,7 +7,7 @@ from _pytest.fixtures import FixtureRequest
 from flask.testing import FlaskClient
 
 from talelio_backend.core import create_app
-from talelio_backend.tests.utils.constants import EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL
+from talelio_backend.tests.constants import EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL
 
 
 @pytest.fixture(scope='module', autouse=True)

@@ -1,11 +1,11 @@
 import pytest
 
 from talelio_backend.core.exceptions import UserError
+from talelio_backend.tests.constants import USERNAME_BIANCA
 from talelio_backend.tests.integration.helpers import (create_user_project_helper,
                                                        get_user_projects_helper,
                                                        register_account_helper)
 from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
-from talelio_backend.tests.utils.constants import USERNAME_BIANCA
 
 
 def test_can_create_user_project() -> None:

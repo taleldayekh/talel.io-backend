@@ -5,7 +5,7 @@ from unittest.mock import patch
 import pytest
 from flask import Response
 
-from talelio_backend.tests.utils.constants import ACCOUNTS_BASE_URL, USERS_BASE_URL
+from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, USERS_BASE_URL
 
 
 @pytest.mark.usefixtures('api_server')
@@ -24,6 +24,9 @@ class RequestHelper:
     def get_user_projects_request(self, username: str) -> Response:
         return self.api.get(f'{USERS_BASE_URL}/{username}/projects')  # type: ignore
 
-    def create_user_project_request(self, username: str, project: Dict[str, str]) -> Response:
+    def create_user_project_request(self, username: str, project: Dict[str, str],
+                                    authorization_header: Dict[str, str]) -> Response:
         return self.api.post(  # type: ignore
-            f'{USERS_BASE_URL}/{username}/projects', json=project)
+            f'{USERS_BASE_URL}/{username}/projects',
+            headers=authorization_header,
+            json=project)

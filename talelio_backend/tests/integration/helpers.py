@@ -6,10 +6,10 @@ from talelio_backend.app_project.domain.project_model import Project
 from talelio_backend.app_project.use_cases.create_project import create_user_project
 from talelio_backend.app_project.use_cases.get_projects import get_user_projects
 from talelio_backend.app_user.use_cases.authenticate_user import get_access_token
+from talelio_backend.tests.constants import EMAIL_TALEL, PASSWORD, USERNAME_TALEL
 from talelio_backend.tests.mocks.data import FakeUnitOfWork
 from talelio_backend.tests.mocks.projects import talelio_server_project
-from talelio_backend.tests.utils.constants import EMAIL_TALEL, PASSWORD, USERNAME_TALEL
-from talelio_backend.tests.utils.mocks import generate_verification_token
+from talelio_backend.tests.utils import generate_verification_token
 
 
 def register_account_helper(uow: Union[FakeUnitOfWork, None] = None,

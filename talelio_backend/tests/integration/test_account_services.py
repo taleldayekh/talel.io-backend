@@ -6,10 +6,10 @@ import pytest
 from talelio_backend.app_account.use_cases.register_account import (AccountError,
                                                                     AccountRegistrationError,
                                                                     AccountVerificationError)
+from talelio_backend.tests.constants import EMAIL_BIANCA, EMAIL_TALEL, USERNAME_TALEL
 from talelio_backend.tests.integration.helpers import (register_account_helper,
                                                        verify_account_helper)
 from talelio_backend.tests.mocks.data import FakeUnitOfWork
-from talelio_backend.tests.utils.constants import EMAIL_BIANCA, EMAIL_TALEL, USERNAME_TALEL
 
 
 def test_can_register_account() -> None:

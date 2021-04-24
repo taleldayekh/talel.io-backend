@@ -8,6 +8,7 @@ EMAIL_BIANCA = 'bianca@bianca.bianca'
 USERNAME_BIANCA = 'biancabasan'
 
 PASSWORD = 'password'
+INITIAL_USER_ID = '1'
 
 INVALID_EMAIL = 'unknown@unknown.unknown'
 INVALID_USER = 'unknown'
