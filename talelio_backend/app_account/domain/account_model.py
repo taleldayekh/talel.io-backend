@@ -1,18 +1,12 @@
 import smtplib
 from email.message import EmailMessage
-from os import getenv
-from typing import Dict, cast
+from typing import Dict
 
 from itsdangerous import BadSignature, TimedJSONWebSignatureSerializer
 
 from talelio_backend.app_user.domain.user_model import User
-
-ENV = getenv('ENV')
-SECRET_KEY = cast(str, getenv('SECRET_KEY'))
-EMAIL_USER = cast(str, getenv('EMAIL_USER'))
-EMAIL_PASS = cast(str, getenv('EMAIL_PASS'))
-EMAIL_SENDER = cast(str, getenv('EMAIL_SENDER'))
-EMAIL_SERVER = cast(str, getenv('EMAIL_SERVER'))
+from talelio_backend.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER, ENV,
+                                       SECRET_KEY)
 
 PROD_VERIFICATION_URL = 'https://api.talel.io/v1/accounts/verify'
 DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'

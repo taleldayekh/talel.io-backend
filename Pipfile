@@ -4,13 +4,15 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-alembic = "*"
+alembic = "==1.5.7"
 flask = "*"
 flask-cors = "*"
 gunicorn = "*"
 psycopg2 = "*"
 marshmallow = "*"
 sqlalchemy = "==1.3.23"
+markdown = "*"
+pyjwt = "*"
 
 [dev-packages]
 isort = "*"

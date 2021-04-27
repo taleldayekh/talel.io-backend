@@ -1,52 +1,33 @@
-# pylint: disable=E1101
 from os import environ
-from typing import Dict
 from unittest.mock import patch
 
 import pytest
-from flask import Response, json
+from flask import json
 
-from talelio_backend.tests.utils.constants import (ACCOUNT_BASE_URL, EMAIL_BIANCA, EMAIL_TALEL,
-                                                   PASSWORD, USERNAME_BIANCA, USERNAME_TALEL)
-from talelio_backend.tests.utils.mocks import generate_verification_token
+from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL, PASSWORD,
+                                             USERNAME_BIANCA, USERNAME_TALEL)
+from talelio_backend.tests.e2e.helpers import RequestHelper
+from talelio_backend.tests.mocks.accounts import bianca_registration_data, talel_registration_data
+from talelio_backend.tests.utils import generate_verification_token
 
-talel_account_registration_data = {
-    'email': EMAIL_TALEL,
-    'password': PASSWORD,
-    'username': USERNAME_TALEL
+talel_login_data = {
+    'email': talel_registration_data['email'],
+    'password': talel_registration_data['password']
 }
 
-bianca_account_registration_data = {
-    'email': EMAIL_BIANCA,
-    'password': PASSWORD,
-    'username': USERNAME_BIANCA,
-}
 
-INVALID_EMAIL = 'unknown@unknown.unknown'
-
-
-@pytest.mark.usefixtures('api_server')
-class TestRequests:
-    def make_register_request(self, account_registration_data: Dict[str, str]) -> Response:
-        with patch('talelio_backend.app_account.domain.account_model.smtplib.SMTP_SSL'):
-            return self.api.post(  # type: ignore
-                f'{ACCOUNT_BASE_URL}/register', json=account_registration_data)
-
-    def make_verify_request(self, verification_token: str) -> Response:
-        return self.api.get(f'{ACCOUNT_BASE_URL}/verify/{verification_token}')  # type: ignore
-
-
-class TestAccountApiPOST(TestRequests):
-    def test_valid_register_account_api_request(self) -> None:
-        res = self.make_register_request(talel_account_registration_data)
+@pytest.mark.usefixtures('populate_db_account')
+class TestRegisterAccount(RequestHelper):
+    def test_can_register_account(self) -> None:
+        res = self.register_account_request(bianca_registration_data)
         res_data = json.loads(res.data)
 
         assert res.status_code == 201
-        assert res_data['email'] == EMAIL_TALEL
-        assert res_data['user']['username'] == USERNAME_TALEL
+        assert res_data['email'] == EMAIL_BIANCA
+        assert res_data['user']['username'] == USERNAME_BIANCA
 
-    def test_cannot_register_account_with_missing_registration_details(self) -> None:
-        res = self.make_register_request({'email': EMAIL_TALEL})
+    def test_cannot_register_account_when_missing_registration_details(self) -> None:
+        res = self.register_account_request({'email': EMAIL_TALEL})
         res_data = json.loads(res.data)
 
         assert res.status_code == 400
@@ -54,44 +35,54 @@ class TestAccountApiPOST(TestRequests):
 
     @patch.dict(environ, {'WHITELISTED_EMAILS': ''})
     def test_cannot_register_account_with_non_whitelisted_email(self) -> None:
-        res = self.make_register_request(talel_account_registration_data)
+        res = self.register_account_request(bianca_registration_data)
         res_data = json.loads(res.data)
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Email not whitelisted'
 
     def test_cannot_register_account_with_already_registered_email(self) -> None:
-        res_one = self.make_register_request(bianca_account_registration_data)
+        res = self.register_account_request(talel_registration_data)
+        res_data = json.loads(res.data)
 
-        assert res_one.status_code == 201
+        assert res.status_code == 400
+        assert res_data['error'][
+            'message'] == f"Account with the email '{EMAIL_TALEL}' already exists"
 
-        res_two = self.make_register_request(bianca_account_registration_data)
-        res_two_data = json.loads(res_two.data)
+    def test_cannot_register_account_with_already_registered_username(self) -> None:
+        registration_data = {
+            'email': INVALID_EMAIL,
+            'password': PASSWORD,
+            'username': USERNAME_TALEL
+        }
 
-        assert res_two.status_code == 400
-        assert res_two_data['error'][
-            'message'] == f"Account with the email '{EMAIL_BIANCA}' already exists"
+        res = self.register_account_request(registration_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error'][
+            'message'] == f"Account with the username '{USERNAME_TALEL}' already exists"
 
 
-class TestAccountApiGET(TestRequests):
-    def test_valid_verify_account_api_request(self) -> None:
-        verification_token = generate_verification_token({'email': EMAIL_TALEL})
+class TestVerifyAccount(RequestHelper):
+    def test_can_verify_account(self) -> None:
+        talel_verification_token = generate_verification_token({'email': EMAIL_TALEL})
 
-        not_verified_res = self.make_register_request(talel_account_registration_data)
-        not_verified_res_data = json.loads(not_verified_res.data)
+        res_account = self.register_account_request(talel_registration_data)
+        res_account_data = json.loads(res_account.data)
 
-        assert not not_verified_res_data['verified']
+        assert not res_account_data['verified']
 
-        verified_res = self.make_verify_request(verification_token)
-        verified_res_data = json.loads(verified_res.data)
+        res_verify = self.verify_account_request(talel_verification_token)
+        res_verify_data = json.loads(res_verify.data)
 
-        assert verified_res.status_code == 200
-        assert verified_res_data['verified']
+        assert res_verify.status_code == 200
+        assert res_verify_data['verified']
 
     def test_cannot_verify_non_registered_account(self) -> None:
-        verification_token = generate_verification_token({'email': INVALID_EMAIL})
+        unknown_verification_token = generate_verification_token({'email': INVALID_EMAIL})
 
-        res = self.make_verify_request(verification_token)
+        res = self.verify_account_request(unknown_verification_token)
         res_data = json.loads(res.data)
 
         assert res.status_code == 400
@@ -99,13 +90,63 @@ class TestAccountApiGET(TestRequests):
             'message'] == f"No registered account with the email '{INVALID_EMAIL}'"
 
     def test_cannot_verify_already_verified_account(self) -> None:
-        verification_token = generate_verification_token({'email': EMAIL_BIANCA})
+        bianca_verification_token = generate_verification_token({'email': EMAIL_BIANCA})
 
-        self.make_register_request(bianca_account_registration_data)
-        self.make_verify_request(verification_token)
+        self.register_account_request(bianca_registration_data)
+        self.verify_account_request(bianca_verification_token)
 
-        res = self.make_verify_request(verification_token)
+        res = self.verify_account_request(bianca_verification_token)
         res_data = json.loads(res.data)
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Account already verified'
+
+    def test_cannot_verify_account_with_invalid_token(self) -> None:
+        invalid_verification_token = generate_verification_token({'email': EMAIL_TALEL},
+                                                                 'invalidsecretkey')
+
+        res = self.verify_account_request(invalid_verification_token)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Invalid verification token'
+
+
+@pytest.mark.usefixtures('populate_db_account')
+class TestLogin(RequestHelper):
+    def test_can_login_to_account(self) -> None:
+        res = self.login_request(talel_login_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 200
+        assert res_data['access_token']
+
+    def test_cannot_login_when_missing_login_details(self) -> None:
+        invalid_login_data = {'email': talel_login_data['email']}
+
+        res = self.login_request(invalid_login_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == "Expected 'password' key"
+
+    def test_cannot_login_to_non_registered_account(self) -> None:
+        invalid_login_data = {'email': INVALID_EMAIL, 'password': PASSWORD}
+
+        res = self.login_request(invalid_login_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 401
+        assert res_data['error']['message'] == 'Invalid username or password'
+
+    def test_cannot_login_with_invalid_password(self) -> None:
+        invalid_login_data = {
+            'email': talel_registration_data['email'],
+            'password': talel_registration_data['password'] + '1986'
+        }
+
+        res = self.login_request(invalid_login_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 401
+        assert res_data['error']['message'] == 'Invalid username or password'

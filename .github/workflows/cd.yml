@@ -51,9 +51,6 @@ jobs:
     runs-on: ubuntu-latest
     needs: test
 
-    env:
-      DOTENV_PRODUCTION: ${{ secrets.DOTENV_PRODUCTION }}
-
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2

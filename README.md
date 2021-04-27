@@ -8,8 +8,9 @@
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
 - [API](#api)
-  - [Account Resource Overview](#account-resource-overview)
-  - [Account Resource Details](#account-resource-details)
+  - [Accounts Resource](#accounts-resource)
+  - [Users Resource](#users-resource)
+  - [Projects Resource](#projects-resource)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -77,25 +78,24 @@ SQLAlchemy helps define schemas, map them to domain models and generate SQL base
 
 Details about the REST API
 
-## Account Resource Overview
+## Accounts Resource
 
-| HTTP Method | Description          | Resource                               | Success Code | Failure Code |
-|-------------|----------------------|----------------------------------------|--------------|--------------|
-| POST        | Account registration | /\<version\>/accounts/register         | 201          | 400          |
-| GET         | Verified account     | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
-
-## Account Resource Details
+| HTTP Method | Description    | Resource                               | Success Code | Failure Code |
+|-------------|----------------|----------------------------------------|--------------|--------------|
+| POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
+| POST        | Login          | /\<version\>/accounts/login            | 200          | 400, 401     |
+| GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 <details>
-<summary>POST account registration</summary>
+<summary>POST - Create account</summary>
 
 <br/>
 
-⚠️ Endpoint for registering account can only be successfully queried if email is included in whitelisted emails.
+⚠️ Endpoint for creating account can only be successfully queried if email is included in whitelisted emails.
 
 ### Request
 
-```bash
+```shell
 curl -X POST \
 https://api.talel.io/v1/accounts/register \
 -H "Content-Type: application/json" \
@@ -104,39 +104,42 @@ https://api.talel.io/v1/accounts/register \
 
 ### Success Response
 
-```bash
+```shell
 201: CREATED
 
 {
-  "id": <int>,
-  "created_at": <str>,
-  "updated_at": <str>,
-  "verified": <bool>,
-  "email": <str>,
+  "id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": null,
+  "verified": false,
+  "email": "talel@talel.talel",
   "user": {
-    "id": <int>,
-    "username" <str>,
-    "location" <str>,
-    "avatar_url": <str>
+    "id": 1,
+    "account_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "username" "taleldayekh",
+    "location" "",
+    "avatar_url": "default.jpg"
   }
 }
 ```
 
 ### Error Response
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
   "error": {
-    "message": "expected '<key>' key",
+    "message": "Expected '<key>' key",
     "status": 400,
     "type": "Bad Request"
   }
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -148,12 +151,24 @@ https://api.talel.io/v1/accounts/register \
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
   "error": {
-    "message": "Account with the '<email>' email already exists",
+    "message": "Account with the email '<email>' already exists",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Account with the username '<username>' already exists",
     "status": 400,
     "type": "Bad Request"
   }
@@ -162,38 +177,91 @@ https://api.talel.io/v1/accounts/register \
 </details>
 
 <details>
-<summary>GET verified account</summary>
+<summary>POST - Login</summary>
 
 ### Request
 
-```bash
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/login \
+-H "Content-Type: application/json" \
+-d '{"email": <str>, "password": <str>}'
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "access_token": "eyJ0eX.eyJ1c2.2U4WpJ"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "Invalid username or password",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
+
+</details>
+
+<details>
+<summary>GET - Verify account</summary>
+
+### Request
+
+```shell
 curl -X GET \
 https://api.talel.io/v1/accounts/verify/<token>
 ```
 
 ### Success Response
 
-```bash
+```shell
 200: OK
 
 {
-  "id": <int>,
-  "created_at": <str>,
-  "updated_at": <str>,
-  "verified": <bool>,
-  "email": <str>,
+  "id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": "1986-06-05 00:00:00.000000",
+  "verified": true,
+  "email": talel@talel.talel,
   "user": {
-    "id": <int>,
-    "username": <str>,
-    "location": <str>,
-    "avatar_url": <str>
+    "id": 1,
+    "account_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "username": taleldayekh,
+    "location": "",
+    "avatar_url": "default.jpg"
   }
 }
 ```
 
 ### Error Response
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
@@ -205,12 +273,159 @@ https://api.talel.io/v1/accounts/verify/<token>
 }
 ```
 
-```bash
+```shell
 400: BAD REQUEST
 
 {
   "error": {
     "message": "Account already verified",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Invalid verification token",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+</details>
+
+## Users Resource
+
+| HTTP Method | Description | Resource | Success Code | Failure Code |
+|-------------|-------------|----------|--------------|--------------|
+
+## Projects Resource
+
+| HTTP Method | Description                  | Resource                                 | Success Code | Failure Code |
+|-------------|------------------------------|------------------------------------------|--------------|--------------|
+| POST        | Create a project             | /\<version\>/projects                    | 201          | 400, 403     |
+| GET         | List all projects for a user | /\<version\>/users/\<username\>/projects | 200          | 400          |
+
+<details>
+<summary>POST - Create a project</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/projects \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{"title": <str>, "body": <str>}'
+```
+
+### Success Response
+
+```shell
+201: CREATED
+
+{
+  "id": 1,
+  "user_id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": null,
+  "title": "Project Name",
+  "body": "## Hello World",
+  "html": "<h1>Hello World</h1>"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+403: Forbidden
+
+{
+  "error": {
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: Forbidden
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: Forbidden
+
+{
+  "error": {
+    "message" "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+</details>
+
+<details>
+<summary>GET - List all projects for a user</summary>
+
+### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/users/<username>/projects
+```
+
+### Success Response
+
+```shell
+200: OK
+
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at": null,
+    "title": "Project Name",
+    "body": "## Hello World",
+    "html": "<h1>Hello World</h1>
+  }
+]
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "User '<username>' does not exist",
     "status": 400,
     "type": "Bad Request"
   }
