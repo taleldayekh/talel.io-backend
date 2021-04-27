@@ -27,9 +27,13 @@ def check_password_hash(password: str, password_hash: str) -> bool:
     return bool(generate_password_hash(password, salt) == password_hash)
 
 
-def generate_access_token(payload: Dict[str, str]) -> str:
+def generate_access_token(payload: Dict[str, Union[str, int]]) -> str:
     return encode(payload, SECRET_KEY, algorithm='HS512')
 
 
 def verify_access_token(token: str) -> Dict[str, str]:
     return decode(token, SECRET_KEY, algorithms=['HS512'])
+
+
+def get_jwt_identity(token: str) -> Dict[str, str]:
+    return verify_access_token(token)

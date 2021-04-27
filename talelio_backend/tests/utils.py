@@ -14,7 +14,7 @@ def generate_verification_token(data: Dict[str, str], secret_key: str = SECRET_K
     return str(token, 'utf-8')
 
 
-def generate_authorization_header(user_id: str = INITIAL_USER_ID,
+def generate_authorization_header(user_id: int = INITIAL_USER_ID,
                                   username: str = USERNAME_TALEL,
                                   no_token: bool = False,
                                   invalid_token: bool = False) -> Dict[str, str]:

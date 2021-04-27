@@ -1,43 +1,14 @@
 from typing import Tuple
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, jsonify
 
-from talelio_backend.app_project.use_cases.create_project import create_user_project
 from talelio_backend.app_project.use_cases.get_projects import get_user_projects
-from talelio_backend.core.exceptions import AuthorizationError, UserError
+from talelio_backend.core.exceptions import UserError
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.projects.project_serializer import ProjectSchema
 
 users_v1 = Blueprint('users_v1', __name__)
-
-
-@users_v1.route('/<string:username>/projects', methods=['POST'])
-def create_user_project_endpoint(username: str) -> Tuple[str, int]:
-    authorization_header = request.headers.get('Authorization')
-
-    @authorization_required(authorization_header)
-    def protected() -> Tuple[str, int]:
-        try:
-            uow = UnitOfWork()
-
-            title = request.json['title']
-            body = request.json['body']
-
-            created_project = create_user_project(uow, username, title, body)
-            res_body = ProjectSchema().dump(created_project)
-
-            return res_body, 201
-        except KeyError as error:
-            raise APIError(f'Expected {error} key', 400) from error
-        except UserError as error:
-            raise APIError(str(error), 400) from error
-
-    try:
-        return protected()
-    except AuthorizationError as error:
-        raise APIError(str(error), 403) from error
 
 
 @users_v1.route('/<string:username>/projects', methods=['GET'])

@@ -12,13 +12,13 @@ def authorization_required(authorization_header: Union[str, None]) -> Any:
             if not authorization_header:
                 raise AuthorizationError('No authorization header provided')
 
-            token = authorization_header.split(' ')[1]
+            access_token = authorization_header.split(' ')[1]
 
-            if not token:
+            if not access_token:
                 raise AuthorizationError('No authorization token provided')
 
             try:
-                verify_access_token(token)
+                verify_access_token(access_token)
             except Exception as e:
                 raise AuthorizationError(e) from e
 

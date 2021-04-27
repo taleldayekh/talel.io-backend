@@ -305,19 +305,20 @@ https://api.talel.io/v1/accounts/verify/<token>
 
 ## Projects Resource
 
-| HTTP Method | Description                 | Resource                                 | Success Code | Failure Code |
-|-------------|-----------------------------|------------------------------------------|--------------|--------------|
-| POST        | Create project for a user   | /\<version\>/users/\<username\>/projects | 201          | 400          |
-| GET         | Get all projects for a user | /\<version\>/users/\<username\>/projects | 200          | 400          |
+| HTTP Method | Description                  | Resource                                 | Success Code | Failure Code |
+|-------------|------------------------------|------------------------------------------|--------------|--------------|
+| POST        | Create a project             | /\<version\>/projects                    | 201          | 400, 403     |
+| GET         | List all projects for a user | /\<version\>/users/\<username\>/projects | 200          | 400          |
 
 <details>
-<summary>POST - Create project for a user</summary>
+<summary>POST - Create a project</summary>
 
 ### Request
 
 ```shell
 curl -X POST \
-https://api.talel.io/v1/users/<username>/projects \
+https://api.talel.io/v1/projects \
+-H "Authorization: Bearer <access_token>" \
 -H "Content-Type: application/json" \
 -d '{"title": <str>, "body": <str>}'
 ```
@@ -353,20 +354,44 @@ https://api.talel.io/v1/users/<username>/projects \
 ```
 
 ```shell
-400: BAD REQUEST
+403: Forbidden
 
 {
   "error": {
-    "message": "User '<username>' does not exist",
-    "status": 400,
-    "type": "Bad Request"
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: Forbidden
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: Forbidden
+
+{
+  "error": {
+    "message" "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
   }
 }
 ```
 </details>
 
 <details>
-<summary>GET - Get all projects for a user</summary>
+<summary>GET - List all projects for a user</summary>
 
 ### Request
 

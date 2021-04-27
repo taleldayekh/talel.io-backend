@@ -5,12 +5,12 @@ from talelio_backend.core.exceptions import UserError
 from talelio_backend.data.uow import UnitOfWork
 
 
-def create_user_project(uow: UnitOfWork, username: str, title: str, body: str) -> Project:
+def create_project(uow: UnitOfWork, user_id: int, title: str, body: str) -> Project:
     with uow:
-        user_record = uow.user.get(User, username=username)
+        user_record = uow.user.get(User, id=user_id)
 
         if user_record is None:
-            raise UserError(f"User '{username}' does not exist")
+            raise UserError('User does not exist')
 
         new_project = Project(title, body)
         new_project.convert_body_to_html

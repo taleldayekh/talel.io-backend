@@ -13,24 +13,29 @@ class BaseRepository:
 
         return model
 
-    def get(self, model: Any, **kwargs: Any) -> None:
-        pass
-
 
 class AccountRepository(BaseRepository):
     def get(self, model: Any, **kwargs: Any) -> Any:
+        account: Any
+
         if 'email' in kwargs:
-            return self.session.query(model).filter_by(email=kwargs.get('email')).first()
-        return None
+            account = self.session.query(model).filter_by(email=kwargs.get('email')).first()
+
+        return account
 
 
 class UserRepository(BaseRepository):
     def get(self, model: Any, **kwargs: Any) -> Any:
+        user: Any
+
+        if 'id' in kwargs:
+            user = self.session.query(model).filter_by(id=kwargs.get('id')).first()
         if 'username' in kwargs:
-            return self.session.query(model).filter_by(username=kwargs.get('username')).first()
-        return None
+            user = self.session.query(model).filter_by(username=kwargs.get('username')).first()
+
+        return user
 
 
 class ProjectRepository(BaseRepository):
-    def get(self, model: Any, **kwargs: Any) -> Any:
+    def get(self, model: Any) -> Any:
         return self.session.query(model).order_by(model.id.desc()).first()

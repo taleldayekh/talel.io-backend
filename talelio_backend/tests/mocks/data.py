@@ -15,6 +15,20 @@ class FakeRepository:
 
 class FakeAccountRepository(FakeRepository):
     def add(self, model: Account) -> Account:
+        new_id: int
+        available_account_ids = []
+
+        if len(self.fake_db['account']):
+            for account in self.fake_db['account']:
+                available_account_ids.append(account.id)
+
+            new_id = max(available_account_ids) + 1
+        else:
+            new_id = 1
+
+        setattr(model, 'id', new_id)
+        setattr(model.user, 'id', new_id)
+
         self.fake_db['account'].append(model)
         # Account has relation with user
         self.fake_db['user'].append(model.user)
@@ -31,6 +45,8 @@ class FakeAccountRepository(FakeRepository):
 class FakeUserRepository(FakeRepository):
     def get(self, _model: User, **kwargs: Any) -> Union[User, None]:
         for user in self.fake_db['user']:
+            if user.id == kwargs.get('id'):
+                return user
             if user.username == kwargs.get('username'):
                 return user
         return None
