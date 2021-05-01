@@ -13,6 +13,7 @@ marshmallow = "*"
 sqlalchemy = "==1.3.23"
 markdown = "*"
 pyjwt = "*"
+boto3 = "*"
 
 [dev-packages]
 isort = "*"

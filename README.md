@@ -11,6 +11,8 @@
   - [Accounts Resource](#accounts-resource)
   - [Users Resource](#users-resource)
   - [Projects Resource](#projects-resource)
+- [File Storage](#file-storage)
+  - [AWS S3](#aws-s3-simple-storage-service)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -432,6 +434,10 @@ https://api.talel.io/v1/users/<username>/projects
 }
 ```
 </details>
+
+# File Storage
+
+## AWS S3 (Simple Storage Service)
 
 # Database Schema Migration
 
