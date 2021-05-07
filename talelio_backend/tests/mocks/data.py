@@ -1,7 +1,12 @@
 from __future__ import annotations
 
+from contextlib import contextmanager
+from io import BytesIO
 from types import TracebackType
-from typing import Any, Dict, List, Optional, Type, Union
+from typing import Any, Dict, Generator, List, Optional, Tuple, Type, Union
+
+from PIL import Image
+from werkzeug.datastructures import FileStorage, ImmutableMultiDict, MultiDict
 
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_project.domain.project_model import Project
@@ -80,3 +85,29 @@ class FakeUnitOfWork:
 
     def commit(self) -> None:
         self.committed = True
+
+
+@contextmanager
+def generate_request_image_files(
+        filenames_with_extensions: List[str]) -> Generator[MultiDict, None, None]:
+    request_image_files: List[Tuple[str, FileStorage]] = []
+
+    try:
+        for file in filenames_with_extensions:
+            filename, extension = file.split('.')
+            image = Image.new('RGB', (500, 500))
+            image_bytes = BytesIO()
+            image.save(image_bytes, format=extension)
+            image_bytes.seek(0)
+
+            image.close()
+
+            request_image_file_storage = FileStorage(image_bytes,
+                                                     filename,
+                                                     content_type=f'image/{extension}')
+            request_image_files.append((file, request_image_file_storage))
+
+        yield ImmutableMultiDict(request_image_files)
+    finally:
+        for request_image_file in request_image_files:
+            request_image_file[1].close()
