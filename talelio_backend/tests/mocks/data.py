@@ -113,15 +113,14 @@ def generate_file_streams(
                 file_streams.append(image_stream)
                 image.close()
             else:
-                temp_file = TemporaryFile(suffix=f'.{extension}', prefix=filename)
-                temp_file_size = getsizeof(temp_file)
-                temp_file.write(b'0' * (file_size - temp_file_size))
-                temp_file.seek(0)
-                file_stream = BytesIO(temp_file.read())
-                setattr(file_stream, 'name', filename_and_size[0])
+                with TemporaryFile(suffix=f'.{extension}', prefix=filename) as temp_file:
+                    temp_file_size = getsizeof(temp_file)
+                    temp_file.write(b'0' * (file_size - temp_file_size))
+                    temp_file.seek(0)
+                    file_stream = BytesIO(temp_file.read())
+                    setattr(file_stream, 'name', filename_and_size[0])
 
-                file_streams.append(file_stream)
-                temp_file.close()
+                    file_streams.append(file_stream)
         yield file_streams
     finally:
         for streams in file_streams:
