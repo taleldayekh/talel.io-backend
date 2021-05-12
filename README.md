@@ -54,6 +54,13 @@ Description of Business Logic Layer
 
 ```
 └── talelio_backend/
+    └── app_<package_name>/
+    ╵   └── data/
+    ╵   ╵   └── <package_name>_repository.py
+```
+
+```
+└── talelio_backend/
     └── data/
     ╵   └── orm.py
     ╵   └── repositories.py

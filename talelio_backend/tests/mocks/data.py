@@ -1,12 +1,14 @@
 from __future__ import annotations
 
 from contextlib import contextmanager
-from io import BytesIO
+from io import SEEK_END, BytesIO
+from sys import getsizeof
+from tempfile import TemporaryFile
 from types import TracebackType
 from typing import Any, Dict, Generator, List, Optional, Tuple, Type, Union
 
 from PIL import Image
-from werkzeug.datastructures import FileStorage, ImmutableMultiDict, MultiDict
+from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_project.domain.project_model import Project
@@ -88,26 +90,57 @@ class FakeUnitOfWork:
 
 
 @contextmanager
-def generate_request_image_files(
-        filenames_with_extensions: List[str]) -> Generator[MultiDict, None, None]:
-    request_image_files: List[Tuple[str, FileStorage]] = []
+def generate_file_streams(
+        filenames_and_sizes: List[Tuple[str, int]]) -> Generator[List[BytesIO], None, None]:
+    image_file_extensions = ['gif', 'jpeg', 'png']
+    file_streams: List[BytesIO] = []
 
     try:
-        for file in filenames_with_extensions:
-            filename, extension = file.split('.')
-            image = Image.new('RGB', (500, 500))
-            image_bytes = BytesIO()
-            image.save(image_bytes, format=extension)
-            image_bytes.seek(0)
+        for filename_and_size in filenames_and_sizes:
+            filename, extension = filename_and_size[0].split('.')
+            file_size = filename_and_size[1]
 
-            image.close()
+            if extension in image_file_extensions:
+                image = Image.new('RGB', (500, 500))
+                image_stream = BytesIO()
+                setattr(image_stream, 'name', filename_and_size[0])
+                image.save(image_stream, format=extension)
+                image_file_size = getsizeof(image_stream)
+                image_stream.seek(0, SEEK_END)
+                image_stream.write(b'0' * (file_size - image_file_size))
+                image_stream.seek(0)
 
-            request_image_file_storage = FileStorage(image_bytes,
-                                                     filename,
-                                                     content_type=f'image/{extension}')
-            request_image_files.append((file, request_image_file_storage))
+                file_streams.append(image_stream)
+                image.close()
+            else:
+                temp_file = TemporaryFile(suffix=f'.{extension}', prefix=filename)
+                temp_file_size = getsizeof(temp_file)
+                temp_file.write(b'0' * (file_size - temp_file_size))
+                temp_file.seek(0)
+                file_stream = BytesIO(temp_file.read())
+                setattr(file_stream, 'name', filename_and_size[0])
 
-        yield ImmutableMultiDict(request_image_files)
+                file_streams.append(file_stream)
+                temp_file.close()
+        yield file_streams
     finally:
-        for request_image_file in request_image_files:
-            request_image_file[1].close()
+        for streams in file_streams:
+            streams.close()
+
+
+@contextmanager
+def generate_request_files(
+        filenames_and_sizes: List[Tuple[str, int]]) -> Generator[ImmutableMultiDict, None, None]:
+    try:
+        request_files: List[Tuple[str, FileStorage]] = []
+
+        with generate_file_streams(filenames_and_sizes) as file_streams:
+            for file_stream in file_streams:
+                filename = file_stream.name
+                request_file_storage = FileStorage(file_stream, filename)
+                request_files.append((filename, request_file_storage))
+
+            yield ImmutableMultiDict(request_files)
+    finally:
+        for request_file in request_files:
+            request_file[1].close()
