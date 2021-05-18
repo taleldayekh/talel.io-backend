@@ -1,8 +1,10 @@
+from unittest.mock import patch
+
 import pytest
 
 from talelio_backend.app_assets.domain.image_model import Image
-from talelio_backend.constants import MAX_IMAGE_FILE_SIZE
 from talelio_backend.core.exceptions import ImageError
+from talelio_backend.shared.constants import MAX_IMAGE_FILE_SIZE
 from talelio_backend.tests.mocks.data import generate_file_streams
 
 
@@ -51,3 +53,14 @@ def test_does_not_validate_images_above_max_file_size() -> None:
 
         with pytest.raises(ImageError, match='One or more image file sizes are too large'):
             assert not images.validate
+
+
+def test_can_generate_new_filenames() -> None:
+    with patch('talelio_backend.app_assets.domain.image_model.uuid4',
+               side_effect=['mock-uuid-123', 'mock-uuid-456']):
+        with generate_file_streams([('Image One.jpeg', 0), ('Image Two.png', 0)]) as file_streams:
+            images = Image(file_streams)
+            renamed_images = images.generate_new_filenames
+
+            assert renamed_images[0].name == 'image_one_mock-uuid-123.jpeg'
+            assert renamed_images[1].name == 'image_two_mock-uuid-456.png'

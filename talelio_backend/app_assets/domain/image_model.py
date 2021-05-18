@@ -1,10 +1,12 @@
 from imghdr import what
 from io import BytesIO
+from os.path import splitext
 from typing import List
+from uuid import uuid4
 
 from talelio_backend.app_assets.domain.asset_model import Asset
-from talelio_backend.constants import MAX_IMAGE_FILE_SIZE
 from talelio_backend.core.exceptions import ImageError
+from talelio_backend.shared.constants import MAX_IMAGE_FILE_SIZE
 
 
 class Image(Asset):
@@ -40,3 +42,15 @@ class Image(Asset):
             raise ImageError('One or more image file sizes are too large')
 
         return True
+
+    @property
+    def generate_new_filenames(self) -> List[BytesIO]:
+        for image_stream in self.image_streams:
+            uuid = str(uuid4())
+            secure_filename = self.generate_secure_filename(image_stream.name)
+            (filename, extension) = splitext(secure_filename)
+
+            new_filename = f'{filename}_{uuid}{extension}'
+            setattr(image_stream, 'name', new_filename)
+
+        return self.image_streams
