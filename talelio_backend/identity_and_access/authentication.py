@@ -5,7 +5,7 @@ from typing import Dict, Union
 
 from jwt import decode, encode
 
-from talelio_backend.constants import SECRET_KEY
+from talelio_backend.shared.constants import SECRET_KEY
 
 
 def generate_salt() -> str:

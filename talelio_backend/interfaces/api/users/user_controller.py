@@ -11,7 +11,7 @@ from talelio_backend.interfaces.api.projects.project_serializer import ProjectSc
 users_v1 = Blueprint('users_v1', __name__)
 
 
-@users_v1.route('/<string:username>/projects', methods=['GET'])
+@users_v1.get('/<string:username>/projects')
 def get_user_projects_endpoint(username: str) -> Tuple[str, int]:
     try:
         uow = UnitOfWork()

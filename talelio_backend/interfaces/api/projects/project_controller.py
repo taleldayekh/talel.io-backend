@@ -13,7 +13,7 @@ from talelio_backend.interfaces.api.projects.project_serializer import ProjectSc
 projects_v1 = Blueprint('projects_v1', __name__)
 
 
-@projects_v1.route('', methods=['POST'])
+@projects_v1.post('')
 def create_project_endpoint() -> Tuple[str, int]:
     authorization_header = request.headers.get('Authorization')
 

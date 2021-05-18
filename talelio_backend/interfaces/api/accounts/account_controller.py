@@ -14,7 +14,7 @@ from talelio_backend.interfaces.api.errors import APIError
 accounts_v1 = Blueprint('accounts_v1', __name__)
 
 
-@accounts_v1.route('/register', methods=['POST'])
+@accounts_v1.post('/register')
 def register_account_endpoint() -> Tuple[str, int]:
     try:
         uow = UnitOfWork()
@@ -33,7 +33,7 @@ def register_account_endpoint() -> Tuple[str, int]:
         raise APIError(str(error), 400) from error
 
 
-@accounts_v1.route('/verify/<string:token>', methods=['GET'])
+@accounts_v1.get('/verify/<string:token>')
 def verify_account_endpoint(token: str) -> Tuple[str, int]:
     try:
         uow = UnitOfWork()
@@ -50,7 +50,7 @@ def verify_account_endpoint(token: str) -> Tuple[str, int]:
         raise APIError(str(error), 400) from error
 
 
-@accounts_v1.route('/login', methods=['POST'])
+@accounts_v1.post('/login')
 def login_endpoint() -> Tuple[str, int]:
     try:
         uow = UnitOfWork()

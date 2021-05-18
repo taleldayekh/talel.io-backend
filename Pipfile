@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 alembic = "==1.5.7"
-flask = "*"
+flask = "==2.0.0"
 flask-cors = "*"
 gunicorn = "*"
 psycopg2 = "*"
