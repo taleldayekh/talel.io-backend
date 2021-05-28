@@ -1,11 +1,13 @@
 # pylint: disable=E1101
-from typing import Dict
+from io import BytesIO
+from typing import Dict, List
 from unittest.mock import patch
 
 import pytest
 from flask import Response
 
-from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, PROJECTS_BASE_URL, USERS_BASE_URL
+from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ASSETS_BASE_URL, PROJECTS_BASE_URL,
+                                             USERS_BASE_URL)
 
 
 @pytest.mark.usefixtures('api_server')
@@ -28,3 +30,11 @@ class RequestHelper:
                                authorization_header: Dict[str, str]) -> Response:
         return self.api.post(  # type: ignore
             PROJECTS_BASE_URL, headers=authorization_header, json=project)
+
+    def upload_images_request(self, image_streams: List[BytesIO],
+                              authorization_header: Dict[str, str]) -> Response:
+        return self.api.post(  # type: ignore
+            f'{ASSETS_BASE_URL}/images',
+            headers=authorization_header,
+            data={'files': image_streams},
+            content_type='multipart/form-data')
