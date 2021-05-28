@@ -1,5 +1,9 @@
+from os import getenv
+
+
 class Config(object):
     DEBUG = False
+    S3_BUCKET = getenv('S3_BUCKET')
 
 
 class Development(Config):
