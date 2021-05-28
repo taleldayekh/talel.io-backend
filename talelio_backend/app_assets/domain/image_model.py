@@ -17,6 +17,9 @@ class Image(Asset):
     def validate_type(self) -> bool:
         allowed_image_types = ['gif', 'jpeg', 'png']
 
+        if not self.image_streams:
+            return False
+
         for image_stream in self.image_streams:
             # Reads sufficient bytes of a stream to identify from
             # the header whether the file is of valid image type.
@@ -32,6 +35,9 @@ class Image(Asset):
 
     @property
     def validate_size(self) -> bool:
+        if not self.image_streams:
+            return False
+
         return self.validate_file_size(self.image_streams, MAX_IMAGE_FILE_SIZE)
 
     @property

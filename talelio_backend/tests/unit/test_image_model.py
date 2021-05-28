@@ -25,6 +25,11 @@ def test_does_not_validate_unallowed_image_types() -> None:
             assert not images.validate
 
 
+def test_does_not_validate_image_types_for_empty_list() -> None:
+    images = Image([])
+    assert not images.validate_type
+
+
 def test_does_not_validate_non_image_files() -> None:
     with generate_file_streams([('image.jpeg', 0), ('document.pdf', 0)]) as file_streams:
         images = Image(file_streams)
@@ -42,6 +47,11 @@ def test_validates_images_within_max_file_size() -> None:
         images = Image(file_streams)
         assert images.validate_size
         assert images.validate
+
+
+def test_does_not_validate_image_sizes_for_empty_list() -> None:
+    images = Image([])
+    assert not images.validate_size
 
 
 def test_does_not_validate_images_above_max_file_size() -> None:
