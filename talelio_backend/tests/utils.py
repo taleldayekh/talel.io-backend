@@ -2,8 +2,8 @@ from typing import Dict
 
 from itsdangerous import TimedJSONWebSignatureSerializer
 
-from talelio_backend.constants import SECRET_KEY
 from talelio_backend.identity_and_access.authentication import generate_access_token
+from talelio_backend.shared.constants import SECRET_KEY
 from talelio_backend.tests.constants import INITIAL_USER_ID, USERNAME_TALEL
 
 

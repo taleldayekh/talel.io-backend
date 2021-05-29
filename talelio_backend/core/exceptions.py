@@ -14,5 +14,9 @@ class AccountVerificationError(Exception):
     pass
 
 
+class ImageError(Exception):
+    pass
+
+
 class UserError(Exception):
     pass

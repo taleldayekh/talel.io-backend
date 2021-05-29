@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from flask import Blueprint, jsonify, request
+from flask import Blueprint, Response, jsonify, request
 from itsdangerous import BadSignature
 
 from talelio_backend.app_account.use_cases.register_account import register_account, verify_account
@@ -14,9 +14,12 @@ from talelio_backend.interfaces.api.errors import APIError
 accounts_v1 = Blueprint('accounts_v1', __name__)
 
 
-@accounts_v1.route('/register', methods=['POST'])
-def register_account_endpoint() -> Tuple[str, int]:
+@accounts_v1.post('/register')
+def register_account_endpoint() -> Tuple[Response, int]:
     try:
+        if not request.json:
+            raise APIError('Missing request JSON', 400)
+
         uow = UnitOfWork()
 
         email = request.json['email']
@@ -33,8 +36,8 @@ def register_account_endpoint() -> Tuple[str, int]:
         raise APIError(str(error), 400) from error
 
 
-@accounts_v1.route('/verify/<string:token>', methods=['GET'])
-def verify_account_endpoint(token: str) -> Tuple[str, int]:
+@accounts_v1.get('/verify/<string:token>')
+def verify_account_endpoint(token: str) -> Tuple[Response, int]:
     try:
         uow = UnitOfWork()
 
@@ -50,9 +53,12 @@ def verify_account_endpoint(token: str) -> Tuple[str, int]:
         raise APIError(str(error), 400) from error
 
 
-@accounts_v1.route('/login', methods=['POST'])
-def login_endpoint() -> Tuple[str, int]:
+@accounts_v1.post('/login')
+def login_endpoint() -> Tuple[Response, int]:
     try:
+        if not request.json:
+            raise APIError('Missing request JSON', 400)
+
         uow = UnitOfWork()
 
         email = request.json['email']

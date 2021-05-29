@@ -5,8 +5,8 @@ from typing import Dict
 from itsdangerous import BadSignature, TimedJSONWebSignatureSerializer
 
 from talelio_backend.app_user.domain.user_model import User
-from talelio_backend.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER, ENV,
-                                       SECRET_KEY)
+from talelio_backend.shared.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER,
+                                              ENV, SECRET_KEY)
 
 PROD_VERIFICATION_URL = 'https://api.talel.io/v1/accounts/verify'
 DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'

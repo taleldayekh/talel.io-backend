@@ -1,4 +1,5 @@
 ACCOUNTS_BASE_URL = 'http://localhost:5000/v1/accounts'
+ASSETS_BASE_URL = 'http://localhost:5000/v1/assets'
 USERS_BASE_URL = 'http://localhost:5000/v1/users'
 PROJECTS_BASE_URL = 'http://localhost:5000/v1/projects'
 

@@ -1,6 +1,6 @@
 from typing import Tuple
 
-from flask import Blueprint, jsonify
+from flask import Blueprint, Response, jsonify
 
 from talelio_backend.app_project.use_cases.get_projects import get_user_projects
 from talelio_backend.core.exceptions import UserError
@@ -11,8 +11,8 @@ from talelio_backend.interfaces.api.projects.project_serializer import ProjectSc
 users_v1 = Blueprint('users_v1', __name__)
 
 
-@users_v1.route('/<string:username>/projects', methods=['GET'])
-def get_user_projects_endpoint(username: str) -> Tuple[str, int]:
+@users_v1.get('/<string:username>/projects')
+def get_user_projects_endpoint(username: str) -> Tuple[Response, int]:
     try:
         uow = UnitOfWork()
 

@@ -5,6 +5,7 @@ from flask_cors import CORS  # type: ignore
 
 from talelio_backend.data.orm import start_mappers
 from talelio_backend.interfaces.api.accounts.account_controller import accounts_v1
+from talelio_backend.interfaces.api.assets.asset_controller import assets_v1
 from talelio_backend.interfaces.api.errors import error_handlers
 from talelio_backend.interfaces.api.projects.project_controller import projects_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
@@ -18,8 +19,9 @@ def create_app() -> Flask:
                            'production' else 'talelio_backend.config.config.Development')
 
     app.register_blueprint(accounts_v1, url_prefix='/v1/accounts')
-    app.register_blueprint(users_v1, url_prefix='/v1/users')
+    app.register_blueprint(assets_v1, url_prefix='/v1/assets')
     app.register_blueprint(projects_v1, url_prefix='/v1/projects')
+    app.register_blueprint(users_v1, url_prefix='/v1/users')
 
     CORS(app, resources={r'/*': app.config['CORS_ORIGIN_WHITELIST']})
     error_handlers(app)

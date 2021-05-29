@@ -9,8 +9,11 @@
   - [Data Layer](#data-layer)
 - [API](#api)
   - [Accounts Resource](#accounts-resource)
-  - [Users Resource](#users-resource)
+  - [Assets Resource](#assets-resource)
   - [Projects Resource](#projects-resource)
+  - [Users Resource](#users-resource)
+- [File Storage](#file-storage)
+  - [AWS S3](#aws-s3-simple-storage-service)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -49,6 +52,13 @@ Description of Business Logic Layer
 ## Data Layer
 
 ### Folder Structure
+
+```
+└── talelio_backend/
+    └── app_<package_name>/
+    ╵   └── data/
+    ╵   ╵   └── <package_name>_repository.py
+```
 
 ```
 └── talelio_backend/
@@ -298,10 +308,109 @@ https://api.talel.io/v1/accounts/verify/<token>
 ```
 </details>
 
-## Users Resource
+## Assets Resource
 
-| HTTP Method | Description | Resource | Success Code | Failure Code |
-|-------------|-------------|----------|--------------|--------------|
+| HTTP Method | Description  | Resource                   | Success Code | Failure Code |
+|-------------|--------------|----------------------------|--------------|--------------|
+| POST        | Upload image | /\<version\>/assets/images | 200          | 400, 403     |
+
+<details>
+<summary>POST - Upload image</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/assets/images \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: multipart/form-data" \
+-F "<name>=<content>"
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "image_objects_urls": ["https://s3<-region>.amazonaws.com/<bucket>/<user id>/images/<image file>"]
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "One or more image files are of invalid type",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "One or more image files are too large",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "<aws error>",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+</details>
 
 ## Projects Resource
 
@@ -354,7 +463,7 @@ https://api.talel.io/v1/projects \
 ```
 
 ```shell
-403: Forbidden
+403: FORBIDDEN
 
 {
   "error": {
@@ -366,7 +475,7 @@ https://api.talel.io/v1/projects \
 ```
 
 ```shell
-403: Forbidden
+403: FORBIDDEN
 
 {
   "error": {
@@ -378,11 +487,11 @@ https://api.talel.io/v1/projects \
 ```
 
 ```shell
-403: Forbidden
+403: FORBIDDEN
 
 {
   "error": {
-    "message" "<pyjwt error>",
+    "message": "<pyjwt error>",
     "status": 403,
     "type": "Forbidden"
   }
@@ -432,6 +541,15 @@ https://api.talel.io/v1/users/<username>/projects
 }
 ```
 </details>
+
+## Users Resource
+
+| HTTP Method | Description | Resource | Success Code | Failure Code |
+|-------------|-------------|----------|--------------|--------------|
+
+# File Storage
+
+## AWS S3 (Simple Storage Service)
 
 # Database Schema Migration
 
