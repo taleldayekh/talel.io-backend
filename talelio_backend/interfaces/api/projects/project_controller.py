@@ -21,11 +21,11 @@ def create_project_endpoint() -> Tuple[Response, int]:
     @authorization_required(authorization_header)
     def protected() -> Tuple[Response, int]:
         try:
-            if not authorization_header:
-                raise AuthorizationError('No authorization header provided')
-
             if not request.json:
                 raise APIError('Missing request JSON', 400)
+
+            if not authorization_header:
+                raise AuthorizationError('No authorization header provided')
 
             access_token = extract_access_token_from_authorization_header(authorization_header)
             user = get_jwt_identity(access_token)

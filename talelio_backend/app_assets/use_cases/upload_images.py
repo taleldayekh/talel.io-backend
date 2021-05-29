@@ -1,12 +1,12 @@
 from io import BytesIO
-from typing import List
+from typing import Dict, List
 
 from talelio_backend.app_assets.data.asset_store import Asset, AssetStore
 from talelio_backend.app_assets.domain.image_model import Image
 
 
 def upload_images(asset_store: AssetStore, image_streams: List[BytesIO], user_id: int,
-                  bucket: str) -> List[str]:
+                  bucket: str) -> Dict[str, List[str]]:
     image_objects_urls = []
     images = Image(image_streams)
 
@@ -19,4 +19,4 @@ def upload_images(asset_store: AssetStore, image_streams: List[BytesIO], user_id
             image_object_url = asset_store.upload(renamed_image, user_id, options)
             image_objects_urls.append(image_object_url)
 
-    return image_objects_urls
+    return {'image_objects_urls': image_objects_urls}

@@ -329,6 +329,14 @@ https://api.talel.io/v1/assets/images \
 
 ### Success Response
 
+```shell
+200: OK
+
+{
+  "image_objects_urls": ["https://s3<-region>.amazonaws.com/<bucket>/<user id>/images/<image file>"]
+}
+```
+
 ### Error Response
 
 ```shell

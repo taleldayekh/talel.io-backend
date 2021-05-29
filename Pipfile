@@ -25,6 +25,7 @@ pytest-cov = "*"
 python-dotenv = "*"
 sqlalchemy-stubs = "*"
 yapf = "*"
+boto3-stubs = {version = "==1.17.75", extras = ["s3"]}
 
 [requires]
 python_version = "3.8"
