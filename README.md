@@ -3,7 +3,6 @@
 # Table of Contents
 
 - [Architecture](#architecture)
-  - [Architecture Layers Overview](#architecture-layers-overview)
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
@@ -35,19 +34,39 @@
 
 # Architecture
 
-Describe DDD
+The project structure is organized to follow a three tier layered architecture where each layer depend only on the layer below.
 
-## Architecture Layers Overview
+One core concept is to keep the domain model which is part of the _*business logic layer*_ free from depending on any of the other layers and rather make dependencies flow inwards and to the domain model.
 
-Diagram of Architecture
+```
+╭── Presentation Layer ──╮
+╰────────────────────────╯
+            ↓
+╭─ Business Logic Layer ─╮         ╭──────────────────────╮
+│ ╭────────────────────╮ │         │  Presentation Layer  │
+│ │      Services      │ │         ╰──────────────────────╯
+│ ╰────────────────────╯ │                    ↓
+│ ╭────────────────────╮ │         ╭──────────────────────╮
+│ │    Domain Model    │ │ ─ ─ ─ ─ │     Domain Model     │
+│ ╰────────────────────╯ │         ╰──────────────────────╯
+╰────────────────────────╯                    ↑
+            ↓                      ╭──────────────────────╮
+╭────── Data Layer ──────╮         │      Data Layer      │
+│ ╭────────────────────╮ │         ╰──────────────────────╯
+│ │    Repositories    │ │
+│ ╰────────────────────╯ │
+│ ╭────────────────────╮ │
+│ │        ORMs        │ │
+│ ╰────────────────────╯ │
+│ ╭────────────────────╮ │
+│ │      Database      │ │
+│ ╰────────────────────╯ │
+╰────────────────────────╯
+```
 
 ## Presentation Layer
 
-Description of Presentation Layer
-
 ## Business Logic Layer
-
-Description of Business Logic Layer
 
 ## Data Layer
 
@@ -62,10 +81,10 @@ Description of Business Logic Layer
 
 ```
 └── talelio_backend/
-    └── data/
-    ╵   └── orm.py
-    ╵   └── repositories.py
-    ╵   └── uow.py
+    └── shared/
+    ╵   └── data/
+    ╵   ╵   └── orm.py
+    ╵   ╵   └── repository.py
 ```
 
 ### Repositories
@@ -570,45 +589,6 @@ Run Alembic in the command line whenever a model has been created or modified. T
    ```
 
 Above steps will auto-generate necessary SQL for transforming the database into the new version.
-
-
-
-
-
-<!-- Architecture
-
-## Architecture Layers
-
-
-```
-          Presentation Layer
-          ╭── Business Logic Layer ──╮
-	  │ ╭──────────────────────╮ │
-	  │ │       Use Case       │ │
-	  │ ╰──────────────────────╯ │
-	  │ ╭──────────────────────╮ │
-     +	  │ │     Domain Model     │ │
-     |	  │ ╰──────────────────────╯ │
-     |	  ╰──────────────────────────╯
-     |
-     |    ╭─────── Data Layer ───────╮
-     |    │ ╭──────────────────────╮ │
-     |    │ │     Repositories     │ │
-     |    │ ╰──────────────────────╯ │
-     |    │ ╭──────────────────────╮ │
-     +----+ │         ORMs         │ │ 
-          │ ╰──────────────────────╯ │
-          │ ╭──────────────────────╮ │
-          │ │       Database       │ │
-          │ ╰──────────────────────╯ │
-          ╰──────────────────────────╯
-```
-
-### Data Layer -->
-
-
-
-
 
 # Development
 
