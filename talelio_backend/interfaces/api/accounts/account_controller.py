@@ -1,7 +1,7 @@
 from typing import Tuple
 
 from flask import Blueprint, Response, jsonify, request
-from itsdangerous import BadSignature
+from jwt import InvalidSignatureError
 
 from talelio_backend.app_account.use_cases.register_account import register_account, verify_account
 from talelio_backend.app_user.use_cases.authenticate_user import get_access_token
@@ -45,7 +45,7 @@ def verify_account_endpoint(token: str) -> Tuple[Response, int]:
         res_body = AccountSchema().dump(verified_account)
 
         return res_body, 200
-    except BadSignature as error:
+    except InvalidSignatureError as error:
         raise APIError(str(error), 400) from error
     except AccountError as error:
         raise APIError(str(error), 400) from error

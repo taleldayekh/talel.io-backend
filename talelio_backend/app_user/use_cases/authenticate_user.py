@@ -3,8 +3,7 @@ from typing import Dict
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.core.exceptions import AccountError
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authentication import (check_password_hash,
-                                                                generate_access_token)
+from talelio_backend.identity_and_access.authentication import JWT, check_password_hash
 
 
 def get_access_token(uow: UnitOfWork, email: str, password: str) -> Dict[str, str]:
@@ -22,6 +21,6 @@ def get_access_token(uow: UnitOfWork, email: str, password: str) -> Dict[str, st
             raise AccountError(error_msg)
 
         payload = {'user_id': account_record.user.id, 'username': account_record.user.username}
-        access_token = generate_access_token(payload)
+        access_token = JWT.generate_token(payload)
 
         return {'access_token': access_token}

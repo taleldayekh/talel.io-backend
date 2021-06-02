@@ -2,11 +2,12 @@ import smtplib
 from email.message import EmailMessage
 from typing import Dict
 
-from itsdangerous import BadSignature, TimedJSONWebSignatureSerializer
+from jwt import InvalidSignatureError
 
 from talelio_backend.app_user.domain.user_model import User
+from talelio_backend.identity_and_access.authentication import JWT
 from talelio_backend.shared.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER,
-                                              ENV, SECRET_KEY)
+                                              ENV)
 
 PROD_VERIFICATION_URL = 'https://api.talel.io/v1/accounts/verify'
 DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'
@@ -21,20 +22,16 @@ class Account:
 
     @property
     def generate_verification_token(self) -> str:
-        serializer = TimedJSONWebSignatureSerializer(SECRET_KEY)
-        token = serializer.dumps({'email': self.email}).decode('utf-8')
-
+        token = JWT.generate_token({'email': self.email})
         return token
 
     @staticmethod
     def validate_verification_token(token: str) -> Dict[str, str]:
-        serializer = TimedJSONWebSignatureSerializer(SECRET_KEY)
-
         try:
-            serialized_token = serializer.loads(token)
-            return serialized_token
-        except BadSignature as error:
-            raise BadSignature('Invalid verification token') from error
+            verified_token = JWT.verify_token(token)
+            return verified_token
+        except InvalidSignatureError as error:
+            raise InvalidSignatureError('Invalid verification token') from error
 
     def _compose_email_message(self, subject: str, content: str) -> EmailMessage:
         message = EmailMessage()

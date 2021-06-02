@@ -10,7 +10,7 @@ from os import getenv
 from alembic import context
 from sqlalchemy import engine_from_config, pool
 
-from talelio_backend.data.orm import metadata
+from talelio_backend.shared.data.orm import metadata
 
 DB_URI = getenv('DB_URI')
 

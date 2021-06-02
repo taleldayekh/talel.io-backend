@@ -1,11 +1,24 @@
 import hashlib
 import string
 from random import choice
-from typing import Dict, Union
+from typing import Any, Dict, Union
 
 from jwt import decode, encode
 
 from talelio_backend.shared.constants import SECRET_KEY
+
+
+class JWT:
+    @staticmethod
+    def generate_token(payload: Dict[str, Any], secret_key: str = SECRET_KEY) -> str:
+        return encode(payload, secret_key, algorithm='HS512')
+
+    @staticmethod
+    def verify_token(token: str, secret_key: str = SECRET_KEY) -> Dict[str, str]:
+        return decode(token, secret_key, algorithms=['HS512'])
+
+    def get_jwt_identity(self, token: str) -> Dict[str, str]:
+        return self.verify_token(token)
 
 
 def generate_salt() -> str:
@@ -25,15 +38,3 @@ def check_password_hash(password: str, password_hash: str) -> bool:
     salt = password_hash.split(',')[1]
 
     return bool(generate_password_hash(password, salt) == password_hash)
-
-
-def generate_access_token(payload: Dict[str, Union[str, int]]) -> str:
-    return encode(payload, SECRET_KEY, algorithm='HS512')
-
-
-def verify_access_token(token: str) -> Dict[str, str]:
-    return decode(token, SECRET_KEY, algorithms=['HS512'])
-
-
-def get_jwt_identity(token: str) -> Dict[str, str]:
-    return verify_access_token(token)

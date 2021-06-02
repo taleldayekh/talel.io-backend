@@ -40,6 +40,9 @@ One core concept is to keep the domain model which is part of the _*business log
 
 ```
 ╭── Presentation Layer ──╮
+│ ╭────────────────────╮ │
+│ │      REST API      │ │
+│ ╰────────────────────╯ │
 ╰────────────────────────╯
             ↓
 ╭─ Business Logic Layer ─╮         ╭──────────────────────╮
