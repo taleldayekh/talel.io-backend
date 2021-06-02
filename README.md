@@ -34,7 +34,7 @@
 
 # Architecture
 
-The project structure is organized to follow a three tier layered architecture where each layer depend only on the layer below.
+The project structure is organized to follow a three tier layered architecture that modularize the interface, business logic and data access and where each layer depend only on the layer below.
 
 One core concept is to keep the domain model which is part of the _*business logic layer*_ free from depending on any of the other layers and rather make dependencies flow inwards and to the domain model.
 
@@ -70,7 +70,11 @@ One core concept is to keep the domain model which is part of the _*business log
 
 ## Data Layer
 
+The data layer handles any **infrastructural concerns**. In this layer the storage logic is managed by using the **repository pattern** for accessing a PostgreSQL database and SQL queries are generated using an **ORM**.
+
 ### Folder Structure
+
+The data layer is organized in a `data` directory for separate app packages and in a shared `data` directory.
 
 ```
 └── talelio_backend/
@@ -89,17 +93,17 @@ One core concept is to keep the domain model which is part of the _*business log
 
 ### Repositories
 
-The repositories provides an abstraction over the data storage. They decouple the business logic layer from the database and allows for retrieving and storing domain model data while hiding database access details.
+The repositories provides an abstraction over the data storage and decouples the business logic layer from the database. They allow for retrieving and storing domain model data while hiding database access details.
 
-The repositories collaborates with a **Unit of Work** (uow) which groups any database related functions and executes them as an _*atomic*_ unit. This is done in a context manager where all changes either gets saved to the database or rolled back if anything fails.
-
-The uow is initialized by the API in the interface layer and passed to use-cases in the service layer.
+The repositories collaborate with a **Unit of Work (uow)** in the services of the business logic layer which groups database transactions and executes them as an _*atomic*_ unit.
 
 ### ORMs
 
-[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as the ORM (object relational mapper) that keeps the domain models database agnostic and not dependent on any particular database technology. By keeping the models ignorant of the persistence storage the database can easily be switched at any point in time.
+[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as **ORM (object-relational mapper)** which keeps the domain models database agnostic and allows for easy switching of persistence storage at any point in time.
 
-SQLAlchemy helps define schemas, map them to domain models and generate SQL based on the model objects.
+SQLAlchemy helps define schemas, map them to the domain models and generate SQL based on the model objects.
+
+To prevent the domain models from depending on the infrastructure the ORM is implemented using the **dependency inversion principle (DIP)** with which the ORM depends on the model and not the other way around.
 
 ### Database
 
