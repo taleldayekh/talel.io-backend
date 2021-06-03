@@ -102,7 +102,7 @@ The repositories collaborate with a **Unit of Work (uow)** in the services of th
 
 ### ORMs
 
-[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as **ORM (object-relational mapper)** which keeps the domain models database agnostic and allows for easy switching of persistence storage at any point in time.
+[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as **ORM (object-relational mapper)** which keeps the domain models database agnostic and allows to easy switch the persistence storage at any point in time.
 
 SQLAlchemy helps define schemas, map them to the domain models and generate SQL based on the model objects.
 

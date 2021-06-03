@@ -1,6 +1,6 @@
 # pylint: disable=E1101
 from io import BytesIO
-from typing import Dict, List
+from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -31,10 +31,10 @@ class RequestHelper:
         return self.api.post(  # type: ignore
             PROJECTS_BASE_URL, headers=authorization_header, json=project)
 
-    def upload_images_request(self, image_streams: List[BytesIO],
+    def upload_images_request(self, image_streams: Dict[str, BytesIO],
                               authorization_header: Dict[str, str]) -> Response:
         return self.api.post(  # type: ignore
             f'{ASSETS_BASE_URL}/images',
             headers=authorization_header,
-            data={'files': image_streams},
+            data=image_streams,
             content_type='multipart/form-data')
