@@ -33,6 +33,13 @@ class TestRegisterAccount(RequestHelper):
         assert res.status_code == 400
         assert res_data['error']['message'] == "Expected 'password' key"
 
+    def test_cannot_register_account_with_missing_request_body(self) -> None:
+        res = self.register_account_request()
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == "Missing request body"
+
     @patch.dict(environ, {'WHITELISTED_EMAILS': ''})
     def test_cannot_register_account_with_non_whitelisted_email(self) -> None:
         res = self.register_account_request(bianca_registration_data)
@@ -128,6 +135,13 @@ class TestLogin(RequestHelper):
 
         assert res.status_code == 400
         assert res_data['error']['message'] == "Expected 'password' key"
+
+    def test_cannot_login_with_missing_request_body(self) -> None:
+        res = self.login_request()
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Missing request body'
 
     def test_cannot_login_to_non_registered_account(self) -> None:
         invalid_login_data = {'email': INVALID_EMAIL, 'password': PASSWORD}

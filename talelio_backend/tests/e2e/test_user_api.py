@@ -18,7 +18,7 @@ class TestGetUserProjects(RequestHelper):
         assert len(res_one_project_data) == 1
         assert res_one_project_data[0]['title'] == talelio_server_project['title']
 
-        self.create_project_request(talelio_client_project, authorization_header)
+        self.create_project_request(authorization_header, talelio_client_project)
 
         res_two_projects = self.get_user_projects_request(USERNAME_TALEL)
         res_two_projects_data = json.loads(res_two_projects.data)

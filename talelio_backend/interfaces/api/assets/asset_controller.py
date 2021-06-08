@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, cast
 
 from boto3 import client
 from flask import Blueprint, Response, current_app, jsonify, request
@@ -22,10 +22,8 @@ def upload_images_endpoint() -> Tuple[Response, int]:
     @authorization_required(authorization_header)
     def protected() -> Tuple[Response, int]:
         try:
-            if not authorization_header:
-                raise AuthorizationError('No authorization header provided')
-
-            access_token = extract_access_token_from_authorization_header(authorization_header)
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
             user = JWT().get_jwt_identity(access_token)
 
             asset_store = AssetStore()

@@ -18,7 +18,7 @@ accounts_v1 = Blueprint('accounts_v1', __name__)
 def register_account_endpoint() -> Tuple[Response, int]:
     try:
         if not request.json:
-            raise APIError('Missing request JSON', 400)
+            raise APIError('Missing request body', 400)
 
         uow = UnitOfWork()
 
@@ -57,7 +57,7 @@ def verify_account_endpoint(token: str) -> Tuple[Response, int]:
 def login_endpoint() -> Tuple[Response, int]:
     try:
         if not request.json:
-            raise APIError('Missing request JSON', 400)
+            raise APIError('Missing request body', 400)
 
         uow = UnitOfWork()
 

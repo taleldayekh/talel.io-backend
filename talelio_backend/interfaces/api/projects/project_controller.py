@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, cast
 
 from flask import Blueprint, Response, request
 
@@ -22,12 +22,10 @@ def create_project_endpoint() -> Tuple[Response, int]:
     def protected() -> Tuple[Response, int]:
         try:
             if not request.json:
-                raise APIError('Missing request JSON', 400)
+                raise APIError('Missing request body', 400)
 
-            if not authorization_header:
-                raise AuthorizationError('No authorization header provided')
-
-            access_token = extract_access_token_from_authorization_header(authorization_header)
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
             user = JWT().get_jwt_identity(access_token)
 
             uow = UnitOfWork()
