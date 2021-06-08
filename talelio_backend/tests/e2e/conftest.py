@@ -5,7 +5,7 @@ import pytest
 from flask.testing import FlaskClient
 
 from talelio_backend.core.db import engine
-from talelio_backend.data.orm import metadata
+from talelio_backend.shared.data.orm import metadata
 from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, PROJECTS_BASE_URL
 from talelio_backend.tests.mocks.accounts import talel_registration_data
 from talelio_backend.tests.mocks.projects import talelio_server_project

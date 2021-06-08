@@ -6,8 +6,10 @@ from typing import Optional, Type
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
+from talelio_backend.app_account.data.account_repository import AccountRepository
+from talelio_backend.app_project.data.project_repository import ProjectRepository
+from talelio_backend.app_user.data.user_repository import UserRepository
 from talelio_backend.core.db import default_session
-from talelio_backend.data.repositories import AccountRepository, ProjectRepository, UserRepository
 
 
 class UnitOfWork:

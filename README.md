@@ -3,7 +3,6 @@
 # Table of Contents
 
 - [Architecture](#architecture)
-  - [Architecture Layers Overview](#architecture-layers-overview)
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
@@ -35,23 +34,50 @@
 
 # Architecture
 
-Describe DDD
+The project structure is organized to follow a three tier layered architecture that modularize the interface, business logic and data access and where each layer depend only on the layer below.
 
-## Architecture Layers Overview
+One core concept is to keep the domain model which is part of the _*business logic layer*_ free from depending on any of the other layers and rather make dependencies flow inwards and to the domain model.
 
-Diagram of Architecture
+```
+╭── Presentation Layer ──╮
+│ ╭────────────────────╮ │
+│ │      REST API      │ │
+│ ╰────────────────────╯ │
+╰────────────────────────╯
+            ↓
+╭─ Business Logic Layer ─╮         ╭──────────────────────╮
+│ ╭────────────────────╮ │         │  Presentation Layer  │
+│ │      Services      │ │         ╰──────────────────────╯
+│ ╰────────────────────╯ │                    ↓
+│ ╭────────────────────╮ │         ╭──────────────────────╮
+│ │    Domain Model    │ │ ─ ─ ─ ─ │     Domain Model     │
+│ ╰────────────────────╯ │         ╰──────────────────────╯
+╰────────────────────────╯                    ↑
+            ↓                      ╭──────────────────────╮
+╭────── Data Layer ──────╮         │      Data Layer      │
+│ ╭────────────────────╮ │         ╰──────────────────────╯
+│ │    Repositories    │ │
+│ ╰────────────────────╯ │
+│ ╭────────────────────╮ │
+│ │        ORMs        │ │
+│ ╰────────────────────╯ │
+│ ╭────────────────────╮ │
+│ │      Database      │ │
+│ ╰────────────────────╯ │
+╰────────────────────────╯
+```
 
 ## Presentation Layer
 
-Description of Presentation Layer
-
 ## Business Logic Layer
-
-Description of Business Logic Layer
 
 ## Data Layer
 
+The data layer handles any **infrastructural concerns**. In this layer the storage logic is managed by using the **repository pattern** for accessing a PostgreSQL database and SQL queries are generated using an **ORM**.
+
 ### Folder Structure
+
+The data layer is organized in a `data` directory for separate app packages and in a shared `data` directory.
 
 ```
 └── talelio_backend/
@@ -62,25 +88,25 @@ Description of Business Logic Layer
 
 ```
 └── talelio_backend/
-    └── data/
-    ╵   └── orm.py
-    ╵   └── repositories.py
-    ╵   └── uow.py
+    └── shared/
+    ╵   └── data/
+    ╵   ╵   └── orm.py
+    ╵   ╵   └── repository.py
 ```
 
 ### Repositories
 
-The repositories provides an abstraction over the data storage. They decouple the business logic layer from the database and allows for retrieving and storing domain model data while hiding database access details.
+The repositories provides an abstraction over the data storage and decouples the business logic layer from the database. They allow for retrieving and storing domain model data while hiding database access details.
 
-The repositories collaborates with a **Unit of Work** (uow) which groups any database related functions and executes them as an _*atomic*_ unit. This is done in a context manager where all changes either gets saved to the database or rolled back if anything fails.
-
-The uow is initialized by the API in the interface layer and passed to use-cases in the service layer.
+The repositories collaborate with a **Unit of Work (uow)** in the services of the business logic layer which groups database transactions and executes them as an _*atomic*_ unit.
 
 ### ORMs
 
-[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as the ORM (object relational mapper) that keeps the domain models database agnostic and not dependent on any particular database technology. By keeping the models ignorant of the persistence storage the database can easily be switched at any point in time.
+[SQLAlchemy](https://github.com/sqlalchemy/sqlalchemy) is used as **ORM (object-relational mapper)** which keeps the domain models database agnostic and allows to easy switch the persistence storage at any point in time.
 
-SQLAlchemy helps define schemas, map them to domain models and generate SQL based on the model objects.
+SQLAlchemy helps define schemas, map them to the domain models and generate SQL based on the model objects.
+
+To prevent the domain models from depending on the infrastructure the ORM is implemented using the **dependency inversion principle (DIP)** with which the ORM depends on the model and not the other way around.
 
 ### Database
 
@@ -136,6 +162,18 @@ https://api.talel.io/v1/accounts/register \
 ```
 
 ### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
 
 ```shell
 400: BAD REQUEST
@@ -209,6 +247,18 @@ https://api.talel.io/v1/accounts/login \
 ```
 
 ### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
 
 ```shell
 400: BAD REQUEST
@@ -455,6 +505,18 @@ https://api.talel.io/v1/projects \
 
 {
   "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
     "message": "Expected '<key>' key",
     "status": 400,
     "type": "Bad Request"
@@ -570,45 +632,6 @@ Run Alembic in the command line whenever a model has been created or modified. T
    ```
 
 Above steps will auto-generate necessary SQL for transforming the database into the new version.
-
-
-
-
-
-<!-- Architecture
-
-## Architecture Layers
-
-
-```
-          Presentation Layer
-          ╭── Business Logic Layer ──╮
-	  │ ╭──────────────────────╮ │
-	  │ │       Use Case       │ │
-	  │ ╰──────────────────────╯ │
-	  │ ╭──────────────────────╮ │
-     +	  │ │     Domain Model     │ │
-     |	  │ ╰──────────────────────╯ │
-     |	  ╰──────────────────────────╯
-     |
-     |    ╭─────── Data Layer ───────╮
-     |    │ ╭──────────────────────╮ │
-     |    │ │     Repositories     │ │
-     |    │ ╰──────────────────────╯ │
-     |    │ ╭──────────────────────╮ │
-     +----+ │         ORMs         │ │ 
-          │ ╰──────────────────────╯ │
-          │ ╭──────────────────────╮ │
-          │ │       Database       │ │
-          │ ╰──────────────────────╯ │
-          ╰──────────────────────────╯
-```
-
-### Data Layer -->
-
-
-
-
 
 # Development
 

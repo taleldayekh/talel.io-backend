@@ -1,4 +1,4 @@
-from typing import Tuple
+from typing import Tuple, cast
 
 from boto3 import client
 from flask import Blueprint, Response, current_app, jsonify, request
@@ -6,7 +6,7 @@ from flask import Blueprint, Response, current_app, jsonify, request
 from talelio_backend.app_assets.data.asset_store import AssetStore
 from talelio_backend.app_assets.use_cases.upload_images import upload_images
 from talelio_backend.core.exceptions import AuthorizationError, ImageError
-from talelio_backend.identity_and_access.authentication import get_jwt_identity
+from talelio_backend.identity_and_access.authentication import JWT
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import (extract_access_token_from_authorization_header,
@@ -22,11 +22,9 @@ def upload_images_endpoint() -> Tuple[Response, int]:
     @authorization_required(authorization_header)
     def protected() -> Tuple[Response, int]:
         try:
-            if not authorization_header:
-                raise AuthorizationError('No authorization header provided')
-
-            access_token = extract_access_token_from_authorization_header(authorization_header)
-            user = get_jwt_identity(access_token)
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
+            user = JWT().get_jwt_identity(access_token)
 
             asset_store = AssetStore()
             image_streams = get_streams_from_request_files(request.files)

@@ -3,12 +3,12 @@ from os import getenv
 from flask import Flask
 from flask_cors import CORS  # type: ignore
 
-from talelio_backend.data.orm import start_mappers
 from talelio_backend.interfaces.api.accounts.account_controller import accounts_v1
 from talelio_backend.interfaces.api.assets.asset_controller import assets_v1
 from talelio_backend.interfaces.api.errors import error_handlers
 from talelio_backend.interfaces.api.projects.project_controller import projects_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
+from talelio_backend.shared.data.orm import start_mappers
 
 start_mappers()
 
