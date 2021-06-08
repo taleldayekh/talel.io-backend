@@ -14,3 +14,5 @@ INITIAL_USER_ID = 1
 
 INVALID_EMAIL = 'unknown@unknown.unknown'
 INVALID_USER = 'unknown'
+
+S3_TEST_BUCKET = 'test_bucket'

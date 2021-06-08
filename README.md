@@ -168,6 +168,18 @@ https://api.talel.io/v1/accounts/register \
 
 {
   "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
     "message": "Expected '<key>' key",
     "status": 400,
     "type": "Bad Request"
@@ -235,6 +247,18 @@ https://api.talel.io/v1/accounts/login \
 ```
 
 ### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
 
 ```shell
 400: BAD REQUEST
@@ -475,6 +499,18 @@ https://api.talel.io/v1/projects \
 ```
 
 ### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
 
 ```shell
 400: BAD REQUEST

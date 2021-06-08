@@ -4,10 +4,13 @@ from unittest.mock import patch
 
 import pytest
 from _pytest.fixtures import FixtureRequest
+from boto3 import client
 from flask.testing import FlaskClient
+from moto import mock_s3
 
 from talelio_backend.core import create_app
-from talelio_backend.tests.constants import EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL
+from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL,
+                                             S3_TEST_BUCKET)
 
 
 @pytest.fixture(scope='module', autouse=True)
@@ -24,3 +27,18 @@ def api_server(request: FixtureRequest) -> FlaskClient:
     app.config['TESTING'] = True
     request.cls.api = app.test_client()
     return request.cls.api
+
+
+@pytest.fixture
+def mocked_s3(request: FixtureRequest) -> Generator:
+    with mock_s3():
+        s3 = client('s3')
+
+        if request.param is None:  # type: ignore
+            s3.create_bucket(Bucket=S3_TEST_BUCKET)
+        else:
+            location = {'LocationConstraint': request.param}  # type: ignore
+            s3.create_bucket(Bucket=S3_TEST_BUCKET,
+                             CreateBucketConfiguration=location)  # type: ignore
+
+        yield s3
