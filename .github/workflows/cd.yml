@@ -82,8 +82,9 @@ jobs:
           --build-arg EMAIL_PASS=${{ secrets.EMAIL_PASS }} \
           --build-arg EMAIL_SERVER=${{ secrets.EMAIL_SERVER }} \
           --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
+          --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
           --build-arg DB_URI=${{ secrets.DB_URI }} \
-          -f talelio_backend/Dockerfile .
+          -f docker/talelio_backend.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
       - name: Add Image ID to talel.io Backend API Task Definition

@@ -3,8 +3,8 @@ FROM python:3.8-alpine
 ARG SRC_DIR=talelio_backend
 ARG APP_DIR=app
 
-# ARGs are passed with the build command in the CD pipeline and they are set to
-# all the necessary ENV variables for running the application.
+# ARGs gets passed with the build command in the CD pipeline and sets all of the
+# ENV variables in the container which are expected for running the application.
 ARG ENV
 ARG SECRET_KEY
 ARG WHITELISTED_EMAILS
@@ -12,6 +12,7 @@ ARG EMAIL_USER
 ARG EMAIL_PASS
 ARG EMAIL_SERVER
 ARG EMAIL_SENDER
+ARG S3_BUCKET
 ARG DB_URI
 
 ENV ENV=${ENV}
@@ -21,6 +22,7 @@ ENV EMAIL_USER=${EMAIL_USER}
 ENV EMAIL_PASS=${EMAIL_PASS}
 ENV EMAIL_SERVER=${EMAIL_SERVER}
 ENV EMAIL_SENDER=${EMAIL_SENDER}
+ENV S3_BUCKET=${S3_BUCKET}
 ENV DB_URI=${DB_URI}
 
 WORKDIR /${APP_DIR}
