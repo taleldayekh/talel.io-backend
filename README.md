@@ -20,7 +20,6 @@
   - [Testing](#testing)
   - [CI/CD](#cicd)
 - [Deployment](#deployment)
-  - [Infrastructure Diagram](#infrastructure-diagram)
   - [Deployment Stack](#deployment-stack)
     - [GitHub](#github)
     - [AWS ECR](#aws-ecr-elastic-container-registry)
@@ -77,7 +76,7 @@ The data layer handles any **infrastructural concerns**. In this layer the stora
 
 ### Folder Structure
 
-The data layer is organized in a `data` directory for separate app packages and in a shared `data` directory.
+The data layer is organized in a `data` directory for the separate app packages and in a shared `data` directory.
 
 ```
 └── talelio_backend/
@@ -715,23 +714,24 @@ Runs all test suites before building the Docker image artifact of the applicatio
 
 # Deployment
 
-The **talel.io backend** consists of dockerized services for the NGINX web server and the REST API which are deployed to AWS in the CD pipeline and runs on a EC2 instance.
-
-All services in the deployment setup can also be run locally with `docker-compose`:
-
-```bash
-docker-compose build
-docker-compose up
 ```
-
-## Infrastructure Diagram
-
-```
-╭─── GitHub ───╮         ╭─── AWS ECR ───╮         ╭─── AWS ECS ───╮ API req ╭──────────────╮
-│              │         │               │         │╭─────────────╮│ ◄────── │              │
-│ Server CI/CD │ ──────► │ Server Images │ ──────► ││     EC2     ││         │ www.talel.io │
-│              │         │               │         │╰─────────────╯│ ──────► │              │
-╰──────────────╯         ╰───────────────╯         ╰───────────────╯ API res ╰──────────────╯
+                                                ╭ ─ ─ ─ ─ ─ ECS ─ ─ ─ ─ ─ ╮
+╭── GitHub Action ──╮   ╭─────── ECR ───────╮     ╭──────── EC2 ────────╮
+│╭─────────────────╮│   │╭─────────────────╮│   │ │╭───────────────────╮│ │
+││  Backend Image  ││   ││  Backend Image  ││     ││ Backend Container ││
+│╰─────────────────╯│   │╰─────────────────╯│   │ │╰───────────────────╯│ │
+╰───────────────────╯   │                   │     │                     │
+╭────── Local ──────╮   │╭─────────────────╮│   │ │╭───────────────────╮│ │           ╭────────────────╮
+│╭─────────────────╮│   ││ Traefik Reverse ││     ││  Traefik Reverse  ││   ← API Req │                │
+││ Traefik Reverse ││ → ││   Proxy Image   ││ → │ ││  Proxy Container  ││ │           │  www.talel.io  │
+││   Proxy Image   ││   │╰─────────────────╯│     │╰───────────────────╯│   API Res → │                │
+│╰─────────────────╯│   │                   │   │ │                     │ │           ╰────────────────╯
+│╭─────────────────╮│   │╭─────────────────╮│     │╭───────────────────╮│
+││  PostgreSQL DB  ││   ││  PostgreSQL DB  ││   │ ││   PostgreSQL DB   ││ │
+││      Image      ││   ││      Image      ││     ││     Container     ││
+│╰─────────────────╯│   │╰─────────────────╯│   │ │╰───────────────────╯│ │
+╰───────────────────╯   ╰───────────────────╯     ╰─────────────────────╯
+                                                ╰ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╯
 ```
 
 ## Deployment Stack
