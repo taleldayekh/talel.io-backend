@@ -1,0 +1,9 @@
+version: '3'
+
+services:
+  postgres-development:
+    build:
+      context: ./docker
+      dockerfile: talelio_db_development.Dockerfile
+    ports:
+      - 5432:5432
