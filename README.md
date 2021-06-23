@@ -636,83 +636,121 @@ Above steps will auto-generate necessary SQL for transforming the database into 
 
 ## Setup
 
-1. **Clone repository**  
+### Clone Repository
 
-   ```bash
-   git clone git@github.com:taleldayekh/talel.io-backend.git
-   ```
+```shell
+git clone git@github.com:taleldayekh/talel.io-backend.git
+```
 
-2. **Set Git Hooks path**  
+### Set Git Hooks Path
 
-   This is necessary for using the hooks located in the `.githooks` directory. The path is added locally for the git config of this repository.
+The Git Hooks path is added locally in the `.git/config` of this repository. Adding this path is necessary for using the hooks located in the `.githooks` directory.
 
-   ```bash
-   make set-githooks-path
-   ```
+```shell
+make set-githooks
+```
 
-3. **Install dependencies**  
+### Install Dependencies
 
-   ```bash
-   pipenv install --dev
-   ```
+```shell
+pipenv install --dev
+```
+
+### Start Development Database
+
+To start the development database make sure Docker is installed and run:
+
+```shell
+make start-postgres-development
+```
+
+This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
+
+When running the e2e tests all database tables are dropped after the tests complete. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
+
+To continue developing with the test database the container needs to be stopped and restarted. To stop the container run:
+
+```shell
+make stop-postgres-development
+```
+
+### Serve API
+
+```shell
+make serve-api
+```
 
 ## Code Style
 
 To maintain consistency across the codebase, coding standards that conforms to the _*PEP 8*_ style guide are enforced with the help of:
 
-- [YAPF](https://github.com/google/yapf) for reformatting the code.  
+- [YAPF](https://github.com/google/yapf) for reformatting the code.
 
-- [isort](https://github.com/PyCQA/isort) for sorting and separating imports.  
-  
-  ```bash
-  make fix
-  ```
+- [isort](https://github.com/PyCQA/isort) for sorting and separating imports.
+
+The formatters are run with:
+
+```shell
+make fix
+```
 
 To help detect errors and reduce bugs the following static code analysis tools are used:
 
-- [mypy](https://github.com/python/mypy) for checking type errors.  
-  
-  ```bash
-  make type-check
-  ```
+- [mypy](https://github.com/python/mypy) for checking type errors.
 
-- [Pylint](https://github.com/PyCQA/pylint) for checking programming errors.  
-  
-  ```bash
-  make lint
-  ```
+```shell
+make type-check
+```
+
+- [Pylint](https://github.com/PyCQA/pylint) for checking programming errors.
+
+```shell
+make lint
+```
 
 ## Testing
 
-Tests are written using the [pytest](https://github.com/pytest-dev/pytest) framework and test coverage reports are generated with [pytest-cov](https://github.com/pytest-dev/pytest-cov) and uploaded to [codecov.io](https://codecov.io/).
+Tests are written with the help of [pytest](https://github.com/pytest-dev/pytest) and test coverage is generated and reported using [pytest-cov](https://github.com/pytest-dev/pytest-cov) and uploaded to [codecov.io](https://codecov.io).
 
-**Run tests**
+The codebase is covered with a set of unit, integration and e2e tests.
 
-```bash
-make test
+### Unit Tests
+
+```shell
+make test-unit
 ```
 
-**Run tests and generate coverage XML file**
+### Integration Tests
 
-Test coverage is only uploaded to Codecov in the CI pipeline.
-
-```bash
-make test-coverage
+```shell
+make test-integration
 ```
+
+### E2E Tests
+
+```shell
+make test-e2e
+```
+
+The e2e tests needs a running [development database](#start-development-database).
 
 ## CI/CD
 
-[GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions) is used for _*Continuous Integration*_ and _*Continuous Deployment*_. The CI pipeline runs when a pull request is created to the `develop` branch and the CD pipeline runs when code is merged to the `main` branch.
+[GitHub Actions](https://docs.github.com/en/free-pro-team@latest/actions) is used for _*Continuous Integration*_ and _*Continuous Deployment*_.
+
+The CI pipeline runs whenever a pull request is created to the `develop` branch and the CD pipeline runs when code is merged to the `main` branch.
 
 ### CI
 
-Runs all test suites and lint tools.
+CI runs all test suites and the static code analysis and uploads the coverage reports to [codecov.io](https://codecov.io).
 
 ### CD
 
-Runs all test suites before building the Docker image artifact of the application backend which is then pushed to and deployed on AWS.
+CD runs all test suites and the static code analysis before building a Docker image of the talel.io backend which then gets pushed to and deployed on AWS.
 
 # Deployment
+
+The deployment stack consists of the **talelio backend application**, **Traefik as a reverse proxy** and a **PostgreSQL database**, all running as containerized services on one **AWS EC2 instance** which is provisioned on a **AWS ECS cluster**.
 
 ```
                                                 ╭ ─ ─ ─ ─ ─ ECS ─ ─ ─ ─ ─ ╮
@@ -733,6 +771,8 @@ Runs all test suites before building the Docker image artifact of the applicatio
 ╰───────────────────╯   ╰───────────────────╯     ╰─────────────────────╯
                                                 ╰ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ─ ╯
 ```
+
+Deployment of the talelio backend image is done automatically in a GitHub Action as part of the continuous deployment while the images for the Traefik reverse proxy and PostgreSQL database needs to be deployed manually.
 
 ## Deployment Stack
 
