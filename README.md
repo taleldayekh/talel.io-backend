@@ -283,6 +283,18 @@ https://api.talel.io/v1/accounts/login \
 }
 ```
 
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
 </details>
 
 <details>
@@ -666,7 +678,7 @@ make start-postgres-development
 
 This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
 
-When running the e2e tests all database tables are dropped after the tests complete. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
+When running the e2e tests all database tables are dropped after the tests completes. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
 
 To continue developing with the test database the container needs to be stopped and restarted. To stop the container run:
 
@@ -742,7 +754,7 @@ The CI pipeline runs whenever a pull request is created to the `develop` branch 
 
 ### CI
 
-CI runs all test suites and the static code analysis and uploads the coverage reports to [codecov.io](https://codecov.io).
+CI runs all test suites and the static code analysis and uploads the test coverage reports to [codecov.io](https://codecov.io).
 
 ### CD
 

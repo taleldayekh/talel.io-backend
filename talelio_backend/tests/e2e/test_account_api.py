@@ -3,12 +3,16 @@ from unittest.mock import patch
 
 import pytest
 from flask import json
+from freezegun import freeze_time
 
 from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.shared.utils import generate_time_from_now
 from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL, PASSWORD,
                                              USERNAME_BIANCA, USERNAME_TALEL)
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.accounts import bianca_registration_data, talel_registration_data
+from talelio_backend.tests.mocks.projects import talelio_server_project
+from talelio_backend.tests.utils import generate_authorization_header
 
 talel_login_data = {
     'email': talel_registration_data['email'],
@@ -126,6 +130,21 @@ class TestLogin(RequestHelper):
 
         assert res.status_code == 200
         assert res_data['access_token']
+
+    def test_access_token_expires_30_min_after_login(self) -> None:
+        res_login = self.login_request(talel_login_data)
+        res_data_login = json.loads(res_login.data)
+        access_token = res_data_login['access_token']
+
+        thirtyone_mins_from_now = generate_time_from_now(1860)
+
+        with freeze_time(thirtyone_mins_from_now):
+            authorization_header = generate_authorization_header(access_token=access_token)
+            res_proj = self.create_project_request(authorization_header, talelio_server_project)
+            res_proj_data = json.loads(res_proj.data)
+
+            assert res_proj.status_code == 403
+            assert res_proj_data['error']['message'] == 'Signature has expired'
 
     def test_cannot_login_when_missing_login_details(self) -> None:
         invalid_login_data = {'email': talel_login_data['email']}
