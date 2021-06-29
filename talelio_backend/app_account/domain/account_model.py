@@ -5,7 +5,7 @@ from typing import Dict
 from jwt import InvalidSignatureError
 
 from talelio_backend.app_user.domain.user_model import User
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER,
                                               ENV)
 
@@ -22,13 +22,13 @@ class Account:
 
     @property
     def generate_verification_token(self) -> str:
-        token = JWT.generate_token({'email': self.email})
+        token = Authentication.generate_token({'email': self.email})
         return token
 
     @staticmethod
     def validate_verification_token(token: str) -> Dict[str, str]:
         try:
-            verified_token = JWT.verify_token(token)
+            verified_token = Authentication.verify_token(token)
             return verified_token
         except InvalidSignatureError as error:
             raise InvalidSignatureError('Invalid verification token') from error

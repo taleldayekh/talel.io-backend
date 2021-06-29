@@ -3,7 +3,7 @@ from freezegun import freeze_time
 from jwt.exceptions import ExpiredSignatureError
 
 from talelio_backend.core.exceptions import AccountError
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.utils import generate_time_from_now
 from talelio_backend.tests.integration.helpers import (get_access_token_helper,
                                                        register_account_helper)
@@ -24,7 +24,7 @@ def test_access_token_expires_after_30_min() -> None:
 
     with freeze_time(thirtyone_mins_from_now):
         with pytest.raises(ExpiredSignatureError):
-            JWT.verify_token(access_token['access_token'])
+            Authentication.verify_token(access_token['access_token'])
 
 
 def test_cannot_get_access_token_for_non_registered_user() -> None:

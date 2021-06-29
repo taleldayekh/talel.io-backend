@@ -5,7 +5,7 @@ import pytest
 from flask import json
 from freezegun import freeze_time
 
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.utils import generate_time_from_now
 from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL, PASSWORD,
                                              USERNAME_BIANCA, USERNAME_TALEL)
@@ -77,7 +77,7 @@ class TestRegisterAccount(RequestHelper):
 
 class TestVerifyAccount(RequestHelper):
     def test_can_verify_account(self) -> None:
-        talel_verification_token = JWT.generate_token({'email': EMAIL_TALEL})
+        talel_verification_token = Authentication.generate_token({'email': EMAIL_TALEL})
 
         res_account = self.register_account_request(talel_registration_data)
         res_account_data = json.loads(res_account.data)
@@ -91,7 +91,7 @@ class TestVerifyAccount(RequestHelper):
         assert res_verify_data['verified']
 
     def test_cannot_verify_non_registered_account(self) -> None:
-        unknown_verification_token = JWT.generate_token({'email': INVALID_EMAIL})
+        unknown_verification_token = Authentication.generate_token({'email': INVALID_EMAIL})
 
         res = self.verify_account_request(unknown_verification_token)
         res_data = json.loads(res.data)
@@ -101,7 +101,7 @@ class TestVerifyAccount(RequestHelper):
             'message'] == f"No registered account with the email '{INVALID_EMAIL}'"
 
     def test_cannot_verify_already_verified_account(self) -> None:
-        bianca_verification_token = JWT.generate_token({'email': EMAIL_BIANCA})
+        bianca_verification_token = Authentication.generate_token({'email': EMAIL_BIANCA})
 
         self.register_account_request(bianca_registration_data)
         self.verify_account_request(bianca_verification_token)
@@ -113,7 +113,8 @@ class TestVerifyAccount(RequestHelper):
         assert res_data['error']['message'] == 'Account already verified'
 
     def test_cannot_verify_account_with_invalid_token(self) -> None:
-        invalid_verification_token = JWT.generate_token({'email': EMAIL_TALEL}, 'invalidsecretkey')
+        invalid_verification_token = Authentication.generate_token({'email': EMAIL_TALEL},
+                                                                   'invalidsecretkey')
 
         res = self.verify_account_request(invalid_verification_token)
         res_data = json.loads(res.data)

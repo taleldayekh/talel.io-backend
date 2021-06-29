@@ -5,7 +5,7 @@ from flask import Blueprint, Response, request
 from talelio_backend.app_project.use_cases.create_project import create_project
 from talelio_backend.core.exceptions import AuthorizationError
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.projects.project_serializer import ProjectSchema
@@ -26,7 +26,7 @@ def create_project_endpoint() -> Tuple[Response, int]:
 
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
-            user = JWT().get_jwt_identity(access_token)
+            user = Authentication().get_jwt_identity(access_token)
 
             uow = UnitOfWork()
             user_id = int(user['user_id'])
