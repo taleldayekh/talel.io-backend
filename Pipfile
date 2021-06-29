@@ -15,6 +15,7 @@ markdown = "*"
 pyjwt = "*"
 boto3 = "*"
 pillow = "==8.2.0"
+redis = "==3.5.3"
 
 [dev-packages]
 isort = "*"

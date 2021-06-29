@@ -7,3 +7,10 @@ services:
       dockerfile: talelio_db_development.Dockerfile
     ports:
       - 5432:5432
+
+  redis-development:
+    build:
+      context: ./docker
+      dockerfile: talelio_redis.Dockerfile
+    ports:
+      - 6379:6379
