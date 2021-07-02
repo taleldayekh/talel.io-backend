@@ -241,7 +241,8 @@ https://api.talel.io/v1/accounts/login \
 200: OK
 
 {
-  "access_token": "eyJ0eX.eyJ1c2.2U4WpJ"
+  "access_token": "eyJ0eX...eyJ1c2...2U4WpJ",
+  "refresh_token": "eyJ0eX...eyJ1c2...Z4XTA0"
 }
 ```
 
@@ -673,7 +674,7 @@ pipenv install --dev
 To start the development database make sure Docker is installed and run:
 
 ```shell
-make start-postgres-development
+make start-dev-dbs
 ```
 
 This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
@@ -683,7 +684,7 @@ When running the e2e tests all database tables are dropped after the tests compl
 To continue developing with the test database the container needs to be stopped and restarted. To stop the container run:
 
 ```shell
-make stop-postgres-development
+make stop-dev-dbs
 ```
 
 ### Serve API

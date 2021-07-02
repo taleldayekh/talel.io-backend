@@ -4,10 +4,13 @@ from flask import Blueprint, Response, jsonify, request
 from jwt import InvalidSignatureError
 
 from talelio_backend.app_account.use_cases.register_account import register_account, verify_account
-from talelio_backend.app_user.use_cases.authenticate_user import get_access_token
+from talelio_backend.app_user.use_cases.authenticate_user import (get_access_token,
+                                                                  set_refresh_token)
 from talelio_backend.core.exceptions import (AccountError, AccountRegistrationError,
                                              AccountVerificationError)
 from talelio_backend.data.uow import UnitOfWork
+from talelio_backend.identity_and_access.authentication import Authentication
+from talelio_backend.identity_and_access.token_store import TokenStore
 from talelio_backend.interfaces.api.accounts.account_serializers import AccountSchema
 from talelio_backend.interfaces.api.errors import APIError
 
@@ -66,7 +69,15 @@ def login_endpoint() -> Tuple[Response, int]:
 
         access_token = get_access_token(uow, email, password)
 
-        return jsonify(access_token), 200
+        user = Authentication().get_jwt_identity(access_token)
+        user_id = int(user['user_id'])
+        username = user['username']
+
+        token_store = TokenStore()
+
+        refresh_token = set_refresh_token(token_store, user_id, username)
+
+        return jsonify({'access_token': access_token, 'refresh_token': refresh_token}), 200
     except KeyError as error:
         raise APIError(f'Expected {error} key', 400) from error
     except AccountError as error:

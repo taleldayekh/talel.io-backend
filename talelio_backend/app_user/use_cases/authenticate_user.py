@@ -1,13 +1,12 @@
-from typing import Dict
-
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.core.exceptions import AccountError
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authentication import JWT, check_password_hash
+from talelio_backend.identity_and_access.authentication import Authentication, check_password_hash
+from talelio_backend.identity_and_access.token_store import TokenStore
 from talelio_backend.shared.utils import generate_time_from_now
 
 
-def get_access_token(uow: UnitOfWork, email: str, password: str) -> Dict[str, str]:
+def get_access_token(uow: UnitOfWork, email: str, password: str) -> str:
     error_msg = 'Invalid username or password'
 
     with uow:
@@ -28,6 +27,17 @@ def get_access_token(uow: UnitOfWork, email: str, password: str) -> Dict[str, st
             'username': account_record.user.username,
             'exp': thirty_mins_from_now
         }
-        access_token = JWT.generate_token(payload)
+        access_token = Authentication.generate_token(payload)
 
-        return {'access_token': access_token}
+        return access_token
+
+
+def set_refresh_token(token_store: TokenStore, user_id: int, username: str) -> str:
+    now = generate_time_from_now(seconds=0)
+
+    payload = {'user_id': user_id, 'username': username, 'iat': now}
+    refresh_token = Authentication.generate_token(payload)
+
+    token_store.set_token(user_id, refresh_token)
+
+    return refresh_token

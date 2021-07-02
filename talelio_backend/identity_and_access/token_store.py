@@ -12,8 +12,8 @@ class TokenStore:
     def __init__(self, redis: Redis = redis_client) -> None:
         self.redis = redis
 
-    def set_token(self, user_id: int, token: str) -> None:
-        self.redis.set(str(user_id), token)
+    def set_token(self, user_id: int, token: str, exp: int = 604800) -> None:
+        self.redis.set(str(user_id), token, ex=exp)
 
     def get_token(self, user_id: int) -> Union[str, None]:
         token = self.redis.get(str(user_id))

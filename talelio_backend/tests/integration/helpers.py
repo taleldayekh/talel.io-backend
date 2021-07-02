@@ -47,5 +47,5 @@ def get_user_projects_helper(uow: FakeUnitOfWork, username: str = USERNAME_TALEL
 
 def get_access_token_helper(uow: FakeUnitOfWork,
                             email: str = EMAIL_TALEL,
-                            password: str = PASSWORD) -> Dict[str, str]:
+                            password: str = PASSWORD) -> str:
     return get_access_token(uow, email, password)  # type: ignore
