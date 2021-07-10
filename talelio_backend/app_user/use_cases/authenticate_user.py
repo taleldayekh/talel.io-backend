@@ -1,7 +1,7 @@
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.core.exceptions import AccountError
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authentication import Authentication, check_password_hash
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.token_store import TokenStore
 from talelio_backend.shared.utils import generate_time_from_now
 
@@ -17,7 +17,7 @@ def get_access_token(uow: UnitOfWork, email: str, password: str) -> str:
 
         password_hash = account_record.password
 
-        if not check_password_hash(password, password_hash):
+        if not Authentication().check_password_hash(password, password_hash):
             raise AccountError(error_msg)
 
         thirty_mins_from_now = generate_time_from_now(seconds=1800)
