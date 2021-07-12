@@ -9,10 +9,11 @@ USERNAME_TALEL = 'taleldayekh'
 EMAIL_BIANCA = 'bianca@bianca.bianca'
 USERNAME_BIANCA = 'biancabasan'
 
-PASSWORD = 'password'
-INITIAL_USER_ID = 1
-
 INVALID_EMAIL = 'unknown@unknown.unknown'
 INVALID_USER = 'unknown'
+
+PASSWORD = 'password'
+FAKE_TOKEN = 'abc.123'
+INITIAL_USER_ID = 1
 
 S3_TEST_BUCKET = 'test_bucket'

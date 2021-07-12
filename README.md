@@ -6,6 +6,7 @@
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
+- [Authentication](#authentication)
 - [API](#api)
   - [Accounts Resource](#accounts-resource)
   - [Assets Resource](#assets-resource)
@@ -108,6 +109,8 @@ SQLAlchemy helps define schemas, map them to the domain models and generate SQL 
 To prevent the domain models from depending on the infrastructure the ORM is implemented using the **dependency inversion principle (DIP)** with which the ORM depends on the model and not the other way around.
 
 ### Database
+
+# Authentication
 
 # API
 
