@@ -112,6 +112,30 @@ To prevent the domain models from depending on the infrastructure the ORM is imp
 
 # Authentication
 
+```
+╭─────────────────╮                              ╭─────────────────╮                ╭───────╮
+│ talel.io Client │                              │ talel.io Server │                │ Redis │
+╰─────────────────╯                              ╰─────────────────╯                ╰───────╯
+         |                                                |                             |
+	 | ---------- Req w/ login credentials ---------> | -- Create refresh token --> |
+	 |                                                |                             |
+	 | <------ Res w/ access & refresh token -------- |                             |
+	 |                                                |                             |
+	 | ----- Req resource w/ valid access token ----> |                             |
+	 |                                                |                             |
+	 | <------------- Res w/ resource --------------- |                             |
+	 |                                                |                             |
+	 | ---- Req resource w/ invalid access token ---> |                             |
+	 |                                                |                             |
+	 | <----------- Res w/ 403 Forbidden ------------ |                             |
+	 |                                                |                             |
+	 | -- Req new access token with refresh token --> | --- Check refresh token --> |
+	 |                                                |                             |
+	 | <--------- Res w/ new access token ----------- |                             |
+	 |                                                |                             |
+	 | ------------ Req logout resource ------------> | -- Delete refresh token --> |
+```
+
 # API
 
 Details about the REST API
@@ -283,18 +307,6 @@ https://api.talel.io/v1/accounts/login \
     "message": "Invalid username or password",
     "status": 401,
     "type": "Unauthorized"
-  }
-}
-```
-
-```shell
-403: FORBIDDEN
-
-{
-  "error": {
-    "message": "<pyjwt error>",
-    "status": 403,
-    "type": "Forbidden"
   }
 }
 ```
