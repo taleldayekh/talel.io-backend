@@ -89,6 +89,11 @@ class FakeUnitOfWork:
         self.committed = True
 
 
+class FakeTokenStore:
+    def set_token(self, user_id: int, refresh_token: str) -> None:
+        pass
+
+
 @contextmanager
 def generate_file_streams(
         filenames_and_sizes: List[Tuple[str, int]]) -> Generator[List[BytesIO], None, None]:

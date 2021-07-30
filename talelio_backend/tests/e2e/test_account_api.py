@@ -131,6 +131,7 @@ class TestLogin(RequestHelper):
 
         assert res.status_code == 200
         assert res_data['access_token']
+        assert res_data['refresh_token']
 
     def test_access_token_expires_30_min_after_login(self) -> None:
         res_login = self.login_request(talel_login_data)

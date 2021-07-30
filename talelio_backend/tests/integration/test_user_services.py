@@ -2,13 +2,14 @@ import pytest
 from freezegun import freeze_time
 from jwt.exceptions import ExpiredSignatureError
 
+from talelio_backend.app_user.use_cases.authenticate_user import set_refresh_token
 from talelio_backend.core.exceptions import AccountError
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.utils import generate_time_from_now
-from talelio_backend.tests.constants import USERNAME_TALEL
+from talelio_backend.tests.constants import INITIAL_USER_ID, USERNAME_TALEL
 from talelio_backend.tests.integration.helpers import (get_access_token_helper,
                                                        register_account_helper)
-from talelio_backend.tests.mocks.data import FakeUnitOfWork
+from talelio_backend.tests.mocks.data import FakeTokenStore, FakeUnitOfWork
 
 
 def test_can_get_access_token_for_user() -> None:
@@ -42,3 +43,14 @@ def test_cannot_get_access_token_with_invalid_password() -> None:
 
     with pytest.raises(AccountError, match='Invalid username or password'):
         get_access_token_helper(uow, password='')
+
+
+def test_can_set_refresh_token_for_user() -> None:
+    token_store = FakeTokenStore()
+    refresh_token = set_refresh_token(token_store, INITIAL_USER_ID, USERNAME_TALEL)  # type: ignore
+
+    user_id, username, iat = Authentication().get_jwt_identity(refresh_token).values()
+
+    assert username == USERNAME_TALEL
+    assert user_id == INITIAL_USER_ID
+    assert iat
