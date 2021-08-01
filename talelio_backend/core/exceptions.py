@@ -2,6 +2,10 @@ class AuthorizationError(Exception):
     pass
 
 
+class TokenError(Exception):
+    pass
+
+
 class AccountError(Exception):
     pass
 

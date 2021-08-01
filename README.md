@@ -112,6 +112,8 @@ To prevent the domain models from depending on the infrastructure the ORM is imp
 
 # Authentication
 
+## Authorization Flow
+
 ```
 ╭─────────────────╮                              ╭─────────────────╮                ╭───────╮
 │ talel.io Client │                              │ talel.io Server │                │ Redis │
@@ -142,11 +144,12 @@ Details about the REST API
 
 ## Accounts Resource
 
-| HTTP Method | Description    | Resource                               | Success Code | Failure Code |
-|-------------|----------------|----------------------------------------|--------------|--------------|
-| POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
-| POST        | Login          | /\<version\>/accounts/login            | 200          | 400, 401     |
-| GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
+| HTTP Method | Description      | Resource                               | Success Code | Failure Code |
+|-------------|------------------|----------------------------------------|--------------|--------------|
+| POST        | Create account   | /\<version\>/accounts/register         | 201          | 400          |
+| POST        | Login            | /\<version\>/accounts/login            | 200          | 400, 401     |
+| POST        | New access token | /\<version\>/accounts/token            | 200          | 400, 401     |
+| GET         | Verify account   | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 <details>
 <summary>POST - Create account</summary>
@@ -311,6 +314,79 @@ https://api.talel.io/v1/accounts/login \
 }
 ```
 
+</details>
+
+<details>
+<summary>POST - New access token</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/token \
+-H "Content-Type: application/json" \
+-d '{"refresh_token": <str>}'
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "access_token": "eyJ0eX...eyJ1c2...K4eKBy"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "No stored refresh token for user",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "Provided refresh token not matching stored refresh token",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
 </details>
 
 <details>
