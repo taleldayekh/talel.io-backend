@@ -1,4 +1,5 @@
 from os import environ
+from typing import Dict
 from unittest.mock import patch
 
 import pytest
@@ -7,17 +8,14 @@ from freezegun import freeze_time
 
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.utils import generate_time_from_now
-from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL, PASSWORD,
-                                             USERNAME_BIANCA, USERNAME_TALEL)
+from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INITIAL_USER_ID,
+                                             INVALID_EMAIL, PASSWORD, USERNAME_BIANCA,
+                                             USERNAME_TALEL)
 from talelio_backend.tests.e2e.helpers import RequestHelper
-from talelio_backend.tests.mocks.accounts import bianca_registration_data, talel_registration_data
+from talelio_backend.tests.mocks.accounts import (bianca_registration_data, talel_login_data,
+                                                  talel_registration_data)
 from talelio_backend.tests.mocks.projects import talelio_server_project
 from talelio_backend.tests.utils import generate_authorization_header
-
-talel_login_data = {
-    'email': talel_registration_data['email'],
-    'password': talel_registration_data['password']
-}
 
 
 @pytest.mark.usefixtures('populate_db_account')
@@ -135,8 +133,8 @@ class TestLogin(RequestHelper):
 
     def test_access_token_expires_30_min_after_login(self) -> None:
         res_login = self.login_request(talel_login_data)
-        res_data_login = json.loads(res_login.data)
-        access_token = res_data_login['access_token']
+        res_login_data = json.loads(res_login.data)
+        access_token = res_login_data['access_token']
 
         thirtyone_mins_from_now = generate_time_from_now(1860)
 
@@ -175,8 +173,8 @@ class TestLogin(RequestHelper):
 
     def test_cannot_login_with_invalid_password(self) -> None:
         invalid_login_data = {
-            'email': talel_registration_data['email'],
-            'password': talel_registration_data['password'] + '1986'
+            'email': talel_login_data['email'],
+            'password': talel_login_data['password'] + '1986'
         }
 
         res = self.login_request(invalid_login_data)
@@ -184,3 +182,60 @@ class TestLogin(RequestHelper):
 
         assert res.status_code == 401
         assert res_data['error']['message'] == 'Invalid username or password'
+
+
+@pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
+class TestToken(RequestHelper):
+    def test_valid_refresh_token_can_generate_new_access_token(
+            self, login_user_talel: Dict[str, str]) -> None:
+        refresh_token = login_user_talel['refresh_token']
+        refresh_token_data = {'refresh_token': refresh_token}
+
+        res = self.new_access_token_request(refresh_token_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 200
+        assert res_data['access_token']
+
+    def test_invalid_refresh_token_cannot_generate_new_access_token(self) -> None:
+        invalid_refresh_token = Authentication.generate_token({
+            'user_id': INITIAL_USER_ID,
+            'username': USERNAME_TALEL
+        })
+        invalid_refresh_token_data = {'refresh_token': invalid_refresh_token}
+
+        res = self.new_access_token_request(invalid_refresh_token_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 401
+        assert res_data['error'][
+            'message'] == 'Provided refresh token not matching stored refresh token'
+
+    def test_cannot_generate_access_token_for_user_with_no_stored_refresh_token(self) -> None:
+        invalid_refresh_token = Authentication.generate_token({
+            'user_id': INITIAL_USER_ID + 1986,
+            'username': USERNAME_TALEL
+        })
+        invalid_refresh_token_data = {'refresh_token': invalid_refresh_token}
+
+        res = self.new_access_token_request(invalid_refresh_token_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 401
+        assert res_data['error']['message'] == 'No stored refresh token for user'
+
+    def test_cannot_generate_new_access_token_when_missing_refresh_token(self) -> None:
+        invalid_refresh_token_data = {'invalid_key': ''}
+
+        res = self.new_access_token_request(invalid_refresh_token_data)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == "Expected 'refresh_token' key"
+
+    def test_cannot_generate_new_access_token_with_missing_request_body(self) -> None:
+        res = self.new_access_token_request()
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Missing request body'
