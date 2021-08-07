@@ -100,7 +100,7 @@ def new_access_token_endpoint() -> Tuple[Response, int]:
 
         token_store = TokenStore()
 
-        verify_refresh_token(token_store, user_id, refresh_token)
+        assert verify_refresh_token(token_store, user_id, refresh_token)
         access_token = generate_access_token(user_id, username)
 
         return jsonify({'access_token': access_token}), 200

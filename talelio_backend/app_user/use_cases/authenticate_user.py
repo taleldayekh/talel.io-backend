@@ -43,7 +43,7 @@ def set_refresh_token(token_store: TokenStore, user_id: int, username: str) -> s
     return refresh_token
 
 
-def verify_refresh_token(token_store: TokenStore, user_id: int, refresh_token: str) -> None:
+def verify_refresh_token(token_store: TokenStore, user_id: int, refresh_token: str) -> bool:
     stored_refresh_token = token_store.get_token(user_id)
 
     if not stored_refresh_token:
@@ -51,3 +51,5 @@ def verify_refresh_token(token_store: TokenStore, user_id: int, refresh_token: s
 
     if not stored_refresh_token == refresh_token:
         raise TokenError('Provided refresh token not matching stored refresh token')
+
+    return True

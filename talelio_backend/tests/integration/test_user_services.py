@@ -2,11 +2,12 @@ import pytest
 from freezegun import freeze_time
 from jwt.exceptions import ExpiredSignatureError
 
-from talelio_backend.app_user.use_cases.authenticate_user import set_refresh_token
-from talelio_backend.core.exceptions import AccountError
+from talelio_backend.app_user.use_cases.authenticate_user import (set_refresh_token,
+                                                                  verify_refresh_token)
+from talelio_backend.core.exceptions import AccountError, TokenError
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.utils import generate_time_from_now
-from talelio_backend.tests.constants import INITIAL_USER_ID, USERNAME_TALEL
+from talelio_backend.tests.constants import FAKE_TOKEN, INITIAL_USER_ID, USERNAME_TALEL
 from talelio_backend.tests.integration.helpers import (get_access_token_helper,
                                                        register_account_helper)
 from talelio_backend.tests.mocks.data import FakeTokenStore, FakeUnitOfWork
@@ -54,3 +55,30 @@ def test_can_set_refresh_token_for_user() -> None:
     assert username == USERNAME_TALEL
     assert user_id == INITIAL_USER_ID
     assert iat
+
+
+def test_can_verify_refresh_token() -> None:
+    token_store = FakeTokenStore()
+    verified_refresh_token = verify_refresh_token(
+        token_store,  # type: ignore
+        INITIAL_USER_ID,
+        FAKE_TOKEN)
+
+    assert verified_refresh_token
+
+
+def test_cannot_verify_refresh_token_for_non_existing_user_id() -> None:
+    token_store = FakeTokenStore()
+    invalid_user_id = INITIAL_USER_ID + 1986
+
+    with pytest.raises(TokenError, match='No stored refresh token for user'):
+        verify_refresh_token(token_store, invalid_user_id, FAKE_TOKEN)  # type: ignore
+
+
+def test_cannot_verify_non_existing_refresh_token() -> None:
+    token_store = FakeTokenStore()
+    invalid_refresh_token = 'invalid.refresh.token'
+
+    with pytest.raises(TokenError,
+                       match='Provided refresh token not matching stored refresh token'):
+        verify_refresh_token(token_store, INITIAL_USER_ID, invalid_refresh_token)  # type: ignore
