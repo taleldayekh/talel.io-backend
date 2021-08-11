@@ -20,7 +20,7 @@ def upload_images_endpoint() -> Tuple[Response, int]:
     authorization_header = request.headers.get('Authorization')
 
     @authorization_required(authorization_header)
-    def protected() -> Tuple[Response, int]:
+    def protected_upload_images_endpoint() -> Tuple[Response, int]:
         try:
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
@@ -40,6 +40,6 @@ def upload_images_endpoint() -> Tuple[Response, int]:
             raise APIError(str(error), 400) from error
 
     try:
-        return protected()
+        return protected_upload_images_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error

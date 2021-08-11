@@ -19,16 +19,16 @@ def create_project_endpoint() -> Tuple[Response, int]:
     authorization_header = request.headers.get('Authorization')
 
     @authorization_required(authorization_header)
-    def protected() -> Tuple[Response, int]:
+    def protected_create_project_endpoint() -> Tuple[Response, int]:
         try:
             if not request.json:
                 raise APIError('Missing request body', 400)
 
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
-            user = Authentication().get_jwt_identity(access_token)
-
             uow = UnitOfWork()
+
+            user = Authentication().get_jwt_identity(access_token)
             user_id = int(user['user_id'])
             title = request.json['title']
             body = request.json['body']
@@ -41,6 +41,6 @@ def create_project_endpoint() -> Tuple[Response, int]:
             raise APIError(f'Expected {error} key', 400) from error
 
     try:
-        return protected()
+        return protected_create_project_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error
