@@ -53,3 +53,10 @@ def verify_refresh_token(token_store: TokenStore, user_id: int, refresh_token: s
         raise TokenError('Provided refresh token not matching stored refresh token')
 
     return True
+
+
+def delete_refresh_token(token_store: TokenStore, user_id: int) -> bool:
+    if token_store.delete_token(user_id) == 0:
+        raise TokenError('No token to delete')
+
+    return True
