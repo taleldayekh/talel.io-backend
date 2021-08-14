@@ -149,6 +149,7 @@ Details about the REST API
 | POST        | Create account   | /\<version\>/accounts/register         | 201          | 400          |
 | POST        | Login            | /\<version\>/accounts/login            | 200          | 400, 401     |
 | POST        | New access token | /\<version\>/accounts/token            | 200          | 400, 401     |
+| POST        | Logout           | /\<version\>/accounts/logout           | 200          | 403, 409     |
 | GET         | Verify account   | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 <details>
@@ -385,6 +386,78 @@ https://api.talel.io/v1/accounts/token \
     "status": 401,
     "type": "Unauthorized"
   }
+}
+```
+</details>
+
+<details>
+<summary>POST - Logout</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/logout \
+-H "Authorization: Bearer <access_token>"
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "message": "Successfully logged out"
+}
+```
+
+### Error Response
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  ]
+}
+```
+
+```shell
+409: CONFLICT
+
+{
+  "error": {
+    "message": "No token to delete",
+    "status": 409,
+    "type": "Conflict"
+  ]
 }
 ```
 </details>
