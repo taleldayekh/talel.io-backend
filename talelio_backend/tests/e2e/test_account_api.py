@@ -185,7 +185,7 @@ class TestLogin(RequestHelper):
 
 
 @pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
-class TestToken(RequestHelper):
+class TestNewAccessToken(RequestHelper):
     def test_valid_refresh_token_can_generate_new_access_token(
             self, login_user_talel: Dict[str, str]) -> None:
         refresh_token = login_user_talel['refresh_token']
@@ -239,3 +239,30 @@ class TestToken(RequestHelper):
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Missing request body'
+
+
+@pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
+class TestLogout(RequestHelper):
+    def test_can_delete_refresh_token_on_logout(self, authorization_header: Dict[str,
+                                                                                 str]) -> None:
+        res = self.logout_request(authorization_header)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 200
+        assert res_data['message'] == 'Successfully logged out'
+
+    def test_cannot_delete_refresh_token_on_logout_for_unauthorized_user(self) -> None:
+        invalid_token_authorization_header = generate_authorization_header(invalid_token=True)
+        res = self.logout_request(invalid_token_authorization_header)
+
+        assert res.status_code == 403
+
+    def test_cannot_delete_non_existing_refresh_token_on_logout(
+            self, authorization_header: Dict[str, str]) -> None:
+        self.logout_request(authorization_header)
+
+        res = self.logout_request(authorization_header)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 409
+        assert res_data['error']['message'] == 'No token to delete'

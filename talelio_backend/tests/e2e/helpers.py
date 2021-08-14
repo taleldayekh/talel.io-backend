@@ -31,6 +31,10 @@ class RequestHelper:
         return self.api.post(  # type: ignore
             f'{ACCOUNTS_BASE_URL}/token', json=refresh_token_data)
 
+    def logout_request(self, authentication_header: Dict[str, str]) -> Response:
+        return self.api.post(  # type: ignore
+            f'{ACCOUNTS_BASE_URL}/logout', headers=authentication_header)
+
     def get_user_projects_request(self, username: str) -> Response:
         return self.api.get(f'{USERS_BASE_URL}/{username}/projects')  # type: ignore
 
