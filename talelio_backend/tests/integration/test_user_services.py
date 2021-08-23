@@ -2,7 +2,8 @@ import pytest
 from freezegun import freeze_time
 from jwt.exceptions import ExpiredSignatureError
 
-from talelio_backend.app_user.use_cases.authenticate_user import (set_refresh_token,
+from talelio_backend.app_user.use_cases.authenticate_user import (delete_refresh_token,
+                                                                  set_refresh_token,
                                                                   verify_refresh_token)
 from talelio_backend.core.exceptions import AccountError, TokenError
 from talelio_backend.identity_and_access.authentication import Authentication
@@ -82,3 +83,18 @@ def test_cannot_verify_non_existing_refresh_token() -> None:
     with pytest.raises(TokenError,
                        match='Provided refresh token not matching stored refresh token'):
         verify_refresh_token(token_store, INITIAL_USER_ID, invalid_refresh_token)  # type: ignore
+
+
+def test_can_delete_refresh_token() -> None:
+    token_store = FakeTokenStore()
+    deleted_refresh_token = delete_refresh_token(token_store, INITIAL_USER_ID)  # type: ignore
+
+    assert deleted_refresh_token
+
+
+def test_cannot_delete_refresh_token_for_non_existing_user_id() -> None:
+    token_store = FakeTokenStore()
+    invalid_user_id = INITIAL_USER_ID + 1986
+
+    with pytest.raises(TokenError, match='No token to delete'):
+        delete_refresh_token(token_store, invalid_user_id)  # type: ignore

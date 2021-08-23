@@ -91,15 +91,24 @@ class FakeUnitOfWork:
 
 
 class FakeTokenStore:
-    user_ids = [INITIAL_USER_ID]
+    user_ids = {INITIAL_USER_ID: FAKE_TOKEN}
 
     def set_token(self, user_id: int, refresh_token: str) -> None:
         pass
 
     def get_token(self, user_id: int) -> Union[str, None]:
-        if user_id in self.user_ids:
-            return FAKE_TOKEN
+        if self.user_ids.get(user_id):
+            return self.user_ids[user_id]
+
         return None
+
+    def delete_token(self, user_id: int) -> int:
+        deleted_token = self.user_ids.pop(user_id, None)
+
+        if not deleted_token:
+            return 0
+
+        return 1
 
 
 @contextmanager
