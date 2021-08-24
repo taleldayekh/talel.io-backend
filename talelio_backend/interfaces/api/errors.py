@@ -6,7 +6,12 @@ ErrorResponseType = NewType('ErrorResponseType', Dict[str, Dict[str, object]])
 
 
 class APIError(Exception):
-    http_response_status_codes = {400: 'Bad Request', 401: 'Unauthorized', 403: 'Forbidden'}
+    http_response_status_codes = {
+        400: 'Bad Request',
+        401: 'Unauthorized',
+        403: 'Forbidden',
+        409: 'Conflict'
+    }
 
     def __init__(self, message: str, status_code: int) -> None:
         super().__init__()

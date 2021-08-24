@@ -2,7 +2,7 @@ from functools import wraps
 from typing import Any, Union
 
 from talelio_backend.core.exceptions import AuthorizationError
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 
 
 def authorization_required(authorization_header: Union[str, None]) -> Any:
@@ -18,7 +18,7 @@ def authorization_required(authorization_header: Union[str, None]) -> Any:
                 raise AuthorizationError('No authorization token provided')
 
             try:
-                JWT.verify_token(access_token)
+                Authentication.verify_token(access_token)
             except Exception as e:
                 raise AuthorizationError(e) from e
 

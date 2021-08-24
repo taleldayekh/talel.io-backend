@@ -6,7 +6,7 @@ from flask import Blueprint, Response, current_app, jsonify, request
 from talelio_backend.app_assets.data.asset_store import AssetStore
 from talelio_backend.app_assets.use_cases.upload_images import upload_images
 from talelio_backend.core.exceptions import AuthorizationError, ImageError
-from talelio_backend.identity_and_access.authentication import JWT
+from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import (extract_access_token_from_authorization_header,
@@ -20,11 +20,11 @@ def upload_images_endpoint() -> Tuple[Response, int]:
     authorization_header = request.headers.get('Authorization')
 
     @authorization_required(authorization_header)
-    def protected() -> Tuple[Response, int]:
+    def protected_upload_images_endpoint() -> Tuple[Response, int]:
         try:
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
-            user = JWT().get_jwt_identity(access_token)
+            user = Authentication().get_jwt_identity(access_token)
 
             asset_store = AssetStore()
             image_streams = get_streams_from_request_files(request.files)
@@ -40,6 +40,6 @@ def upload_images_endpoint() -> Tuple[Response, int]:
             raise APIError(str(error), 400) from error
 
     try:
-        return protected()
+        return protected_upload_images_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error

@@ -19,7 +19,13 @@ jobs:
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
 
+      redis:
+        image: redis:6.2.4-alpine
+        ports:
+          - 6379:6379
+
     env:
+      HOST: localhost
       SECRET_KEY: test
       DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
 
@@ -84,6 +90,7 @@ jobs:
           --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
           --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
           --build-arg DB_URI=${{ secrets.DB_URI }} \
+          --build-arg HOST=${{ secrets.HOST }} \
           -f docker/talelio_backend.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"

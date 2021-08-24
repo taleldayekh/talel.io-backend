@@ -13,6 +13,7 @@ from werkzeug.datastructures import FileStorage, ImmutableMultiDict
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_project.domain.project_model import Project
 from talelio_backend.app_user.domain.user_model import User
+from talelio_backend.tests.constants import FAKE_TOKEN, INITIAL_USER_ID
 
 
 class FakeRepository:
@@ -87,6 +88,27 @@ class FakeUnitOfWork:
 
     def commit(self) -> None:
         self.committed = True
+
+
+class FakeTokenStore:
+    user_ids = {INITIAL_USER_ID: FAKE_TOKEN}
+
+    def set_token(self, user_id: int, refresh_token: str) -> None:
+        pass
+
+    def get_token(self, user_id: int) -> Union[str, None]:
+        if self.user_ids.get(user_id):
+            return self.user_ids[user_id]
+
+        return None
+
+    def delete_token(self, user_id: int) -> int:
+        deleted_token = self.user_ids.pop(user_id, None)
+
+        if not deleted_token:
+            return 0
+
+        return 1
 
 
 @contextmanager

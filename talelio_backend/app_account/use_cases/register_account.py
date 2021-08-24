@@ -5,7 +5,7 @@ from talelio_backend.app_user.domain.user_model import User
 from talelio_backend.core.exceptions import (AccountError, AccountRegistrationError,
                                              AccountVerificationError)
 from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.identity_and_access.authentication import generate_password_hash
+from talelio_backend.identity_and_access.authentication import Authentication
 
 
 def register_account(uow: UnitOfWork, email: str, password: str, username: str) -> Account:
@@ -22,7 +22,7 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
             raise AccountRegistrationError(
                 f"Account with the username '{username}' already exists")
 
-        password_hash = generate_password_hash(password)
+        password_hash = Authentication().generate_password_hash(password)
         user = User(username)
         account = Account(email, password_hash, user)
 

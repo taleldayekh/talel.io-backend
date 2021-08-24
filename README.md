@@ -6,6 +6,7 @@
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
+- [Authentication](#authentication)
 - [API](#api)
   - [Accounts Resource](#accounts-resource)
   - [Assets Resource](#assets-resource)
@@ -109,17 +110,47 @@ To prevent the domain models from depending on the infrastructure the ORM is imp
 
 ### Database
 
+# Authentication
+
+## Authorization Flow
+
+```
+╭─────────────────╮                              ╭─────────────────╮                ╭───────╮
+│ talel.io Client │                              │ talel.io Server │                │ Redis │
+╰─────────────────╯                              ╰─────────────────╯                ╰───────╯
+         |                                                |                             |
+	 | ---------- Req w/ login credentials ---------> | -- Create refresh token --> |
+	 |                                                |                             |
+	 | <------ Res w/ access & refresh token -------- |                             |
+	 |                                                |                             |
+	 | ----- Req resource w/ valid access token ----> |                             |
+	 |                                                |                             |
+	 | <------------- Res w/ resource --------------- |                             |
+	 |                                                |                             |
+	 | ---- Req resource w/ invalid access token ---> |                             |
+	 |                                                |                             |
+	 | <----------- Res w/ 403 Forbidden ------------ |                             |
+	 |                                                |                             |
+	 | -- Req new access token with refresh token --> | --- Check refresh token --> |
+	 |                                                |                             |
+	 | <--------- Res w/ new access token ----------- |                             |
+	 |                                                |                             |
+	 | ------------ Req logout resource ------------> | -- Delete refresh token --> |
+```
+
 # API
 
 Details about the REST API
 
 ## Accounts Resource
 
-| HTTP Method | Description    | Resource                               | Success Code | Failure Code |
-|-------------|----------------|----------------------------------------|--------------|--------------|
-| POST        | Create account | /\<version\>/accounts/register         | 201          | 400          |
-| POST        | Login          | /\<version\>/accounts/login            | 200          | 400, 401     |
-| GET         | Verify account | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
+| HTTP Method | Description      | Resource                               | Success Code | Failure Code |
+|-------------|------------------|----------------------------------------|--------------|--------------|
+| POST        | Create account   | /\<version\>/accounts/register         | 201          | 400          |
+| POST        | Login            | /\<version\>/accounts/login            | 200          | 400, 401     |
+| POST        | New access token | /\<version\>/accounts/token            | 200          | 400, 401     |
+| POST        | Logout           | /\<version\>/accounts/logout           | 200          | 403, 409     |
+| GET         | Verify account   | /\<version\>/accounts/verify/\<token\> | 200          | 400          |
 
 <details>
 <summary>POST - Create account</summary>
@@ -241,7 +272,8 @@ https://api.talel.io/v1/accounts/login \
 200: OK
 
 {
-  "access_token": "eyJ0eX.eyJ1c2.2U4WpJ"
+  "access_token": "eyJ0eX...eyJ1c2...2U4WpJ",
+  "refresh_token": "eyJ0eX...eyJ1c2...Z4XTA0"
 }
 ```
 
@@ -283,6 +315,151 @@ https://api.talel.io/v1/accounts/login \
 }
 ```
 
+</details>
+
+<details>
+<summary>POST - New access token</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/token \
+-H "Content-Type: application/json" \
+-d '{"refresh_token": <str>}'
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "access_token": "eyJ0eX...eyJ1c2...K4eKBy"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "No stored refresh token for user",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
+
+```shell
+401: UNAUTHORIZED
+
+{
+  "error": {
+    "message": "Provided refresh token not matching stored refresh token",
+    "status": 401,
+    "type": "Unauthorized"
+  }
+}
+```
+</details>
+
+<details>
+<summary>POST - Logout</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/accounts/logout \
+-H "Authorization: Bearer <access_token>"
+```
+
+### Success Response
+
+```shell
+200: OK
+
+{
+  "message": "Successfully logged out"
+}
+```
+
+### Error Response
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  ]
+}
+```
+
+```shell
+409: CONFLICT
+
+{
+  "error": {
+    "message": "No token to delete",
+    "status": 409,
+    "type": "Conflict"
+  ]
+}
+```
 </details>
 
 <details>
@@ -661,17 +838,17 @@ pipenv install --dev
 To start the development database make sure Docker is installed and run:
 
 ```shell
-make start-postgres-development
+make start-dev-dbs
 ```
 
 This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
 
-When running the e2e tests all database tables are dropped after the tests complete. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
+When running the e2e tests all database tables are dropped after the tests completes. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
 
 To continue developing with the test database the container needs to be stopped and restarted. To stop the container run:
 
 ```shell
-make stop-postgres-development
+make stop-dev-dbs
 ```
 
 ### Serve API
@@ -742,7 +919,7 @@ The CI pipeline runs whenever a pull request is created to the `develop` branch 
 
 ### CI
 
-CI runs all test suites and the static code analysis and uploads the coverage reports to [codecov.io](https://codecov.io).
+CI runs all test suites and the static code analysis and uploads the test coverage reports to [codecov.io](https://codecov.io).
 
 ### CD
 

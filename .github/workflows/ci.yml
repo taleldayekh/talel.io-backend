@@ -19,7 +19,13 @@ jobs:
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
 
+      redis:
+        image: redis:6.2.4-alpine
+        ports:
+          - 6379:6379
+
     env:
+      HOST: localhost
       SECRET_KEY: test
       DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
 
@@ -36,7 +42,7 @@ jobs:
         run: |
           pip install pipenv
           pipenv install --dev
-      
+
       - name: Static Code Analysis
         run: |
           make lint
