@@ -90,6 +90,7 @@ jobs:
           --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
           --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
           --build-arg DB_URI=${{ secrets.DB_URI }} \
+          --build-arg HOST=${{ secrets.HOST }} \
           -f docker/talelio_backend.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
