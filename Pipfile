@@ -4,7 +4,7 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-alembic = "==1.5.7"
+alembic = "==1.6.5"
 flask = "==2.0.0"
 flask-cors = "*"
 gunicorn = "*"
