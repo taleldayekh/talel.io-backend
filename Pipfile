@@ -16,7 +16,7 @@ pyjwt = "==2.1.0"
 boto3 = "==1.18.28"
 pillow = "==8.3.1"
 redis = "==3.5.3"
-boto3-stubs = {version = "==1.17.75", extras = ["s3"]}
+boto3-stubs = {version = "==1.18.29", extras = ["s3"]}
 
 [dev-packages]
 isort = "==5.9.3"
