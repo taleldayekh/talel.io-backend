@@ -1,4 +1,4 @@
-from typing import Dict, NewType, Tuple
+from typing import Any, Dict, NewType, Tuple
 
 from flask import Flask, Response, jsonify
 
@@ -26,7 +26,7 @@ class APIError(Exception):
 
 
 def error_handlers(app: Flask) -> None:
-    def api_error(error: APIError) -> Tuple[Response, int]:
+    def api_error(error: Any) -> Tuple[Response, int]:
         error_response = jsonify(error.error_response)
         return error_response, error.status_code
 
