@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "9e856f123f4c7f25c4456173cadf0fafd1bdf7cf42779df7afebc63a3db1912b"
+            "sha256": "353024d392e17760a15fcb0f4a9fb3bf6210275b33b109a23a1f916865e0ad75"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -37,11 +37,11 @@
                 "s3"
             ],
             "hashes": [
-                "sha256:a525ffb04df106bd3ca255a6f118a403c3102e87640237c44f47b4fe45a0f110",
-                "sha256:fb927bf8b210d433e0a1cd8e7db7c15994d8366a8554a971ea4ce670d70c5d50"
+                "sha256:a338599ca03f823c73567acbaf82b3f93cbb35dcc2468f1bf0ca7487baf9baf5",
+                "sha256:b0fbd83602ad0c56fd2daacf7a860b0eb3b63cd7cce643de696ec8c4cf90c8ae"
             ],
             "index": "pypi",
-            "version": "==1.18.33"
+            "version": "==1.18.36"
         },
         "botocore": {
             "hashes": [
@@ -530,7 +530,7 @@
                 "sha256:f0b278ce10936db1a37e6954e15a3730bea96a0997c26d7fee88e6c396c2086d",
                 "sha256:f11642dddbb0253cc8853254301b51390ba0081750a8ac03f20ea8103f0c56b6"
             ],
-            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4.0'",
+            "markers": "python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4' and python_version < '4'",
             "version": "==5.5"
         },
         "cryptography": {
