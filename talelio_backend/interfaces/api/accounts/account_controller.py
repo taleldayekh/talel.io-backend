@@ -1,7 +1,7 @@
 from typing import Tuple, cast
 
-from flask import Blueprint, Response, jsonify, request
-from jwt import InvalidSignatureError
+from flask import Blueprint, Response, current_app, jsonify, request
+from jwt import DecodeError, InvalidSignatureError
 
 from talelio_backend.app_account.use_cases.register_account import register_account, verify_account
 from talelio_backend.app_user.use_cases.authenticate_user import (delete_refresh_token,
@@ -82,7 +82,13 @@ def login_endpoint() -> Tuple[Response, int]:
 
         refresh_token = set_refresh_token(token_store, user_id, username)
 
-        return jsonify({'access_token': access_token, 'refresh_token': refresh_token}), 200
+        res = jsonify({'access_token': access_token})
+        res.set_cookie('refresh_token',
+                       refresh_token,
+                       httponly=True,
+                       secure=not current_app.config['DEBUG'])
+
+        return res, 200
     except KeyError as error:
         raise APIError(f'Expected {error} key', 400) from error
     except AccountError as error:
@@ -92,10 +98,7 @@ def login_endpoint() -> Tuple[Response, int]:
 @accounts_v1.post('/token')
 def new_access_token_endpoint() -> Tuple[Response, int]:
     try:
-        if not request.json:
-            raise APIError('Missing request body', 400)
-
-        refresh_token = request.json['refresh_token']
+        refresh_token = request.cookies.get('refresh_token') or ''
         token_store = TokenStore()
 
         user = Authentication().get_jwt_identity(refresh_token)
@@ -106,8 +109,10 @@ def new_access_token_endpoint() -> Tuple[Response, int]:
         access_token = generate_access_token(user_id, username)
 
         return jsonify({'access_token': access_token}), 200
-    except KeyError as error:
-        raise APIError(f'Expected {error} key', 400) from error
+    except InvalidSignatureError as error:
+        raise APIError(str(error), 400) from error
+    except DecodeError as error:
+        raise APIError(str(error), 400) from error
     except TokenError as error:
         raise APIError(str(error), 401) from error
 

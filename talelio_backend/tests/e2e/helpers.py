@@ -25,11 +25,14 @@ class RequestHelper:
     def login_request(self, login_data: Union[Dict[str, str], None] = None) -> Response:
         return self.api.post(f'{ACCOUNTS_BASE_URL}/login', json=login_data)  # type: ignore
 
-    def new_access_token_request(self,
-                                 refresh_token_data: Union[Dict[str, str],
-                                                           None] = None) -> Response:
+    def new_access_token_request(self, refresh_token_data: Union[str, None] = None) -> Response:
+        self.api.cookie_jar.clear_session_cookies()  # type: ignore
+
+        if refresh_token_data:
+            self.api.set_cookie('', 'refresh_token', refresh_token_data)  # type: ignore
+
         return self.api.post(  # type: ignore
-            f'{ACCOUNTS_BASE_URL}/token', json=refresh_token_data)
+            f'{ACCOUNTS_BASE_URL}/token')
 
     def logout_request(self, authentication_header: Dict[str, str]) -> Response:
         return self.api.post(  # type: ignore

@@ -1,8 +1,8 @@
+from re import match
 from typing import Dict, Generator
 from unittest.mock import patch
 
 import pytest
-from flask import json
 from flask.testing import FlaskClient
 
 from talelio_backend.core.db import engine
@@ -39,6 +39,11 @@ def populate_db_project(api_server: FlaskClient, authorization_header: Dict[str,
 @pytest.fixture(scope='class')
 def login_user_talel(api_server: FlaskClient) -> Dict[str, str]:
     res = api_server.post(f'{ACCOUNTS_BASE_URL}/login', json=talel_login_data)
-    res_data = json.loads(res.data)
 
-    return res_data
+    cookie_header = res.headers['Set-Cookie'].split('=')[1]
+    cookie_header_match = match('^.+?(?=;)', cookie_header)
+
+    if cookie_header_match:
+        refresh_token = cookie_header_match.group(0)
+
+    return {'refresh_token': refresh_token}
