@@ -211,7 +211,7 @@ class TestNewAccessToken(RequestHelper):
 
     def test_cannot_generate_new_access_token_with_invalid_refresh_token_signature(
             self, login_user_talel: Dict[str, str]) -> None:
-        refresh_token = login_user_talel['refresh_token'] + 'ABC'
+        refresh_token = login_user_talel['refresh_token'] + 'TALEL'
         res = self.new_access_token_request(refresh_token)
 
         assert res.status_code == 400
