@@ -273,7 +273,6 @@ https://api.talel.io/v1/accounts/login \
 
 {
   "access_token": "eyJ0eX...eyJ1c2...2U4WpJ",
-  "refresh_token": "eyJ0eX...eyJ1c2...Z4XTA0"
 }
 ```
 
@@ -325,8 +324,7 @@ https://api.talel.io/v1/accounts/login \
 ```shell
 curl -X POST \
 https://api.talel.io/v1/accounts/token \
--H "Content-Type: application/json" \
--d '{"refresh_token": <str>}'
+--cookie "refresh_token=<token>"
 ```
 
 ### Success Response
@@ -346,19 +344,7 @@ https://api.talel.io/v1/accounts/token \
 
 {
   "error": {
-    "message": "Missing request body",
-    "status": 400,
-    "type": "Bad Request"
-  }
-}
-```
-
-```shell
-400: BAD REQUEST
-
-{
-  "error": {
-    "message": "Expected '<key>' key",
+    "message": "<pyjwt error>",
     "status": 400,
     "type": "Bad Request"
   }
