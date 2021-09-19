@@ -129,7 +129,7 @@ class TestLogin(RequestHelper):
 
         assert res.status_code == 200
         assert res_data['access_token']
-        assert res_data['refresh_token']
+        assert res.headers['Set-Cookie']
 
     def test_access_token_expires_30_min_after_login(self) -> None:
         res_login = self.login_request(talel_login_data)
@@ -189,56 +189,49 @@ class TestNewAccessToken(RequestHelper):
     def test_valid_refresh_token_can_generate_new_access_token(
             self, login_user_talel: Dict[str, str]) -> None:
         refresh_token = login_user_talel['refresh_token']
-        refresh_token_data = {'refresh_token': refresh_token}
 
-        res = self.new_access_token_request(refresh_token_data)
+        res = self.new_access_token_request(refresh_token)
         res_data = json.loads(res.data)
 
         assert res.status_code == 200
         assert res_data['access_token']
 
-    def test_invalid_refresh_token_cannot_generate_new_access_token(self) -> None:
+    def test_cannot_generate_new_access_token_with_invalid_refresh_token_for_user(self) -> None:
         invalid_refresh_token = Authentication.generate_token({
             'user_id': INITIAL_USER_ID,
             'username': USERNAME_TALEL
         })
-        invalid_refresh_token_data = {'refresh_token': invalid_refresh_token}
 
-        res = self.new_access_token_request(invalid_refresh_token_data)
+        res = self.new_access_token_request(invalid_refresh_token)
         res_data = json.loads(res.data)
 
         assert res.status_code == 401
         assert res_data['error'][
             'message'] == 'Provided refresh token not matching stored refresh token'
 
-    def test_cannot_generate_access_token_for_user_with_no_stored_refresh_token(self) -> None:
+    def test_cannot_generate_new_access_token_with_invalid_refresh_token_signature(
+            self, login_user_talel: Dict[str, str]) -> None:
+        refresh_token = login_user_talel['refresh_token'] + 'TALEL'
+        res = self.new_access_token_request(refresh_token)
+
+        assert res.status_code == 400
+
+    def test_cannot_generate_new_access_token_for_user_with_no_stored_refresh_token(self) -> None:
         invalid_refresh_token = Authentication.generate_token({
             'user_id': INITIAL_USER_ID + 1986,
             'username': USERNAME_TALEL
         })
-        invalid_refresh_token_data = {'refresh_token': invalid_refresh_token}
 
-        res = self.new_access_token_request(invalid_refresh_token_data)
+        res = self.new_access_token_request(invalid_refresh_token)
         res_data = json.loads(res.data)
 
         assert res.status_code == 401
         assert res_data['error']['message'] == 'No stored refresh token for user'
 
     def test_cannot_generate_new_access_token_when_missing_refresh_token(self) -> None:
-        invalid_refresh_token_data = {'invalid_key': ''}
-
-        res = self.new_access_token_request(invalid_refresh_token_data)
-        res_data = json.loads(res.data)
-
-        assert res.status_code == 400
-        assert res_data['error']['message'] == "Expected 'refresh_token' key"
-
-    def test_cannot_generate_new_access_token_with_missing_request_body(self) -> None:
         res = self.new_access_token_request()
-        res_data = json.loads(res.data)
 
         assert res.status_code == 400
-        assert res_data['error']['message'] == 'Missing request body'
 
 
 @pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
