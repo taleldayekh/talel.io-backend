@@ -12,6 +12,4 @@ class Development(Config):
 
 
 class Production(Config):
-    CORS_ORIGIN_WHITELIST = {
-        'origins': ['https://www.talel.io', 'https://talel.io', 'http://localhost:3000']
-    }
+    CORS_ORIGIN_WHITELIST = {'origins': ['https://www.talel.io', 'https://talel.io']}
