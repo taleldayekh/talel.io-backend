@@ -23,7 +23,7 @@ def create_app() -> Flask:
     app.register_blueprint(projects_v1, url_prefix='/v1/projects')
     app.register_blueprint(users_v1, url_prefix='/v1/users')
 
-    CORS(app, resources={r'/*': app.config['CORS_ORIGIN_WHITELIST']})
+    CORS(app, resources={r'/*': app.config['CORS_ORIGIN_WHITELIST']}, supports_credentials=True)
     error_handlers(app)
 
     return app
