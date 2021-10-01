@@ -6,7 +6,7 @@
 #
 
 -i https://pypi.org/simple/
-alembic==1.7.1
+alembic==1.7.3
 boto3-stubs[s3]==1.18.53
 boto3==1.18.52
 botocore-stubs==1.21.53; python_version >= '3.6'
