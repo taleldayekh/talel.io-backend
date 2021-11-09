@@ -27,7 +27,7 @@ pytest-cov = "==2.12.1"
 python-dotenv = "==0.19.0"
 sqlalchemy-stubs = "==0.4"
 yapf = "==0.31.0"
-moto = {version = "==2.2.8", extras = ["s3"]}
+moto = {version = "==2.2.12", extras = ["s3"]}
 freezegun = "==1.1.0"
 fakeredis = "==1.6.1"
 types-redis = "==3.5.9"
