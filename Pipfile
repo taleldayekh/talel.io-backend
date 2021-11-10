@@ -19,7 +19,7 @@ redis = "==3.5.3"
 boto3-stubs = {version = "==1.20.1", extras = ["s3"]}
 
 [dev-packages]
-isort = "==5.9.3"
+isort = "==5.10.1"
 mypy = "==0.910"
 pylint = "==2.11.1"
 pytest = "==6.2.5"
