@@ -31,7 +31,7 @@ moto = {version = "==2.2.13", extras = ["s3"]}
 freezegun = "==1.1.0"
 fakeredis = "==1.6.1"
 types-redis = "==4.0.1"
-types-markdown = "==3.3.7"
+types-markdown = "==3.3.9"
 types-freezegun = "==1.1.3"
 
 [requires]
