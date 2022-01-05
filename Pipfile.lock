@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "7ccd18c53559226a2c4be8fc44cc4608ee07010888df163bdc033e376202b333"
+            "sha256": "53639d799080cce7040007bd0d966196f5207ada860673bd26bb04816f75dca2"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -53,11 +53,11 @@
         },
         "botocore-stubs": {
             "hashes": [
-                "sha256:ab3398b3f58390e537088a67e74efcf9c5021325c991a8ebf214792d74b892a2",
-                "sha256:c66abda42c1501e3227cffad17eb3384f779e52c5bd301ebeacb5ca902744fdc"
+                "sha256:b2ac646b7922e1f68d2fe730e7ba8a8bc79e2a3cbc0962542a6bdac98c4314e5",
+                "sha256:caf59773fde885fbd6feed4c075206b1821ccc153c21fcf9d710a086cf8ac9bb"
             ],
             "markers": "python_version >= '3.6'",
-            "version": "==1.23.27"
+            "version": "==1.23.28"
         },
         "click": {
             "hashes": [
@@ -232,10 +232,10 @@
         },
         "mypy-boto3-s3": {
             "hashes": [
-                "sha256:662709293bd1a83d66e40a34abf3c3b4deb9f9dcb88ae1cc6aacb65615967429",
-                "sha256:ed9c3c3713845c34662c28711d05d553f1f347ccfa1ee2f15fc6c1de966e0aa7"
+                "sha256:85ac23d06f9d0d794f60041b4c4f271d2bb8f5a83375c963e4a9e73e51ba9ca5",
+                "sha256:aa68c9740b79932d47ce20db6e5470a03f51be252360a49a6fed6beec5d71484"
             ],
-            "version": "==1.20.17"
+            "version": "==1.20.28"
         },
         "pillow": {
             "hashes": [
@@ -1107,11 +1107,11 @@
         },
         "types-markdown": {
             "hashes": [
-                "sha256:0fd38830517560f88c2f460ce5dc7006d831f560ec2a73f50c4ac06efac06793",
-                "sha256:4ab46c58185796366fd0e0a83fa901fbe8107f141d1ac3f1bca6b31df0e8b86c"
+                "sha256:0e3153dc4ad3454326465e4e4e21fd90e8fc74966225ec5aeef15895a2c5d94a",
+                "sha256:d4004e36a33cd3417cd299324232fc28e9915171a7ce46b43bf5b0c579db459d"
             ],
             "index": "pypi",
-            "version": "==3.3.9"
+            "version": "==3.3.10"
         },
         "types-redis": {
             "hashes": [
@@ -1126,7 +1126,7 @@
                 "sha256:4ca091dea149f945ec56afb48dae714f21e8692ef22a395223bcd328961b6a0e",
                 "sha256:7f001e5ac290a0c0401508864c7ec868be4e701886d5b573a9528ed3973d9d3b"
             ],
-            "markers": "python_version >= '3.6'",
+            "markers": "python_version < '3.10'",
             "version": "==4.0.1"
         },
         "urllib3": {
