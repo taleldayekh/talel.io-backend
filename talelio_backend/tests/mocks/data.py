@@ -17,11 +17,13 @@ from talelio_backend.tests.constants import FAKE_TOKEN, INITIAL_USER_ID
 
 
 class FakeRepository:
+
     def __init__(self, fake_db: Dict[str, List[Any]]) -> None:
         self.fake_db = fake_db
 
 
 class FakeAccountRepository(FakeRepository):
+
     def add(self, model: Account) -> Account:
         new_id: int
         available_account_ids = []
@@ -51,6 +53,7 @@ class FakeAccountRepository(FakeRepository):
 
 
 class FakeUserRepository(FakeRepository):
+
     def get(self, _model: User, **kwargs: Any) -> Union[User, None]:
         for user in self.fake_db['user']:
             if user.id == kwargs.get('id'):
@@ -61,6 +64,7 @@ class FakeUserRepository(FakeRepository):
 
 
 class FakeProjectRepository(FakeRepository):
+
     def get(self, _model: Project) -> List[Project]:
         return self.fake_db['user'][-1].projects
 

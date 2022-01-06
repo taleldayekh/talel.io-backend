@@ -10,6 +10,7 @@ from talelio_backend.tests.utils import generate_authorization_header
 
 @pytest.mark.usefixtures('populate_db_account')
 class TestCreateProject(RequestHelper):
+
     def test_can_create_project(self, authorization_header: Dict[str, str]) -> None:
         res = self.create_project_request(authorization_header, talelio_server_project)
         res_data = json.loads(res.data)

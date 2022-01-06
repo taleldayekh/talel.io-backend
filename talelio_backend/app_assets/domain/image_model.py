@@ -10,6 +10,7 @@ from talelio_backend.shared.constants import MAX_IMAGE_FILE_SIZE
 
 
 class Image(Asset):
+
     def __init__(self, image_streams: List[BytesIO]) -> None:
         self.image_streams = image_streams
 

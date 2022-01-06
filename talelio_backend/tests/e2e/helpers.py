@@ -12,6 +12,7 @@ from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ASSETS_BASE_URL,
 
 @pytest.mark.usefixtures('api_server')
 class RequestHelper:
+
     def register_account_request(self,
                                  registration_data: Union[Dict[str, str],
                                                           None] = None) -> Response:

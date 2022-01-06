@@ -6,7 +6,9 @@ from talelio_backend.identity_and_access.authentication import Authentication
 
 
 def authorization_required(authorization_header: Union[str, None]) -> Any:
+
     def decorator(func: Any) -> Any:
+
         @wraps(func)
         def wrapper(*args: Any, **kwargs: Any) -> Any:
             if not authorization_header:

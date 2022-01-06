@@ -20,6 +20,7 @@ class Asset(Enum):
 
 
 class AssetStore:
+
     def __init__(self, s3: S3Client = s3_client) -> None:
         self.s3 = s3
 

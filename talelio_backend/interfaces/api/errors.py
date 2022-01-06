@@ -26,6 +26,7 @@ class APIError(Exception):
 
 
 def error_handlers(app: Flask) -> None:
+
     def api_error(error: Any) -> Tuple[Response, int]:
         error_response = jsonify(error.error_response)
         return error_response, error.status_code
