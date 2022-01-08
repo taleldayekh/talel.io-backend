@@ -8,7 +8,7 @@ class Config(object):
 
 class Development(Config):
     DEBUG = True
-    CORS_ORIGIN_WHITELIST = {'origins': ['http://localhost:3000']}
+    CORS_ORIGIN_WHITELIST = {'origins': ['http://127.0.0.1:3000']}
 
 
 class Production(Config):
