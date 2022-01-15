@@ -20,6 +20,7 @@ from talelio_backend.tests.utils import generate_authorization_header
 
 @pytest.mark.usefixtures('populate_db_account')
 class TestRegisterAccount(RequestHelper):
+
     def test_can_register_account(self) -> None:
         res = self.register_account_request(bianca_registration_data)
         res_data = json.loads(res.data)
@@ -74,6 +75,7 @@ class TestRegisterAccount(RequestHelper):
 
 
 class TestVerifyAccount(RequestHelper):
+
     def test_can_verify_account(self) -> None:
         talel_verification_token = Authentication.generate_token({'email': EMAIL_TALEL})
 
@@ -123,6 +125,7 @@ class TestVerifyAccount(RequestHelper):
 
 @pytest.mark.usefixtures('populate_db_account')
 class TestLogin(RequestHelper):
+
     def test_can_login_to_account(self) -> None:
         res = self.login_request(talel_login_data)
         res_data = json.loads(res.data)
@@ -186,6 +189,7 @@ class TestLogin(RequestHelper):
 
 @pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
 class TestNewAccessToken(RequestHelper):
+
     def test_valid_refresh_token_can_generate_new_access_token(
             self, login_user_talel: Dict[str, str]) -> None:
         refresh_token = login_user_talel['refresh_token']
@@ -236,6 +240,7 @@ class TestNewAccessToken(RequestHelper):
 
 @pytest.mark.usefixtures('populate_db_account', 'login_user_talel')
 class TestLogout(RequestHelper):
+
     def test_can_delete_refresh_token_on_logout(self, authorization_header: Dict[str,
                                                                                  str]) -> None:
         res = self.logout_request(authorization_header)

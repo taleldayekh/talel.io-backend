@@ -1,7 +1,7 @@
 from markdown import markdown
 
 
-class Project:
+class Article:
 
     def __init__(self, title: str, body: str) -> None:
         self.title = title

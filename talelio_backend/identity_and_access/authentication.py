@@ -9,6 +9,7 @@ from talelio_backend.shared.constants import SECRET_KEY
 
 
 class Authentication:
+
     @staticmethod
     def generate_token(payload: Dict[str, Any], secret_key: str = SECRET_KEY) -> str:
         return encode(payload, secret_key, algorithm='HS512')

@@ -7,6 +7,7 @@ from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
 from talelio_backend.app_account.data.account_repository import AccountRepository
+from talelio_backend.app_article.data.article_repository import ArticleRepository
 from talelio_backend.app_project.data.project_repository import ProjectRepository
 from talelio_backend.app_user.data.user_repository import UserRepository
 from talelio_backend.core.db import default_session
@@ -17,6 +18,7 @@ class UnitOfWork:
     account: AccountRepository
     user: UserRepository
     projects: ProjectRepository
+    articles: ArticleRepository
 
     def __init__(self, session_factory: sessionmaker = default_session) -> None:
         self.session_factory = session_factory
@@ -26,6 +28,7 @@ class UnitOfWork:
         self.account = AccountRepository(self.session)
         self.user = UserRepository(self.session)
         self.projects = ProjectRepository(self.session)
+        self.articles = ArticleRepository(self.session)
 
         return self
 

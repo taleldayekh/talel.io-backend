@@ -4,6 +4,7 @@ from talelio_backend.shared.data.repository import BaseRepository
 
 
 class UserRepository(BaseRepository):
+
     def get(self, model: Any, **kwargs: Any) -> Any:
         user: Any
 

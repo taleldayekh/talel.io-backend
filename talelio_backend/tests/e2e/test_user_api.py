@@ -10,6 +10,7 @@ from talelio_backend.tests.mocks.projects import talelio_client_project, talelio
 
 @pytest.mark.usefixtures('populate_db_account', 'populate_db_project')
 class TestGetUserProjects(RequestHelper):
+
     def test_can_get_user_projects(self, authorization_header: Dict[str, str]) -> None:
         res_one_project = self.get_user_projects_request(USERNAME_TALEL)
         res_one_project_data = json.loads(res_one_project.data)

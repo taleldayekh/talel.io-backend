@@ -5,6 +5,7 @@ from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, Integer, String, Text
 
 from talelio_backend.app_account.domain.account_model import Account
+from talelio_backend.app_article.domain.article_model import Article
 from talelio_backend.app_project.domain.project_model import Project
 from talelio_backend.app_user.domain.user_model import User
 
@@ -29,6 +30,13 @@ project_table = Table('project', metadata,
                       Column('updated_at', DateTime, onupdate=func.now()), Column('title', String),
                       Column('body', Text), Column('html', Text))
 
+article_table = Table('article', metadata,
+                      Column('id', Integer, primary_key=True, autoincrement=True),
+                      Column('user_id', Integer, ForeignKey('user.id')),
+                      Column('created_at', DateTime, server_default=func.now()),
+                      Column('updated_at', DateTime, onupdate=func.now()), Column('title', String),
+                      Column('body', Text), Column('html', Text))
+
 
 def start_mappers() -> None:
     mapper(
@@ -36,6 +44,13 @@ def start_mappers() -> None:
         account_table,
         properties={'user': relationship(User, backref='account', uselist=False, lazy='joined')})
 
-    mapper(User, user_table, properties={'projects': relationship(Project, backref='user')})
+    mapper(User,
+           user_table,
+           properties={
+               'projects': relationship(Project, backref='user'),
+               'articles': relationship(Article, backref='user')
+           })
 
     mapper(Project, project_table)
+
+    mapper(Article, article_table)

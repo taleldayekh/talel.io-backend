@@ -9,6 +9,7 @@ redis_client = Redis(host=HOST)
 
 
 class TokenStore:
+
     def __init__(self, redis: Redis = redis_client) -> None:
         self.redis = redis
 

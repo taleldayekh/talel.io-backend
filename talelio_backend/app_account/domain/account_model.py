@@ -14,6 +14,7 @@ DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'
 
 
 class Account:
+
     def __init__(self, email: str, password: str, user: User, verified: bool = False) -> None:
         self.email = email
         self.password = password

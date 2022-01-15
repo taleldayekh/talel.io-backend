@@ -6,6 +6,7 @@ from typing import List
 
 
 class Asset:
+
     @staticmethod
     def validate_file_size(file_streams: List[BytesIO], max_file_size: int) -> bool:
         for file_stream in file_streams:
