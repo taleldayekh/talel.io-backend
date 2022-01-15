@@ -86,6 +86,7 @@ def login_endpoint() -> Tuple[Response, int]:
         res.set_cookie('refresh_token',
                        refresh_token,
                        httponly=True,
+                       domain='api.talel.io',
                        secure=not current_app.config['DEBUG'])
 
         return res, 200
