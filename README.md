@@ -9,6 +9,7 @@
 - [Authentication](#authentication)
 - [API](#api)
   - [Accounts Resource](#accounts-resource)
+  - [Articles Resource](#articles-resource)
   - [Assets Resource](#assets-resource)
   - [Projects Resource](#projects-resource)
   - [Users Resource](#users-resource)
@@ -520,6 +521,104 @@ https://api.talel.io/v1/accounts/verify/<token>
 ```
 </details>
 
+## Articles Resource
+
+| HTTP Method | Description       | Resource             | Success Code | Failure Code |
+|-------------|-------------------|----------------------|--------------|--------------|
+| POST        | Create an article | /\<version>/articles | 201          | 400, 403     |
+
+<details>
+<summary>POST - Create an article</summary>
+
+### Request
+
+```shell
+curl -X POST \
+https://api.talel.io/v1/articles \
+-H "Authorization: Bearer <access_token>" \
+-H "Content-Type: application/json" \
+-d '{"title": <str>, "body": <str>}'
+```
+
+### Success Response
+
+```shell
+201: CREATED
+
+{
+  "id": 1,
+  "user_id": 1,
+  "created_at": "1986-06-05 00:00:00.000000",
+  "updated_at": null,
+  "title": "Article Title",
+  "body": "# Hello World",
+  "html": "<h1>Hello World</h1>"
+}
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Missing request body",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "Expected '<key>' key",
+    "status": 400,
+    "type": "Bad Request"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization header provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "No authorization token provided",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+
+```shell
+403: FORBIDDEN
+
+{
+  "error": {
+    "message": "<pyjwt error>",
+    "status": 403,
+    "type": "Forbidden"
+  }
+}
+```
+</details>
+
 ## Assets Resource
 
 | HTTP Method | Description  | Resource                   | Success Code | Failure Code |
@@ -655,7 +754,7 @@ https://api.talel.io/v1/projects \
   "created_at": "1986-06-05 00:00:00.000000",
   "updated_at": null,
   "title": "Project Name",
-  "body": "## Hello World",
+  "body": "# Hello World",
   "html": "<h1>Hello World</h1>"
 }
 ```
