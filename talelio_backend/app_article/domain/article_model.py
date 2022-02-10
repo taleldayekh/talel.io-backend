@@ -10,5 +10,5 @@ class Article:
 
     @property
     def convert_body_to_html(self) -> None:
-        html = markdown(self.body)
+        html = markdown(self.body, extensions=['fenced_code'])
         self.html = html
