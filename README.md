@@ -523,9 +523,10 @@ https://api.talel.io/v1/accounts/verify/<token>
 
 ## Articles Resource
 
-| HTTP Method | Description       | Resource             | Success Code | Failure Code |
-|-------------|-------------------|----------------------|--------------|--------------|
-| POST        | Create an article | /\<version>/articles | 201          | 400, 403     |
+| HTTP Method | Description                  | Resource                                 | Success Code | Failure Code |
+|-------------|------------------------------|------------------------------------------|--------------|--------------|
+| POST        | Create an article            | /\<version\>/articles                    | 201          | 400, 403     |
+| GET         | List all articles for a user | /\<version\>/users/\<username\>/articles | 200          | 400          |
 
 <details>
 <summary>POST - Create an article</summary>
@@ -614,6 +615,48 @@ https://api.talel.io/v1/articles \
     "message": "<pyjwt error>",
     "status": 403,
     "type": "Forbidden"
+  }
+}
+```
+</details>
+
+<details>
+<summary>GET - List all articles for a user</summary>
+
+### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/users/<username>/articles
+```
+
+### Success Response
+
+```shell
+200: OK
+[
+  {
+    "id": 1,
+    "user_id": 1,
+    "created_at": "1986-06-05 00:00:00.000000",
+    "updated_at" null,
+    "title": "Article Name",
+    "body": "# Hello World",
+    "html": "<h1>Hello World</h1>"
+  }
+]
+```
+
+### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+  "error": {
+    "message": "User '<username>' does not exist",
+    "status": 400,
+    "type": "Bad Request"
   }
 }
 ```
@@ -844,7 +887,7 @@ https://api.talel.io/v1/users/<username>/projects
     "created_at": "1986-06-05 00:00:00.000000",
     "updated_at": null,
     "title": "Project Name",
-    "body": "## Hello World",
+    "body": "# Hello World",
     "html": "<h1>Hello World</h1>
   }
 ]
