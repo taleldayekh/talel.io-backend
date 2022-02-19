@@ -7,5 +7,6 @@ class ArticleSchema(Schema):
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
     title = fields.Str()
+    slug = fields.Str()
     body = fields.Str()
     html = fields.Str()

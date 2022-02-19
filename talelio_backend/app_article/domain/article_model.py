@@ -1,10 +1,13 @@
 from markdown import markdown
 
+from talelio_backend.shared.utils import generate_slug
+
 
 class Article:
 
     def __init__(self, title: str, body: str) -> None:
         self.title = title
+        self.slug = generate_slug(title)
         self.body = body
         self.html = ''
 
