@@ -1,9 +1,8 @@
 from __future__ import annotations
 
 from types import TracebackType
-from typing import Optional, Type, Union
+from typing import Optional, Type
 
-from sqlalchemy.dialects.postgresql.dml import Insert
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.orm.session import Session
 
@@ -41,12 +40,8 @@ class UnitOfWork:
 
         self.session.close()
 
-    def commit(self, statement: Optional[Insert] = None) -> Union[Insert, None]:
-        if statement is None:
-            self.session.commit()
+    def flush(self) -> None:
+        self.session.flush()
 
-            return None
-
-        result = self.session.execute(statement)
-
-        return result
+    def commit(self) -> None:
+        self.session.commit()
