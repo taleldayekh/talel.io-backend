@@ -29,7 +29,7 @@ sqlalchemy-stubs = "==0.4"
 yapf = "==0.32.0"
 moto = {version = "==3.0.2", extras = ["s3"]}
 freezegun = "==1.1.0"
-fakeredis = "==1.7.0"
+fakeredis = "==1.7.1"
 types-redis = "==4.1.17"
 types-markdown = "==3.3.12"
 types-freezegun = "==1.1.6"
