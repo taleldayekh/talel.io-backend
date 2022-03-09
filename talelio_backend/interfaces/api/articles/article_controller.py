@@ -3,6 +3,7 @@ from typing import Tuple, cast
 from flask import Blueprint, Response, request
 
 from talelio_backend.app_article.use_cases.create_article import create_article
+from talelio_backend.app_article.use_cases.get_articles import get_article
 from talelio_backend.core.exceptions import AuthorizationError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
@@ -44,3 +45,13 @@ def create_article_endpoint() -> Tuple[Response, int]:
         return protected_create_article_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error
+
+
+@articles_v1.get('/<string:slug>')
+def get_article_endpoint(slug: str) -> Tuple[Response, int]:
+    uow = UnitOfWork()
+
+    article = get_article(uow, slug)
+    res_body = ArticleSchema().dump(article)
+
+    return res_body, 200

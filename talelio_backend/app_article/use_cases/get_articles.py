@@ -14,3 +14,10 @@ def get_user_articles(uow: UnitOfWork, username: str) -> List[Article]:
             raise UserError(f"User '{username}' does not exist")
 
         return user_record.articles
+
+
+def get_article(uow: UnitOfWork, slug: str) -> Article:
+    with uow:
+        article_record = uow.articles.get(Article, slug=slug)
+
+        return article_record
