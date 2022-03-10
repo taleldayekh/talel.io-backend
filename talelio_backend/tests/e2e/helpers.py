@@ -6,8 +6,8 @@ from unittest.mock import patch
 import pytest
 from flask import Response
 
-from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ASSETS_BASE_URL, PROJECTS_BASE_URL,
-                                             USERS_BASE_URL)
+from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ARTICLES_BASE_URL, ASSETS_BASE_URL,
+                                             PROJECTS_BASE_URL, USERS_BASE_URL)
 
 
 @pytest.mark.usefixtures('api_server')
@@ -47,6 +47,12 @@ class RequestHelper:
                                project_data: Union[Dict[str, str], None] = None) -> Response:
         return self.api.post(  # type: ignore
             PROJECTS_BASE_URL, headers=authorization_header, json=project_data)
+
+    def create_article_request(self,
+                               authorization_header: Dict[str, str],
+                               article_data: Union[Dict[str, str], None] = None) -> Response:
+        return self.api.post(  # type: ignore
+            ARTICLES_BASE_URL, headers=authorization_header, json=article_data)
 
     def upload_images_request(self, image_streams: Dict[str, BytesIO],
                               authorization_header: Dict[str, str]) -> Response:
