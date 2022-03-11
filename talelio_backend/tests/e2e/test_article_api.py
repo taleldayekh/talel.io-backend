@@ -3,6 +3,7 @@ from typing import Dict
 import pytest
 from flask import json
 
+from talelio_backend.shared.utils import generate_slug
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.articles import article_one, article_two
 from talelio_backend.tests.utils import generate_authorization_header
@@ -68,3 +69,16 @@ class TestCreateArticle(RequestHelper):
             invalid_token_authorization_header, article_one)
 
         assert res_invalid_token_authorization_header.status_code == 403
+
+
+@pytest.mark.usefixtures('populate_db_account', 'populate_db_articles')
+class TestGetArticle(RequestHelper):
+
+    def test_can_get_article_by_slug(self) -> None:
+        article_one_slug = generate_slug(article_one['title'])
+
+        res = self.get_article_request(article_one_slug)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 200
+        assert res_data['title'] == article_one['title']
