@@ -19,7 +19,7 @@ class TestCreateProject(RequestHelper):
         assert res_data['title'] == talelio_server_project['title']
         assert res_data['body'] == talelio_server_project['body']
 
-    def test_cannot_create_project_when_missing_project_details(
+    def test_cannot_create_project_when_missing_details(
             self, authorization_header: Dict[str, str]) -> None:
         res = self.create_project_request(authorization_header,
                                           {'title': talelio_server_project['title']})

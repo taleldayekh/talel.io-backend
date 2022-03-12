@@ -6,8 +6,8 @@ from unittest.mock import patch
 import pytest
 from flask import Response
 
-from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ASSETS_BASE_URL, PROJECTS_BASE_URL,
-                                             USERS_BASE_URL)
+from talelio_backend.tests.constants import (ACCOUNTS_BASE_URL, ARTICLES_BASE_URL, ASSETS_BASE_URL,
+                                             PROJECTS_BASE_URL, USERS_BASE_URL)
 
 
 @pytest.mark.usefixtures('api_server')
@@ -42,11 +42,23 @@ class RequestHelper:
     def get_user_projects_request(self, username: str) -> Response:
         return self.api.get(f'{USERS_BASE_URL}/{username}/projects')  # type: ignore
 
+    def get_user_articles_request(self, username: str) -> Response:
+        return self.api.get(f'{USERS_BASE_URL}/{username}/articles')  # type: ignore
+
     def create_project_request(self,
                                authorization_header: Dict[str, str],
                                project_data: Union[Dict[str, str], None] = None) -> Response:
         return self.api.post(  # type: ignore
             PROJECTS_BASE_URL, headers=authorization_header, json=project_data)
+
+    def create_article_request(self,
+                               authorization_header: Dict[str, str],
+                               article_data: Union[Dict[str, str], None] = None) -> Response:
+        return self.api.post(  # type: ignore
+            ARTICLES_BASE_URL, headers=authorization_header, json=article_data)
+
+    def get_article_request(self, slug: str) -> Response:
+        return self.api.get(f'{ARTICLES_BASE_URL}/{slug}')  # type: ignore
 
     def upload_images_request(self, image_streams: Dict[str, BytesIO],
                               authorization_header: Dict[str, str]) -> Response:
