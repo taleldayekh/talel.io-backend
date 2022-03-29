@@ -34,7 +34,11 @@ def create_article_endpoint() -> Tuple[Response, int]:
             title = request.json['title']
             body = request.json['body']
 
-            created_article = create_article(uow, user_id, title, body)
+            # Allows for an optional featured_image request parameter
+            # withour raising the KeyError exception if not provided.
+            featured_image = str(request.json.get('featured_image' or ''))
+
+            created_article = create_article(uow, user_id, title, body, featured_image)
             res_body = ArticleSchema().dump(created_article)
 
             return res_body, 201
