@@ -4,6 +4,8 @@ SERVER_PROJECT_ARCHITECTURE_DIAGRAM_URL = 'https://url/to/server-project-archite
 CLIENT_PROJECT_FEATURED_IMAGE_URL = 'https://url/to/client-project-featured-image.jpg'
 CLIENT_PROJECT_ARCHITECTURE_DIAGRAM_URL = 'https://url/to/client-project-architecture-diagram.jpg'
 
+PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL = 'https://url/to/private-blockchain-featured-image.jpg'
+
 TALELIO_SERVER_PROJECT_BODY = f'''
 # Backend for talel.io
 
@@ -32,6 +34,8 @@ ART_TO_ENGINEERING_ARTICLE_BODY = '''
 # Making the Leap From Art to Engineering
 '''
 
-PRIVATE_BLOCKCHAIN_ARTICLE_BODY = '''
+PRIVATE_BLOCKCHAIN_ARTICLE_BODY = f'''
 # How to Setup a Private Blockchain With Docker
+
+![private blockchain featured image]({PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL})
 '''
