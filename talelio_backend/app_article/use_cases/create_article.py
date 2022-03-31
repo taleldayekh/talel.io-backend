@@ -10,7 +10,8 @@ from talelio_backend.core.exceptions import UserError
 from talelio_backend.data.uow import UnitOfWork
 
 
-def create_article(uow: UnitOfWork, user_id: int, title: str, body: str) -> Article:
+def create_article(uow: UnitOfWork, user_id: int, title: str, body: str,
+                   featured_image: str) -> Article:
 
     def new_article(conflicting_slug: Optional[bool] = False) -> None:
         with uow:
@@ -21,6 +22,11 @@ def create_article(uow: UnitOfWork, user_id: int, title: str, body: str) -> Arti
 
             new_article = Article(title, body)
             new_article.convert_body_to_html
+
+            if featured_image:
+                new_article.featured_image = featured_image
+            else:
+                new_article.set_featured_image
 
             if conflicting_slug:
                 new_article.slug = new_article.slug + '-'
