@@ -10,3 +10,4 @@ class ArticleSchema(Schema):
     slug = fields.Str()
     body = fields.Str()
     html = fields.Str()
+    featured_image = fields.Str()

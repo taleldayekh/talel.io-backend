@@ -3,7 +3,8 @@ from flask import json
 
 from talelio_backend.tests.constants import INVALID_USER, USERNAME_TALEL
 from talelio_backend.tests.e2e.helpers import RequestHelper
-from talelio_backend.tests.mocks.articles import article_one, article_two
+from talelio_backend.tests.mocks.articles import (art_to_engineering_article,
+                                                  private_blockchain_article)
 from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
 
 
@@ -16,8 +17,8 @@ class TestGetUserArticles(RequestHelper):
 
         assert res.status_code == 200
         assert len(res_data) == 2
-        assert res_data[0]['title'] == article_one['title']
-        assert res_data[1]['title'] == article_two['title']
+        assert res_data[0]['title'] == art_to_engineering_article['title']
+        assert res_data[1]['title'] == private_blockchain_article['title']
 
     def test_cannot_get_articles_for_non_existing_user(self) -> None:
         res = self.get_user_articles_request(INVALID_USER)

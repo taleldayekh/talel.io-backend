@@ -36,7 +36,7 @@ article_table = Table('article', metadata,
                       Column('created_at', DateTime, server_default=func.now()),
                       Column('updated_at', DateTime, onupdate=func.now()), Column('title', String),
                       Column('slug', String, unique=True), Column('body', Text),
-                      Column('html', Text))
+                      Column('html', Text), Column('featured_image', Text))
 
 
 def start_mappers() -> None:
