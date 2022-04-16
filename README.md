@@ -11,6 +11,16 @@ sequenceDiagram
   autonumber
   talel.io Client->>talel.io Server: Req w/ login credentials
   Redis->>talel.io Server: Create refresh token
+  talel.io Server->>talel.io Client: Res w/ access and refresh token
+  talel.io Client->>talel.io Server: Req resource w/ valid access token
+  talel.io Server->>talel.io Client: Res w/ resource
+  talel.io Client->>talel.io Server: Req resource w/ invalid access token
+  talel.io Server->>talel.io Client: Res w/ 403 Forbidden
+  talel.io Client->>talel.io Server: Req new access token w/ refresh token
+  talel.io Server->>Redis: Check refresh token
+  talel.io Server->>talel.io Client: Res w/ new access token
+  talel.io Client->>talel.io Server: Req logout resource
+  talel.io Server->>Redis: Delete refresh token
 ```
 
 
