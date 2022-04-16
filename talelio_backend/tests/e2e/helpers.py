@@ -17,14 +17,18 @@ class RequestHelper:
                                  registration_data: Union[Dict[str, str],
                                                           None] = None) -> Response:
         with patch('talelio_backend.app_account.domain.account_model.smtplib.SMTP_SSL'):
+            request_payload = registration_data if registration_data else {}
+
             return self.api.post(  # type: ignore
-                f'{ACCOUNTS_BASE_URL}/register', json=registration_data)
+                f'{ACCOUNTS_BASE_URL}/register', json=request_payload)
 
     def verify_account_request(self, verification_token: str) -> Response:
         return self.api.get(f'{ACCOUNTS_BASE_URL}/verify/{verification_token}')  # type: ignore
 
     def login_request(self, login_data: Union[Dict[str, str], None] = None) -> Response:
-        return self.api.post(f'{ACCOUNTS_BASE_URL}/login', json=login_data)  # type: ignore
+        request_payload = login_data if login_data else {}
+
+        return self.api.post(f'{ACCOUNTS_BASE_URL}/login', json=request_payload)  # type: ignore
 
     def new_access_token_request(self, refresh_token_data: Union[str, None] = None) -> Response:
         self.api.cookie_jar.clear_session_cookies()  # type: ignore
@@ -48,14 +52,18 @@ class RequestHelper:
     def create_project_request(self,
                                authorization_header: Dict[str, str],
                                project_data: Union[Dict[str, str], None] = None) -> Response:
+        request_payload = project_data if project_data else {}
+
         return self.api.post(  # type: ignore
-            PROJECTS_BASE_URL, headers=authorization_header, json=project_data)
+            PROJECTS_BASE_URL, headers=authorization_header, json=request_payload)
 
     def create_article_request(self,
                                authorization_header: Dict[str, str],
                                article_data: Union[Dict[str, str], None] = None) -> Response:
+        request_payload = article_data if article_data else {}
+
         return self.api.post(  # type: ignore
-            ARTICLES_BASE_URL, headers=authorization_header, json=article_data)
+            ARTICLES_BASE_URL, headers=authorization_header, json=request_payload)
 
     def get_article_request(self, slug: str) -> Response:
         return self.api.get(f'{ARTICLES_BASE_URL}/{slug}')  # type: ignore
