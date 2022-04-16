@@ -15,7 +15,9 @@ class Article:
         self.html = ''
         self.featured_image = featured_image
 
-        self.markdown = Markdown(extensions=['fenced_code', ImageSrcExtractorExtension()])
+        self.markdown = Markdown(
+            extensions=['attr_list', 'fenced_code',
+                        ImageSrcExtractorExtension()])
 
     @property
     def convert_body_to_html(self) -> None:
