@@ -2,11 +2,28 @@
 
 # Table of Contents
 
+- [Authentication](#authentication)
+
+# Authentication
+
+```mermaid
+sequenceDiagram
+  autonumber
+  talel.io Client->>talel.io Server: Req w/ login credentials
+  Redis->>talel.io Server: Create refresh token
+```
+
+
+
+
+---
+
+# Table of Contents
+
 - [Architecture](#architecture)
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
-- [Authentication](#authentication)
 - [File Storage](#file-storage)
   - [AWS S3](#aws-s3-simple-storage-service)
 - [Database Schema Migration](#database-schema-migration)
