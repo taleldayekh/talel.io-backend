@@ -24,7 +24,7 @@ mypy = "==0.931"
 pylint = "==2.13.5"
 pytest = "==7.1.1"
 pytest-cov = "==3.0.0"
-python-dotenv = "==0.19.2"
+python-dotenv = "==0.20.0"
 sqlalchemy-stubs = "==0.4"
 yapf = "==0.32.0"
 moto = {version = "==3.0.5", extras = ["s3"]}
