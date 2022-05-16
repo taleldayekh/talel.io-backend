@@ -21,6 +21,7 @@ class TestCreateArticle(RequestHelper):
         assert res.status_code == 201
         assert res_data['title'] == art_to_engineering_article['title']
         assert res_data['body'] == art_to_engineering_article['body']
+        assert res_data['meta_description'] == art_to_engineering_article['meta_description']
 
     def test_can_generate_slug_with_id_on_conflict(self, authorization_header: Dict[str,
                                                                                     str]) -> None:
