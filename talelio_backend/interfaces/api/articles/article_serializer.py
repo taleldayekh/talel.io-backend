@@ -9,5 +9,7 @@ class ArticleSchema(Schema):
     title = fields.Str()
     slug = fields.Str()
     body = fields.Str()
+    meta_description = fields.Str()
     html = fields.Str()
     featured_image = fields.Str()
+    url = fields.Str()
