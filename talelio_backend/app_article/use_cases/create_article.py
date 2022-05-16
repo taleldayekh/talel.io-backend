@@ -1,4 +1,4 @@
-# pylint: disable=W0104
+# pylint: disable=W0104, R0913
 from typing import Optional
 
 # TODO: Wrap in custom DbIntegrityError exception class
@@ -10,7 +10,7 @@ from talelio_backend.core.exceptions import UserError
 from talelio_backend.data.uow import UnitOfWork
 
 
-def create_article(uow: UnitOfWork, user_id: int, title: str, body: str,
+def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_description: str,
                    featured_image: str) -> Article:
 
     def new_article(conflicting_slug: Optional[bool] = False) -> None:
@@ -20,7 +20,7 @@ def create_article(uow: UnitOfWork, user_id: int, title: str, body: str,
             if user_record is None:
                 raise UserError('User does not exist')
 
-            new_article = Article(title, body)
+            new_article = Article(title, body, meta_description)
             new_article.convert_body_to_html
 
             if featured_image:
