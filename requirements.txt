@@ -6,7 +6,7 @@
 #
 
 -i https://pypi.org/simple/
-alembic==1.7.7
+alembic==1.8.0
 async-timeout==4.0.2; python_version >= '3.6'
 boto3-stubs[s3]==1.24.22
 boto3==1.23.0
