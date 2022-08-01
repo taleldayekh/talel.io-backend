@@ -6,12 +6,12 @@
 #
 
 -i https://pypi.org/simple/
-alembic==1.8.0
+alembic==1.8.1
 async-timeout==4.0.2; python_version >= '3.6'
 boto3-stubs[s3]==1.24.24
 boto3==1.24.24
-botocore-stubs==1.27.24.post1; python_version >= '3.6'
-botocore==1.27.24; python_version >= '3.7'
+botocore-stubs==1.27.42.post3; python_version >= '3.7' and python_version < '4'
+botocore==1.27.42; python_version >= '3.7'
 click==8.1.3; python_version >= '3.7'
 deprecated==1.2.13; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 flask-cors==3.0.10
@@ -25,7 +25,7 @@ mako==1.2.1; python_version >= '3.7'
 markdown==3.3.7
 markupsafe==2.1.1; python_version >= '3.7'
 marshmallow==3.17.0
-mypy-boto3-s3==1.24.0
+mypy-boto3-s3==1.24.36.post1
 packaging==21.3; python_version >= '3.6'
 pillow==9.2.0
 psycopg2==2.9.3
@@ -34,11 +34,11 @@ pyparsing==3.0.9; python_full_version >= '3.6.8'
 python-dateutil==2.8.2; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 redis==4.3.4
 s3transfer==0.6.0; python_version >= '3.7'
-setuptools==63.1.0; python_version >= '3.7'
+setuptools==63.3.0; python_version >= '3.7'
 six==1.16.0; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3'
 sqlalchemy==1.3.23
 typing-extensions==4.3.0; python_version >= '3.7'
-urllib3==1.26.10; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5' and python_version < '4'
-werkzeug==2.1.2; python_version >= '3.7'
+urllib3==1.26.11; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4, 3.5' and python_version < '4'
+werkzeug==2.2.1; python_version >= '3.7'
 wrapt==1.14.1; python_version >= '2.7' and python_version not in '3.0, 3.1, 3.2, 3.3, 3.4'
-zipp==3.8.0; python_version >= '3.7'
+zipp==3.8.1; python_version >= '3.7'
