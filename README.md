@@ -27,6 +27,23 @@ sequenceDiagram
 
 
 
+1. User sends a login request with their credentials
+2. The server creates a refresh token and stores it in Redis
+3. The server sends a access token together with the refresh token in a response to the user. The access token is sent in the json response while the refresh token gets stored in a cookie.
+4. When the user makes a request to a protected resource the access token is sent in the request header 
+5. and if it is valid the server will respond with returning the requested resource.
+6. When the user makes a request with a expired access token (rename in mermaid to expired instead of invalid)
+7. The server cannot validate the user and therefore denies access to the requested resource by returning a 403 Forbidden
+8. The client gets the 403 and uses this 403 response to the server with the refresh token that is used to get a new access token
+9. The server checks the validity of the refresh token in Redis
+10. If the refresh token is valid the server issues a new access token and to the user that the user can use to retrieve their resource
+11. A user can other than wait for the longer refresh token to expire also logout which will expire the refresh token
+12. When a user logsout the refresh token is completely deleted from Redis.
+
+
+
+
+
 
 
 
