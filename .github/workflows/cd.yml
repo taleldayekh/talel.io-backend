@@ -61,12 +61,6 @@ jobs:
       - name: Checkout Code
         uses: actions/checkout@v2
 
-      - name: Add GitHub Secrets to Task Definition
-        run: |
-          sed -i "s/<postgres_user>/$POSTGRES_USER/g" .aws/talelio-backend-api-task-definition.json
-        env:
-          POSTGRES_USER: ${{ secrets.POSTGRES_USER }}
-
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v1
         with:
