@@ -32,7 +32,7 @@ WORKDIR /${APP_DIR}
 
 ADD requirements.txt /${APP_DIR}/
 ADD ${SRC_DIR}/ /${APP_DIR}/${SRC_DIR}/
-COPY ${SCRIPTS_DIR}/ /${APP_DIR}/
+ADD ${SCRIPTS_DIR}/backup_postgres_db.sh /${APP_DIR}/
 
 # Dependencies necessary for pip installing psycopg2 and pillow on the Python alpine image
 # are added before installing the ones from the requirements.txt file. They are added in a
