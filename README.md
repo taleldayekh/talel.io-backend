@@ -34,7 +34,7 @@ sequenceDiagram
 
 The database backup is done in a cron job on the EC2 instance. It is scheduled to make a database dump nightly to an S3 bucket by executing a [backup script](https://github.com/taleldayekh/talel.io-backend/blob/main/scripts/backup_postgres_db.sh).
 
-The backup script is automatically [passed to a Docker volume](https://github.com/taleldayekh/talel.io-backend/blob/3d7af510e026e80911c963e901038123a5f9dfd7/talelio_backend/entrypoint.sh#L9) after building the backend API container and is available on the host once the [talel.io Backend API Task Definition](https://github.com/taleldayekh/talel.io-backend/blob/main/.aws/talelio-backend-api-task-definition.json) has completed.
+The backup script is automatically [passed to a Docker volume](https://github.com/taleldayekh/talel.io-backend/blob/f8ef78b0fe7a08c7aa7544ee660427a57d36b422/talelio_backend/entrypoint.sh#L9) after building the backend API container and is available on the host once the [talel.io Backend API Task Definition](https://github.com/taleldayekh/talel.io-backend/blob/main/.aws/talelio-backend-api-task-definition.json) has completed.
 
 The following environment variables are expected in `~/.bash_profile` on the EC2 instance:
 
@@ -61,23 +61,6 @@ The data can be restored in a dockerized PostgreSQL database by issuing:
 ```shell
 docker exec -i <container id> psql -U <database user> -d <database name> < /path/to/postgres_db_backup.sql
 ```
-
-
-
-
-
-1. User sends a login request with their credentials
-2. The server creates a refresh token and stores it in Redis
-3. The server sends a access token together with the refresh token in a response to the user. The access token is sent in the json response while the refresh token gets stored in a cookie.
-4. When the user makes a request to a protected resource the access token is sent in the request header 
-5. and if it is valid the server will respond with returning the requested resource.
-6. When the user makes a request with a expired access token (rename in mermaid to expired instead of invalid)
-7. The server cannot validate the user and therefore denies access to the requested resource by returning a 403 Forbidden
-8. The client gets the 403 and uses this 403 response to the server with the refresh token that is used to get a new access token
-9. The server checks the validity of the refresh token in Redis
-10. If the refresh token is valid the server issues a new access token and to the user that the user can use to retrieve their resource
-11. A user can other than wait for the longer refresh token to expire also logout which will expire the refresh token
-12. When a user logsout the refresh token is completely deleted from Redis.
 
 
 
