@@ -5,7 +5,9 @@
 - [Authentication](#authentication)
 - [Persistent Storage](#persistent-storage)
   - [PostgreSQL](#postgresql)
+    - [Database Schema Migration](#database-schema-migration)
     - [Backup](#backup)
+  - [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
 
 # Authentication
 
@@ -29,6 +31,8 @@ sequenceDiagram
 # Persistent Storage
 
 ## PostgreSQL
+
+### Database Schema Migration
 
 ### Backup
 
@@ -62,15 +66,23 @@ The data can be restored in a dockerized PostgreSQL database by issuing:
 docker exec -i <container id> psql -U <database user> -d <database name> < /path/to/postgres_db_backup.sql
 ```
 
+## AWS S3 (Simple Storage Service)
+
+The talel.io backend uses S3[^1] buckets for storing user content, test content and database backups.
+
+#### Publicly Accessible Buckets
+
+Both the bucket for user content and test content have their policy permissions set to `AllowPublicRead` which grants outside access to any content in those buckets. The `IAM` user holding the `Access key ID` associated with the talel.io backend have additional permissions for making API calls to perform CRUD operations on bucket objects.
+
+#### Private Buckets
+
+The bucket for database backups have all public access blocked and only the EC2 instance is allowed full access via the `IAM Role` attached to the instance.
 
 
 
 
 
-
-
-
-
+[^1]: [S3 pricing.](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
 ---
 
 1. User sends a login request with their credentials
@@ -92,8 +104,6 @@ docker exec -i <container id> psql -U <database user> -d <database name> < /path
   - [Presentation Layer](#presentation-layer)
   - [Business Logic Layer](#business-logic-layer)
   - [Data Layer](#data-layer)
-- [File Storage](#file-storage)
-  - [AWS S3](#aws-s3-simple-storage-service)
 - [Database Schema Migration](#database-schema-migration)
 - [Development](#development)
   - [Setup](#setup)
@@ -219,8 +229,6 @@ To prevent the domain models from depending on the infrastructure the ORM is imp
 ```
 
 # File Storage
-
-## AWS S3 (Simple Storage Service)
 
 # Database Schema Migration
 
