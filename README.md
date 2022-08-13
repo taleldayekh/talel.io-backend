@@ -8,6 +8,9 @@
     - [Database Schema Migration](#database-schema-migration)
     - [Backup](#backup)
   - [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
+- [API](#api)
+  - [Resources](#resources)
+    - [Articles](#articles)
 
 # Authentication
 
@@ -77,6 +80,49 @@ Both the bucket for user content and test content have their policy permissions 
 #### Private Buckets
 
 The bucket for database backups have all public access blocked and only the EC2 instance is allowed full access via the `IAM Role` attached to the instance.
+
+# API
+
+## Resources
+
+- [Articles](#articles)
+
+### Articles
+
+| HTTP Method | Description                                                 | Resource | Success Code | Failure Code |
+|-------------|-------------------------------------------------------------|----------|--------------|--------------|
+| GET         | [List articles for a user](#get---list-articles-for-a-user) |          |              |              |
+
+<details>
+
+<summary>GET - List articles for a user</summary>
+
+#### Success Response
+
+```shell
+200: OK
+
+{
+   "items": [
+      {
+         "id": 1,
+         "user_id": 1,
+         "username": "",
+         "created_at": "",
+         "updated_at": null,
+         "title": "",
+         "slug": "",
+         "body": "",
+         "meta_description": "",
+         "html": "",
+         "featured_image": "",
+         "url": ""
+      }
+   ]
+}
+```
+
+</details>
 
 
 
