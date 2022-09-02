@@ -1,4 +1,4 @@
-from talelio_backend.shared.utils import generate_slug
+from talelio_backend.shared.utils.slug import generate_slug
 
 
 def test_generates_slug_with_word_characters_only() -> None:

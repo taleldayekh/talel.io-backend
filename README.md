@@ -8,7 +8,7 @@
     - [Database Schema Migration](#database-schema-migration)
     - [Backup](#backup)
   - [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
-- [API](#api)
+- [REST API](#rest-api)
   - [Resources](#resources)
     - [Articles](#articles)
 
@@ -81,7 +81,7 @@ Both the bucket for user content and test content have their policy permissions 
 
 The bucket for database backups have all public access blocked and only the EC2 instance is allowed full access via the `IAM Role` attached to the instance.
 
-# API
+# REST API
 
 ## Resources
 
@@ -91,34 +91,85 @@ The bucket for database backups have all public access blocked and only the EC2 
 
 | HTTP Method | Description                                                 | Resource | Success Code | Failure Code |
 |-------------|-------------------------------------------------------------|----------|--------------|--------------|
-| GET         | [List articles for a user](#get---list-articles-for-a-user) |          |              |              |
+| GET         | [List articles for a user](#get---list-articles-for-a-user) |          | 200          |              |
 
 <details>
 
 <summary>GET - List articles for a user</summary>
+<br/>
+
+Pagination is achieved with the `?page=<number>&limit=<number>` query parameters.
 
 #### Success Response
+
+_*Link Header*_
+
+URLs for the next and previous pagination values.
+
+```shell
+Link: </users/<username>/articles?page=3&limit=10>; rel="next",
+</users/<username>/articles?page=1&limit=10>; rel="prev"
+```
+
+_*X-Total-Count Header*_
+
+Total number of articles for the queried user.
+
+```shell
+X-Total-Count: 100
+```
+
+_*Response Body*_
 
 ```shell
 200: OK
 
 {
-   "items": [
+   "user": {
+      "username": "talel",
+      "location": "Berlin",
+      "avatar_url": "/url/to/avatar.jpg"
+   },
+   "articles": [
       {
          "id": 1,
-         "user_id": 1,
-         "username": "",
-         "created_at": "",
+         "created_at": "1986-06-05T00:00:00.000000",
          "updated_at": null,
-         "title": "",
-         "slug": "",
-         "body": "",
-         "meta_description": "",
-         "html": "",
-         "featured_image": "",
-         "url": ""
+         "title": "Hello World Article",
+         "slug": "hello-world-article",
+         "body": "# Hello World",
+         "meta_description": "An article published on talel.io",
+         "html": "<h1>Hello World</h1>",
+         "featured_image": "/url/to/featured_image.jpg",
+         "url": "https://www.talel.io/articles/hello-world-article"
       }
    ]
+}
+```
+
+#### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+   "error": {
+      "message": "Expected numeric query parameters",
+      "status": 400,
+      "type": "Bad Request"
+   }
+}
+```
+
+```shell
+400: BAD REQUEST
+
+{
+   "error": {
+      "message": "User '<username>' does not exist",
+      "status": 400,
+      "type": "Bad Request"
+   }
 }
 ```
 

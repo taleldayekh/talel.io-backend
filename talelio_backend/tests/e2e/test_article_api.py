@@ -3,7 +3,7 @@ from typing import Dict
 import pytest
 from flask import json
 
-from talelio_backend.shared.utils import generate_slug
+from talelio_backend.shared.utils.slug import generate_slug
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.articles import (art_to_engineering_article,
                                                   private_blockchain_article)
