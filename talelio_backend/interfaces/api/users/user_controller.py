@@ -16,7 +16,7 @@ users_v1 = Blueprint('users_v1', __name__)
 
 
 @users_v1.get('/<string:username>/articles')
-def get_user_articles_endpoint(username: str) -> Response:
+def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Response]:
     try:
         uow = UnitOfWork()
 
@@ -28,6 +28,9 @@ def get_user_articles_endpoint(username: str) -> Response:
 
         user_with_articles = get_user_with_articles(uow, username, page, limit)
 
+        if not 'user' in user_with_articles:
+            return jsonify(user_with_articles), 200
+
         user = cast(User, user_with_articles['user'])
         next_link = cast(Union[str, None], user_with_articles['next_link'])
         prev_link = cast(Union[str, None], user_with_articles['prev_link'])
@@ -37,9 +40,8 @@ def get_user_articles_endpoint(username: str) -> Response:
         # TODO: Resolve type error
         res_body = UserArticlesSchema().dump({
             'user': user,
-            'articles': user.articles
-        }  # type: ignore
-                                             )
+            'articles': user.articles  # type: ignore
+        })
 
         res = Response(json.dumps(res_body), status=200, mimetype='application/json')
         res.headers['X-Total-Count'] = cast(int, user_with_articles['total_articles_count'])
@@ -50,8 +52,6 @@ def get_user_articles_endpoint(username: str) -> Response:
         return res
     except ValueError as error:
         raise APIError('Expected numeric query parameters', 400) from error
-    except UserError as error:
-        raise APIError(str(error), 400) from error
 
 
 @users_v1.get('/<string:username>/projects')

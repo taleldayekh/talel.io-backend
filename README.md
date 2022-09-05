@@ -89,9 +89,9 @@ The bucket for database backups have all public access blocked and only the EC2 
 
 ### Articles
 
-| HTTP Method | Description                                                 | Resource | Success Code | Failure Code |
-|-------------|-------------------------------------------------------------|----------|--------------|--------------|
-| GET         | [List articles for a user](#get---list-articles-for-a-user) |          | 200          |              |
+| HTTP Method | Description                                                 | Resource                                 | Success Code | Failure Code |
+|-------------|-------------------------------------------------------------|------------------------------------------|--------------|--------------|
+| GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles | 200          | 400          |
 
 <details>
 
@@ -99,6 +99,13 @@ The bucket for database backups have all public access blocked and only the EC2 
 <br/>
 
 Pagination is achieved with the `?page=<number>&limit=<number>` query parameters.
+
+#### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/users/<username>/articles
+```
 
 #### Success Response
 
@@ -155,18 +162,6 @@ _*Response Body*_
 {
    "error": {
       "message": "Expected numeric query parameters",
-      "status": 400,
-      "type": "Bad Request"
-   }
-}
-```
-
-```shell
-400: BAD REQUEST
-
-{
-   "error": {
-      "message": "User '<username>' does not exist",
       "status": 400,
       "type": "Bad Request"
    }
