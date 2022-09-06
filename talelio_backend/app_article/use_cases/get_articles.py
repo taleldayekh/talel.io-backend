@@ -6,7 +6,7 @@ from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.shared.utils.pagination import Pagination
 
 
-def get_user_with_articles(
+def get_articles_for_user(
         uow: UnitOfWork, username: str, page: Optional[Union[int, None]],
         limit: Optional[Union[int, None]]) -> Union[Dict, Dict[str, Union[User, int, str, None]]]:
     with uow:
@@ -15,15 +15,18 @@ def get_user_with_articles(
 
         offset = Pagination.calculate_offset(page, limit)
 
-        user_record = uow.user.get(User, username=username, limit=limit, offset=offset)
+        user_articles_record = uow.articles.get(User,
+                                                username=username,
+                                                limit=limit,
+                                                offset=offset)
 
-        if len(user_record) == 0:
+        if len(user_articles_record) == 0:
             return {}
 
-        user_record = user_record[0]._asdict()
+        user_articles_record = user_articles_record[0]._asdict()
 
-        user = user_record['User']
-        total_articles_count = user_record['total_articles_count']
+        user = user_articles_record['User']
+        total_articles_count = user_articles_record['total_articles_count']
 
         pages = Pagination.total_pages(total_articles_count, limit)
         last_page = page == pages

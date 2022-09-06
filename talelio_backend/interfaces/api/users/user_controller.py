@@ -3,7 +3,7 @@ from typing import Tuple, Union, cast
 
 from flask import Blueprint, Response, jsonify, request
 
-from talelio_backend.app_article.use_cases.get_articles import get_user_with_articles
+from talelio_backend.app_article.use_cases.get_articles import get_articles_for_user
 from talelio_backend.app_project.use_cases.get_projects import get_user_projects
 from talelio_backend.app_user.domain.user_model import User
 from talelio_backend.core.exceptions import UserError
@@ -26,14 +26,14 @@ def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Res
         page = int(page_param) if page_param else None
         limit = int(limit_param) if limit_param else None
 
-        user_with_articles = get_user_with_articles(uow, username, page, limit)
+        articles_for_user = get_articles_for_user(uow, username, page, limit)
 
-        if not 'user' in user_with_articles:
-            return jsonify(user_with_articles), 200
+        if not 'user' in articles_for_user:
+            return jsonify(articles_for_user), 200
 
-        user = cast(User, user_with_articles['user'])
-        next_link = cast(Union[str, None], user_with_articles['next_link'])
-        prev_link = cast(Union[str, None], user_with_articles['prev_link'])
+        user = cast(User, articles_for_user['user'])
+        next_link = cast(Union[str, None], articles_for_user['next_link'])
+        prev_link = cast(Union[str, None], articles_for_user['prev_link'])
         next_rel = 'rel="next"'
         prev_rel = 'rel="prev"'
 
@@ -44,7 +44,7 @@ def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Res
         })
 
         res = Response(json.dumps(res_body), status=200, mimetype='application/json')
-        res.headers['X-Total-Count'] = cast(int, user_with_articles['total_articles_count'])
+        res.headers['X-Total-Count'] = cast(int, articles_for_user['total_articles_count'])
         res.headers['Link'] = (f'{"<" + next_link + ">; " + next_rel if next_link else ""}'
                                f'{", " if prev_link and next_link else ""}'
                                f' {"<" + prev_link + ">; " + prev_rel if prev_link else ""}')
