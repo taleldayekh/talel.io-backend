@@ -5,7 +5,7 @@ from flask import json
 
 from talelio_backend.tests.constants import INVALID_USER, USERNAME_TALEL
 from talelio_backend.tests.e2e.helpers import RequestHelper
-from talelio_backend.tests.mocks.articles import camping_gear_article, fixed_or_rotary_wing_article
+from talelio_backend.tests.mocks.articles import fixed_or_rotary_wing_article, hiking_gear_article
 from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
 
 
@@ -17,7 +17,7 @@ class TestGetUserArticles(RequestHelper):
         res_data = json.loads(res.data)
 
         assert res.status_code == 200
-        assert res_data['articles'][0]['title'] == camping_gear_article['title']
+        assert res_data['articles'][0]['title'] == hiking_gear_article['title']
         assert res_data['articles'][1]['title'] == fixed_or_rotary_wing_article['title']
 
     def test_can_get_paginated_user_articles(self) -> None:
@@ -63,6 +63,14 @@ class TestGetUserArticles(RequestHelper):
 
         assert res.status_code == 200
         assert res_data == {}
+
+    def test_cannot_get_articles_with_invalid_pagination_query_params(self) -> None:
+        invalid_pagination_query_params = '?page=one&limit=three'
+        res = self.get_user_articles_request(USERNAME_TALEL, invalid_pagination_query_params)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert res_data['error']['message'] == 'Expected numeric query parameters'
 
 
 @pytest.mark.usefixtures('populate_db_account', 'populate_db_projects')

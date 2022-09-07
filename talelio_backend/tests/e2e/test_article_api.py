@@ -5,7 +5,7 @@ from flask import json
 
 from talelio_backend.shared.utils.slug import generate_slug
 from talelio_backend.tests.e2e.helpers import RequestHelper
-from talelio_backend.tests.mocks.articles import (art_to_engineering_article, camping_gear_article,
+from talelio_backend.tests.mocks.articles import (art_to_engineering_article, hiking_gear_article,
                                                   private_blockchain_article)
 from talelio_backend.tests.mocks.example_markdown import PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL
 from talelio_backend.tests.utils import generate_authorization_header
@@ -104,10 +104,10 @@ class TestCreateArticle(RequestHelper):
 class TestGetArticle(RequestHelper):
 
     def test_can_get_article_by_slug(self) -> None:
-        article_slug = generate_slug(camping_gear_article['title'])
+        article_slug = generate_slug(hiking_gear_article['title'])
 
         res = self.get_article_request(article_slug)
         res_data = json.loads(res.data)
 
         assert res.status_code == 200
-        assert res_data['title'] == camping_gear_article['title']
+        assert res_data['title'] == hiking_gear_article['title']
