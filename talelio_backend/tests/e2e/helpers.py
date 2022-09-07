@@ -1,6 +1,6 @@
 # pylint: disable=E1101
 from io import BytesIO
-from typing import Dict, Union
+from typing import Dict, Optional, Union
 from unittest.mock import patch
 
 import pytest
@@ -46,8 +46,16 @@ class RequestHelper:
     def get_user_projects_request(self, username: str) -> Response:
         return self.api.get(f'{USERS_BASE_URL}/{username}/projects')  # type: ignore
 
-    def get_user_articles_request(self, username: str) -> Response:
-        return self.api.get(f'{USERS_BASE_URL}/{username}/articles')  # type: ignore
+    def get_user_articles_request(
+            self,
+            username: str,
+            pagination_query_params: Optional[Union[str, None]] = None) -> Response:
+        if pagination_query_params:
+            url = f'{USERS_BASE_URL}/{username}/articles{pagination_query_params}'
+        else:
+            url = f'{USERS_BASE_URL}/{username}/articles'
+
+        return self.api.get(url)  # type: ignore
 
     def create_project_request(self,
                                authorization_header: Dict[str, str],
