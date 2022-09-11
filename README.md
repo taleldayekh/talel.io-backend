@@ -89,9 +89,10 @@ The bucket for database backups have all public access blocked and only the EC2 
 
 ### Articles
 
-| HTTP Method | Description                                                 | Resource                                 | Success Code | Failure Code |
-|-------------|-------------------------------------------------------------|------------------------------------------|--------------|--------------|
-| GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles | 200          | 400          |
+| HTTP Method | Description                                                 | Resource                                          | Success Code | Failure Code |
+|-------------|-------------------------------------------------------------|---------------------------------------------------|--------------|--------------|
+| GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles          | 200          | 400          |
+| GET         | [Article for a user](#get---article-for-a-user)             | /\<version\>/users/\<username\>/articles/\<slug/> |              |              |
 
 <details>
 
@@ -170,9 +171,56 @@ _*Response Body*_
 
 </details>
 
+<details>
 
+<summary>GET - Article for a user</summary>
 
+#### Request
 
+```shell
+```
+
+#### Success Response
+
+_*Response Body*_
+
+```shell
+200: OK
+
+{
+  "meta": {
+    "adjacent_articles": {
+      "next": {
+        "title": "Next Article",
+        "slug": "next-article"
+      },
+      "prev": {
+        "title": "Previous Article",
+        "slug": "previous-article"
+      }
+    }
+  },
+  "article": {
+    "id": 2,
+    "created_at": "1986-06-05T00:00:00.000000",
+    "updated_at": null,
+    "title": "Hello World Article",
+    "slug": "hello-world-article",
+    "body": "# Hello World",
+    "meta_description": "An article published on talel.io",
+    "html": "<h1>Hello World</h1>",
+    "featured_image": "/url/to/featured_image.jpg",
+    "url": "https://www.talel.io/articles/hello-world-article"
+  }
+}
+```
+
+#### Error Response
+
+```shell
+```
+
+</details>
 
 [^1]: [S3 pricing.](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
 ---
