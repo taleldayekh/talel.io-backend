@@ -8,6 +8,9 @@
     - [Database Schema Migration](#database-schema-migration)
     - [Backup](#backup)
   - [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
+- [REST API](#rest-api)
+  - [Resources](#resources)
+    - [Articles](#articles)
 
 # Authentication
 
@@ -78,9 +81,146 @@ Both the bucket for user content and test content have their policy permissions 
 
 The bucket for database backups have all public access blocked and only the EC2 instance is allowed full access via the `IAM Role` attached to the instance.
 
+# REST API
 
+## Resources
 
+- [Articles](#articles)
 
+### Articles
+
+| HTTP Method | Description                                                 | Resource                                          | Success Code | Failure Code |
+|-------------|-------------------------------------------------------------|---------------------------------------------------|--------------|--------------|
+| GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles          | 200          | 400          |
+| GET         | [Article for a user](#get---article-for-a-user)             | /\<version\>/users/\<username\>/articles/\<slug/> |              |              |
+
+<details>
+
+<summary>GET - List articles for a user</summary>
+<br/>
+
+Pagination is achieved with the `?page=<number>&limit=<number>` query parameters.
+
+#### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/users/<username>/articles
+```
+
+#### Success Response
+
+_*Link Header*_
+
+URLs for the next and previous pagination values.
+
+```shell
+Link: </users/<username>/articles?page=3&limit=10>; rel="next",
+</users/<username>/articles?page=1&limit=10>; rel="prev"
+```
+
+_*X-Total-Count Header*_
+
+Total number of articles for the queried user.
+
+```shell
+X-Total-Count: 100
+```
+
+_*Response Body*_
+
+```shell
+200: OK
+
+{
+   "user": {
+      "username": "talel",
+      "location": "Berlin",
+      "avatar_url": "/url/to/avatar.jpg"
+   },
+   "articles": [
+      {
+         "id": 1,
+         "created_at": "1986-06-05T00:00:00.000000",
+         "updated_at": null,
+         "title": "Hello World Article",
+         "slug": "hello-world-article",
+         "body": "# Hello World",
+         "meta_description": "An article published on talel.io",
+         "html": "<h1>Hello World</h1>",
+         "featured_image": "/url/to/featured_image.jpg",
+         "url": "https://www.talel.io/articles/hello-world-article"
+      }
+   ]
+}
+```
+
+#### Error Response
+
+```shell
+400: BAD REQUEST
+
+{
+   "error": {
+      "message": "Expected numeric query parameters",
+      "status": 400,
+      "type": "Bad Request"
+   }
+}
+```
+
+</details>
+
+<details>
+
+<summary>GET - Article for a user</summary>
+
+#### Request
+
+```shell
+```
+
+#### Success Response
+
+_*Response Body*_
+
+```shell
+200: OK
+
+{
+  "meta": {
+    "adjacent_articles": {
+      "next": {
+        "title": "Next Article",
+        "slug": "next-article"
+      },
+      "prev": {
+        "title": "Previous Article",
+        "slug": "previous-article"
+      }
+    }
+  },
+  "article": {
+    "id": 2,
+    "created_at": "1986-06-05T00:00:00.000000",
+    "updated_at": null,
+    "title": "Hello World Article",
+    "slug": "hello-world-article",
+    "body": "# Hello World",
+    "meta_description": "An article published on talel.io",
+    "html": "<h1>Hello World</h1>",
+    "featured_image": "/url/to/featured_image.jpg",
+    "url": "https://www.talel.io/articles/hello-world-article"
+  }
+}
+```
+
+#### Error Response
+
+```shell
+```
+
+</details>
 
 [^1]: [S3 pricing.](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
 ---

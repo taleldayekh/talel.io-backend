@@ -4,7 +4,7 @@ from typing import Optional
 from markdown import Markdown
 
 from talelio_backend.shared.markdown_extensions import ImageSrcExtractorExtension
-from talelio_backend.shared.utils import generate_slug
+from talelio_backend.shared.utils.slug import generate_slug
 
 
 class Article:

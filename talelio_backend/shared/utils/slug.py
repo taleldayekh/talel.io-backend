@@ -1,10 +1,5 @@
-from datetime import datetime, timedelta
 from re import findall, sub
 from unicodedata import category, normalize
-
-
-def generate_time_from_now(seconds: int) -> datetime:
-    return datetime.utcnow() + timedelta(seconds=seconds)
 
 
 def generate_slug(text: str) -> str:

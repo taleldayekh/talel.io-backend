@@ -9,8 +9,7 @@ from talelio_backend.core.db import engine
 from talelio_backend.shared.data.orm import metadata
 from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, ARTICLES_BASE_URL, PROJECTS_BASE_URL
 from talelio_backend.tests.mocks.accounts import talel_login_data, talel_registration_data
-from talelio_backend.tests.mocks.articles import (art_to_engineering_article,
-                                                  private_blockchain_article)
+from talelio_backend.tests.mocks.articles import articles
 from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
 from talelio_backend.tests.utils import generate_authorization_header
 
@@ -41,7 +40,7 @@ def populate_db_projects(api_server: FlaskClient, authorization_header: Dict[str
 
 @pytest.fixture(scope='class')
 def populate_db_articles(api_server: FlaskClient, authorization_header: Dict[str, str]) -> None:
-    for article in [art_to_engineering_article, private_blockchain_article]:
+    for article in articles:
         api_server.post(ARTICLES_BASE_URL, headers=authorization_header, json=article)
 
 

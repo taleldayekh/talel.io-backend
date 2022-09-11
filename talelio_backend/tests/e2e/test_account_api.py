@@ -7,7 +7,7 @@ from flask import json
 from freezegun import freeze_time
 
 from talelio_backend.identity_and_access.authentication import Authentication
-from talelio_backend.shared.utils import generate_time_from_now
+from talelio_backend.shared.utils.time import generate_time_from_now
 from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INITIAL_USER_ID,
                                              INVALID_EMAIL, PASSWORD, USERNAME_BIANCA,
                                              USERNAME_TALEL)
