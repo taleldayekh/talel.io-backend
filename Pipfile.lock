@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "95fdbcb0d986a01311c8ec4bf5934cd26479dd6e1e7833c431026518637d4b0e"
+            "sha256": "14e43e29ea23f80d43d2a3d9400e82e0ce838ba499b9a1d648dad0ff4c63dc41"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -761,11 +761,11 @@
         },
         "fakeredis": {
             "hashes": [
-                "sha256:60639946e3bb1274c30416f539f01f9d73b4ea68c244c1442f5524e45f51e882",
-                "sha256:868467ff399520fc77e37ff002c60d1b2a1674742982e27338adaeebcc537648"
+                "sha256:b9830f68dafafc0abe6c037775765166e9e2ff6b0da8abd3838eb2c3910f8e65",
+                "sha256:e884776d7d0216e9c6c514527718259cfbd555777b36ba403ae680bd1489f7a1"
             ],
             "index": "pypi",
-            "version": "==1.9.0"
+            "version": "==1.9.1"
         },
         "freezegun": {
             "hashes": [
@@ -1151,7 +1151,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version < '3.11'",
+            "markers": "python_version >= '3.7'",
             "version": "==2.0.1"
         },
         "tomlkit": {
