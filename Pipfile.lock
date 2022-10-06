@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "101815df977a74bb6bef121c19a234b9f9bb8d8260c5c9d42cb6be70368d6e90"
+            "sha256": "4f1dbf043df46c3fbe8cfd018c79282b821c8164c16ae0465c2fc479c80733d7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -44,11 +44,11 @@
                 "s3"
             ],
             "hashes": [
-                "sha256:32a607772e87fb9298361804a47ba3210bbf6eb809623a2ff2b07a3ec07c669c",
-                "sha256:96d3ffeabd69cb8b671e57477c983b35d1e7153e5d81778c6cb5631749682811"
+                "sha256:defe0d04d0be1900e274d3a76aea61aca199422c0fa8bd781fc6e125ff3c1ec6",
+                "sha256:f6dd984326806b3a7d67e275219ec99103984a8c3cef9d99dc3b96ebfb6ebc5e"
             ],
             "index": "pypi",
-            "version": "==1.24.70"
+            "version": "==1.24.87"
         },
         "botocore": {
             "hashes": [
@@ -1109,7 +1109,7 @@
                 "sha256:7c5599b102feddaa661c826c56ab4fee28bfd17f5abca1ebbe3e7f19d7c97983",
                 "sha256:8fefa2a1a1365bf5520aac41836fbee479da67864514bdb821f31ce07ce65349"
             ],
-            "markers": "python_version >= '3.7' and python_version < '4.0'",
+            "markers": "python_version >= '3.7' and python_version < '4'",
             "version": "==2.28.1"
         },
         "responses": {
@@ -1156,7 +1156,7 @@
                 "sha256:939de3e7a6161af0c887ef91b7d41a53e7c5a1ca976325f429cb46ea9bc30ecc",
                 "sha256:de526c12914f0c550d15924c62d72abc48d6fe7364aa87328337a31007fe8a4f"
             ],
-            "markers": "python_version >= '3.7'",
+            "markers": "python_version < '3.11'",
             "version": "==2.0.1"
         },
         "tomlkit": {
@@ -1164,7 +1164,7 @@
                 "sha256:571854ebbb5eac89abcb4a2e47d7ea27b89bf29e09c35395da6f03dd4ae23d1c",
                 "sha256:f2ef9da9cef846ee027947dc99a45d6b68a63b0ebc21944649505bf2e8bc5fe7"
             ],
-            "markers": "python_version >= '3.6' and python_version < '4.0'",
+            "markers": "python_version >= '3.6' and python_version < '4'",
             "version": "==0.11.5"
         },
         "types-freezegun": {
