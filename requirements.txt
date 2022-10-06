@@ -24,7 +24,7 @@ jmespath==1.0.1; python_version >= '3.7'
 mako==1.2.3; python_version >= '3.7'
 markdown==3.4.1
 markupsafe==2.1.1; python_version >= '3.7'
-marshmallow==3.17.1
+marshmallow==3.18.0
 mypy-boto3-s3==1.24.76
 packaging==21.3; python_version >= '3.6'
 pillow==9.2.0
