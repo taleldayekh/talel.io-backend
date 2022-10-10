@@ -2,6 +2,12 @@
 
 # Table of Contents
 
+- [Development](#development)
+  - [Setup](#setup)
+    - [Clone Repository](#clone-repository)
+    - [Install Dependencies](#install-dependencies)
+    - [Start Development Database](#start-development-database)
+    - [Serve API](#serve-api)
 - [Authentication](#authentication)
 - [Persistent Storage](#persistent-storage)
   - [PostgreSQL](#postgresql)
@@ -11,6 +17,56 @@
 - [REST API](#rest-api)
   - [Resources](#resources)
     - [Articles](#articles)
+
+# Development
+
+## Setup
+
+### Clone Repository
+
+```shell
+git clone git@github.com:taleldayekh/talel.io-backend.git
+```
+
+### Install Dependencies
+
+> ⚠️ Ensure that PostgreSQL is installed on the system. The dependency installation will fail if PostgreSQL is not available.
+>
+> ```shell
+> brew install postgresql
+> ```
+
+```shell
+pipenv install --dev
+```
+
+### Start Development Database
+
+The development database setup requires `Docker` and `Docker Compose`.
+
+To start the development database container run:
+
+```
+make start-dev-dbs
+```
+
+This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
+
+To stop the development database container run:
+
+```
+make stop-dev-dbs
+```
+
+### Serve API
+
+To serve the backend api run:
+
+```
+make serve-api
+```
+
+This will run the development server on port 5000.
 
 # Authentication
 
@@ -223,6 +279,11 @@ _*Response Body*_
 </details>
 
 [^1]: [S3 pricing.](https://aws.amazon.com/s3/pricing/?nc=sn&loc=4)
+
+
+
+
+
 ---
 
 1. User sends a login request with their credentials
@@ -394,12 +455,6 @@ Above steps will auto-generate necessary SQL for transforming the database into 
 
 ## Setup
 
-### Clone Repository
-
-```shell
-git clone git@github.com:taleldayekh/talel.io-backend.git
-```
-
 ### Set Git Hooks Path
 
 The Git Hooks path is added locally in the `.git/config` of this repository. Adding this path is necessary for using the hooks located in the `.githooks` directory.
@@ -408,35 +463,11 @@ The Git Hooks path is added locally in the `.git/config` of this repository. Add
 make set-githooks
 ```
 
-### Install Dependencies
-
-```shell
-pipenv install --dev
-```
-
 ### Start Development Database
-
-To start the development database make sure Docker is installed and run:
-
-```shell
-make start-dev-dbs
-```
-
-This will start a Docker container with a PostgreSQL database configured for development and run the most recent migrations.
 
 When running the e2e tests all database tables are dropped after the tests completes. This means that no database queries will be possible if the talel.io backend is served after running the e2e tests.
 
-To continue developing with the test database the container needs to be stopped and restarted. To stop the container run:
-
-```shell
-make stop-dev-dbs
-```
-
-### Serve API
-
-```shell
-make serve-api
-```
+To continue developing with the test database the container needs to be stopped and restarted.
 
 ## Code Style
 
