@@ -36,6 +36,8 @@ git clone git@github.com:taleldayekh/talel.io-backend.git
 > brew install postgresql
 > ```
 
+To install dependencies and dev dependencies run:
+
 ```shell
 pipenv install --dev
 ```
@@ -66,7 +68,7 @@ To serve the backend api run:
 make serve-api
 ```
 
-This will run the development server on port 5000.
+This will run the development server on port `5000`.
 
 # Authentication
 

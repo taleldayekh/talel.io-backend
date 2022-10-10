@@ -1,8 +1,10 @@
 # python
 __pycache__
+.python-version
 
 # testing
 coverage.xml
+.coverage
 
 # env
 .env
