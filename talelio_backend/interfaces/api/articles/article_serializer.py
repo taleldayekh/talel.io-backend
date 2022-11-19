@@ -1,6 +1,20 @@
 from marshmallow import Schema, fields
 
 
+class NextAndPrevArticleSchema(Schema):
+    title = fields.Str()
+    slug = fields.Str()
+
+
+class AdjacentArticlesSchema(Schema):
+    next = fields.Nested(NextAndPrevArticleSchema)
+    prev = fields.Nested(NextAndPrevArticleSchema)
+
+
+class ArticleMetaSchema(Schema):
+    adjacent_articles = fields.Nested(AdjacentArticlesSchema)
+
+
 class ArticleSchema(Schema):
     id = fields.Int()
     user_id = fields.Int()
@@ -13,3 +27,8 @@ class ArticleSchema(Schema):
     html = fields.Str()
     featured_image = fields.Str()
     url = fields.Str()
+
+
+class ArticleResponseSchema(Schema):
+    meta = fields.Nested(ArticleMetaSchema)
+    article = fields.Nested(ArticleSchema)
