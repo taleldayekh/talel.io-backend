@@ -17,12 +17,14 @@ class ArticleRepository(BaseRepository):
             article_query_res = self.session.query(model).filter_by(slug=slug).first()
 
             if article_query_res is not None:
-                next_article_query = self.session.query(model).with_entities(model.title, model.slug)
+                next_article_query = self.session.query(model).with_entities(
+                    model.title, model.slug)
                 next_article_query = next_article_query.order_by(model.id.asc())
                 next_article_query_res = next_article_query.where(
                     model.id > article_query_res.id).first()
 
-                prev_article_query = self.session.query(model).with_entities(model.title, model.slug)
+                prev_article_query = self.session.query(model).with_entities(
+                    model.title, model.slug)
                 prev_article_query = prev_article_query.order_by(model.id.desc())
                 prev_article_query_res = prev_article_query.where(
                     model.id < article_query_res.id).first()

@@ -24,3 +24,7 @@ class ImageError(Exception):
 
 class UserError(Exception):
     pass
+
+
+class ArticleError(Exception):
+    pass

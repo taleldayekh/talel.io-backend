@@ -4,11 +4,12 @@ from flask import Blueprint, Response, request
 
 from talelio_backend.app_article.use_cases.create_article import create_article
 from talelio_backend.app_article.use_cases.get_articles import get_article
-from talelio_backend.core.exceptions import AuthorizationError
+from talelio_backend.core.exceptions import ArticleError, AuthorizationError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
-from talelio_backend.interfaces.api.articles.article_serializer import ArticleSchema
+from talelio_backend.interfaces.api.articles.article_serializer import (ArticleResponseSchema,
+                                                                        ArticleSchema)
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
 
@@ -55,9 +56,14 @@ def create_article_endpoint() -> Tuple[Response, int]:
 
 @articles_v1.get('/<string:slug>')
 def get_article_endpoint(slug: str) -> Tuple[Response, int]:
-    uow = UnitOfWork()
+    try:
+        uow = UnitOfWork()
 
-    article = get_article(uow, slug)
-    res_body = ArticleSchema().dump(article)
+        article = get_article(uow, slug)
+        meta = {'adjacent_articles': article['adjacent_articles']}
 
-    return res_body, 200
+        res_body = ArticleResponseSchema().dump({'meta': meta, 'article': article['article']})
+
+        return res_body, 200
+    except ArticleError as error:
+        raise APIError(str(error), 404) from error
