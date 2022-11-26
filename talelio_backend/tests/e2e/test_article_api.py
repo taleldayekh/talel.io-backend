@@ -5,8 +5,8 @@ from flask import json
 
 from talelio_backend.shared.utils.slug import generate_slug
 from talelio_backend.tests.e2e.helpers import RequestHelper
-from talelio_backend.tests.mocks.articles import (art_to_engineering_article, hiking_gear_article,
-                                                  private_blockchain_article)
+from talelio_backend.tests.mocks.articles import (art_to_engineering_article, articles,
+                                                  hiking_gear_article, private_blockchain_article)
 from talelio_backend.tests.mocks.example_markdown import PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL
 from talelio_backend.tests.utils import generate_authorization_header
 
@@ -110,4 +110,53 @@ class TestGetArticle(RequestHelper):
         res_data = json.loads(res.data)
 
         assert res.status_code == 200
-        assert res_data['title'] == hiking_gear_article['title']
+        assert res_data['article']['title'] == hiking_gear_article['title']
+
+    def test_article_meta_includes_prev_and_next_article(self) -> None:
+        article_slug = generate_slug(articles[1]['title'])
+
+        prev_article_title = articles[0]['title']
+        next_article_title = articles[2]['title']
+
+        res = self.get_article_request(article_slug)
+        res_data = json.loads(res.data)
+        adjacent_articles_meta = res_data['meta']['adjacent_articles']
+
+        assert res.status_code == 200
+        assert adjacent_articles_meta['prev']['title'] == prev_article_title
+        assert adjacent_articles_meta['next']['title'] == next_article_title
+
+    def test_first_article_meta_includes_next_but_not_prev_article(self) -> None:
+        article_slug = generate_slug(articles[0]['title'])
+
+        next_article_title = articles[1]['title']
+
+        res = self.get_article_request(article_slug)
+        res_data = json.loads(res.data)
+        adjacent_articles_meta = res_data['meta']['adjacent_articles']
+
+        assert res.status_code == 200
+        assert adjacent_articles_meta['prev'] is None
+        assert adjacent_articles_meta['next']['title'] == next_article_title
+
+    def test_last_article_meta_includes_prev_but_not_next_article(self) -> None:
+        article_slug = generate_slug(articles[-1]['title'])
+
+        prev_article_title = articles[-2]['title']
+
+        res = self.get_article_request(article_slug)
+        res_data = json.loads(res.data)
+        adjacent_articles_meta = res_data['meta']['adjacent_articles']
+
+        assert res.status_code == 200
+        assert adjacent_articles_meta['prev']['title'] == prev_article_title
+        assert adjacent_articles_meta['next'] is None
+
+    def test_cannot_get_article_for_non_existing_slug(self) -> None:
+        non_existing_article_slug = 'this-article-does-not-exist'
+
+        res = self.get_article_request(non_existing_article_slug)
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 404
+        assert res_data['error']['message'] == 'Article not found'

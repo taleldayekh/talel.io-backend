@@ -14,6 +14,7 @@
     - [Database Schema Migration](#database-schema-migration)
     - [Backup](#backup)
   - [AWS S3 (Simple Storage Service)](#aws-s3-simple-storage-service)
+  - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [REST API](#rest-api)
   - [Resources](#resources)
     - [Articles](#articles)
@@ -139,6 +140,15 @@ Both the bucket for user content and test content have their policy permissions 
 
 The bucket for database backups have all public access blocked and only the EC2 instance is allowed full access via the `IAM Role` attached to the instance.
 
+## Entity Relationship Diagram
+
+```mermaid
+erDiagram
+  USER {
+    int id
+  }
+```
+
 # REST API
 
 ## Resources
@@ -150,7 +160,7 @@ The bucket for database backups have all public access blocked and only the EC2 
 | HTTP Method | Description                                                 | Resource                                          | Success Code | Failure Code |
 |-------------|-------------------------------------------------------------|---------------------------------------------------|--------------|--------------|
 | GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles          | 200          | 400          |
-| GET         | [Article for a user](#get---article-for-a-user)             | /\<version\>/users/\<username\>/articles/\<slug/> |              |              |
+| GET         | [Article](#get---article)                                   | /\<version\>/articles/\<slug/>                    |              |              |
 
 <details>
 
@@ -231,11 +241,13 @@ _*Response Body*_
 
 <details>
 
-<summary>GET - Article for a user</summary>
+<summary>GET - Article</summary>
 
 #### Request
 
 ```shell
+curl -X GET \
+https://api.talel.io/v1/articles/<slug>
 ```
 
 #### Success Response
@@ -276,6 +288,15 @@ _*Response Body*_
 #### Error Response
 
 ```shell
+404: NOT FOUND
+
+{
+  "error": {
+    "message": "Article not found",
+    "status": 404,
+    "type": "Not Found"
+  }
+}
 ```
 
 </details>
