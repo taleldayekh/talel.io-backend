@@ -10,6 +10,10 @@ from talelio_backend.shared.data.repository import BaseRepository
 class ArticleRepository(BaseRepository):
 
     def get(self, model: Any, **kwargs: Any) -> Any:
+        if not kwargs:
+            query_res = self.session.query(model).order_by(model.id.desc()).first()
+
+            return query_res
         if 'slug' in kwargs:
             # TODO: Improve querying to be more efficient instead of making multiple queries.
             slug = kwargs.get('slug')
@@ -50,4 +54,7 @@ class ArticleRepository(BaseRepository):
             query = query.limit(limit).offset(offset)
             query_res = query.options(contains_eager(model.articles)).populate_existing().all()
 
-        return query_res
+            return query_res
+
+        # TODO: Raise exception and return 404.
+        return {}
