@@ -1,5 +1,5 @@
 from sqlalchemy import ForeignKey
-from sqlalchemy.orm import mapper, relationship
+from sqlalchemy.orm import registry, relationship
 from sqlalchemy.schema import Column, MetaData, Table
 from sqlalchemy.sql import func
 from sqlalchemy.sql.sqltypes import Boolean, DateTime, Integer, String, Text
@@ -10,6 +10,8 @@ from talelio_backend.app_project.domain.project_model import Project
 from talelio_backend.app_user.domain.user_model import User
 
 metadata = MetaData()
+
+mapper_registry = registry()
 
 account_table = Table('account', metadata,
                       Column('id', Integer, primary_key=True, autoincrement=True),
@@ -41,18 +43,18 @@ article_table = Table('article', metadata,
 
 
 def start_mappers() -> None:
-    mapper(
+    mapper_registry.map_imperatively(
         Account,
         account_table,
         properties={'user': relationship(User, backref='account', uselist=False, lazy='joined')})
 
-    mapper(User,
-           user_table,
-           properties={
-               'projects': relationship(Project, backref='user'),
-               'articles': relationship(Article, backref='user')
-           })
+    mapper_registry.map_imperatively(User,
+                                     user_table,
+                                     properties={
+                                         'projects': relationship(Project, backref='user'),
+                                         'articles': relationship(Article, backref='user')
+                                     })
 
-    mapper(Project, project_table)
+    mapper_registry.map_imperatively(Project, project_table)
 
-    mapper(Article, article_table)
+    mapper_registry.map_imperatively(Article, article_table)

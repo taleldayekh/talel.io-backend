@@ -49,7 +49,5 @@ class ArticleRepository(BaseRepository):
             query = query.join(model.articles).order_by(text('article.created_at desc'))
             query = query.limit(limit).offset(offset)
             query_res = query.options(contains_eager(model.articles)).populate_existing().all()
-        else:
-            query_res = self.session.query(model).order_by(model.id.desc()).first()
 
         return query_res
