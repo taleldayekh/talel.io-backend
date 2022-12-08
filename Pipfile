@@ -20,7 +20,7 @@ boto3-stubs = {version = "==1.26.16", extras = ["s3"]}
 
 [dev-packages]
 isort = "==5.10.1"
-mypy = "==0.982"
+mypy = "==0.991"
 pylint = "==2.15.6"
 pytest = "==7.2.0"
 pytest-cov = "==4.0.0"
