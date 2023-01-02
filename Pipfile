@@ -30,7 +30,7 @@ moto = {version = "==4.0.6", extras = ["s3"]}
 freezegun = "==1.2.2"
 fakeredis = "==1.9.3"
 types-redis = "==4.3.21.7"
-types-markdown = "==3.4.2"
+types-markdown = "==3.4.2.1"
 types-freezegun = "==1.1.10"
 sqlalchemy = {extras = ["mypy"], version = "*"}
 
