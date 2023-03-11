@@ -7,6 +7,7 @@ from talelio_backend.interfaces.api.accounts.account_controller import accounts_
 from talelio_backend.interfaces.api.articles.article_controller import articles_v1
 from talelio_backend.interfaces.api.assets.asset_controller import assets_v1
 from talelio_backend.interfaces.api.errors import error_handlers
+from talelio_backend.interfaces.api.health.health_controller import health_v1
 from talelio_backend.interfaces.api.projects.project_controller import projects_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
 from talelio_backend.shared.data.orm import start_mappers
@@ -19,6 +20,7 @@ def create_app() -> Flask:
     app.config.from_object('talelio_backend.config.config.Production' if getenv('ENV') ==
                            'production' else 'talelio_backend.config.config.Development')
 
+    app.register_blueprint(health_v1, url_prefix='/v1/health')
     app.register_blueprint(accounts_v1, url_prefix='/v1/accounts')
     app.register_blueprint(articles_v1, url_prefix='/v1/articles')
     app.register_blueprint(assets_v1, url_prefix='/v1/assets')
