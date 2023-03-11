@@ -17,6 +17,7 @@
   - [Entity Relationship Diagram](#entity-relationship-diagram)
 - [REST API](#rest-api)
   - [Resources](#resources)
+    - [Health](#health)
     - [Articles](#articles)
 
 # Development
@@ -153,7 +154,36 @@ erDiagram
 
 ## Resources
 
+- [Health](#health)
 - [Articles](#articles)
+
+### Health
+
+| HTTP Method | Description                                     | Resource            | Success Code | Failure Code |
+|-------------|-------------------------------------------------|---------------------|--------------|--------------|
+| GET         | [Backend API health](#get---backend-api-health) | /\<version\>/health | 200          |              |
+
+<details>
+
+<summary>GET - Backend API health</summary>
+<br/>
+
+#### Request
+
+```shell
+curl -X GET \
+https://api.talel.io/v1/health
+```
+
+#### Success Response
+
+```shell
+200: OK
+
+👍
+```
+
+</details>
 
 ### Articles
 
