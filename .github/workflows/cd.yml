@@ -99,7 +99,7 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: .aws/talelio-backend-api-task-definition.json
-          container-name: talelio-backend-api-container
+          container-name: talelio-backend
           image: ${{ steps.talelio-backend-api-image.outputs.image }}
 
       - name: Deploy talel.io Backend API Task Definition
