@@ -35,10 +35,7 @@ def create_article_endpoint() -> Tuple[Response, int]:
             title = request.json['title']
             body = request.json['body']
             meta_description = request.json['meta_description']
-
-            # Allows for an optional featured_image request parameter
-            # without raising the KeyError exception if not provided.
-            featured_image = str(request.json.get('featured_image') or '')
+            featured_image = str(request.json.get('featured_image') or None)
 
             created_article = create_article(uow, user_id, title, body, meta_description,
                                              featured_image)

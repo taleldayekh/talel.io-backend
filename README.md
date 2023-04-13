@@ -10,7 +10,6 @@
   - [Stop Development Database](#stop-development-database)
   - [Serve API](#serve-api)
 - [REST API](#rest-api)
-  - [Health](#health)
 
 # Development
 
@@ -110,7 +109,7 @@ This will run the development server on port `5000`.
 
 # REST API
 
-## Health
+Full API reference documentation is available on the [Wiki page](https://github.com/taleldayekh/talel.io-backend/wiki/REST-API).
 
 
 
@@ -209,34 +208,6 @@ erDiagram
 ```
 
 # REST API
-
-### Health
-
-| HTTP Method | Description                                     | Resource            | Success Code | Failure Code |
-|-------------|-------------------------------------------------|---------------------|--------------|--------------|
-| GET         | [Backend API health](#get---backend-api-health) | /\<version\>/health | 200          |              |
-
-<details>
-
-<summary>GET - Backend API health</summary>
-<br/>
-
-#### Request
-
-```shell
-curl -X GET \
-https://api.talel.io/v1/health
-```
-
-#### Success Response
-
-```shell
-200: OK
-
-👍
-```
-
-</details>
 
 ### Articles
 
