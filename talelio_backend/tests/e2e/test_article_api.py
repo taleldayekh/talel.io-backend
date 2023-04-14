@@ -7,7 +7,6 @@ from talelio_backend.shared.utils.slug import generate_slug
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.articles import (art_to_engineering_article, articles,
                                                   hiking_gear_article, private_blockchain_article)
-from talelio_backend.tests.mocks.example_markdown import PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL
 from talelio_backend.tests.utils import generate_authorization_header
 
 
@@ -34,7 +33,8 @@ class TestCreateArticle(RequestHelper):
 
         assert res_two_data['slug'] == f'{res_one_slug}-{res_two_id}'
 
-    def test_can_provide_featured_image(self, authorization_header: Dict[str, str]) -> None:
+    def test_can_create_article_with_featured_image(self, authorization_header: Dict[str,
+                                                                                     str]) -> None:
         provided_featured_image = 'https://url/to/provided-featured-image.jpg'
 
         art_to_engineering_article_copy = dict(art_to_engineering_article)
@@ -44,13 +44,6 @@ class TestCreateArticle(RequestHelper):
         res_data = json.loads(res.data)
 
         assert res_data['featured_image'] == provided_featured_image
-
-    def test_can_generate_featured_image_from_article_body(
-            self, authorization_header: Dict[str, str]) -> None:
-        res = self.create_article_request(authorization_header, private_blockchain_article)
-        res_data = json.loads(res.data)
-
-        assert res_data['featured_image'] == PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL
 
     def test_can_create_article_with_no_featured_image(
             self, authorization_header: Dict[str, str]) -> None:

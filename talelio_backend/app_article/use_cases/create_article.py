@@ -1,5 +1,5 @@
 # pylint: disable=W0104, R0913
-from typing import Optional
+from typing import Optional, Union
 
 # TODO: Wrap in custom DbIntegrityError exception class
 from sqlalchemy.exc import IntegrityError
@@ -11,7 +11,7 @@ from talelio_backend.data.uow import UnitOfWork
 
 
 def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_description: str,
-                   featured_image: str) -> Article:
+                   featured_image: Union[str, None]) -> Article:
 
     def new_article(conflicting_slug: Optional[bool] = False) -> None:
         with uow:
@@ -25,8 +25,6 @@ def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_de
 
             if featured_image:
                 new_article.featured_image = featured_image
-            else:
-                new_article.set_featured_image
 
             if conflicting_slug:
                 new_article.slug = new_article.slug + '-'
