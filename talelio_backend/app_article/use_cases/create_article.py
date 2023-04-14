@@ -1,5 +1,5 @@
 # pylint: disable=W0104, R0913
-from typing import Optional
+from typing import Optional, Union
 
 # TODO: Wrap in custom DbIntegrityError exception class
 from sqlalchemy.exc import IntegrityError
