@@ -2,16 +2,19 @@
 
 # Table of Contents
 
-- [Development](#development)
+- [Setup](#setup)
   - [Clone Repository](#clone-repository)
   - [Setup Python](#setup-python)
   - [Install Dependencies](#install-dependencies)
+- [Running the API Locally](#running-the-api-locally)
   - [Start Development Database](#start-development-database)
   - [Stop Development Database](#stop-development-database)
   - [Serve API](#serve-api)
+- [Codebase](#codebase)
+  - [Code Style](#code-style)
 - [REST API](#rest-api)
 
-# Development
+# Setup
 
 ## Clone Repository
 
@@ -69,6 +72,8 @@ Install dependencies and dev dependencies by navigating to the project root and 
 pipenv install --dev
 ```
 
+# Running the API Locally
+
 ## Start Development Database
 
 The development database runs in a Docker container and requires [Docker Desktop](https://docs.docker.com/desktop/) installed and running.
@@ -106,6 +111,40 @@ make serve-api
 ```
 
 This will run the development server on port `5000`.
+
+# Codebase
+
+## Code Style
+
+To maintain consistency across the codebase, coding standards that conforms to the [PEP 8](https://peps.python.org/pep-0008/) style guide are enforced with:
+
+- [YAPF](https://github.com/google/yapf) for formatting the code.
+- [isort](https://github.com/PyCQA/isort) for sorting imports.
+
+To help detect coding errors the following static code analysis tools are used:
+
+- [mypy](https://github.com/python/mypy) for providing type hints.
+- [Pylint](https://github.com/pylint-dev/pylint) for checking coding errors.
+
+### Formatters
+
+Run formatters:
+
+```shell
+make fix
+```
+
+### Code Analysis
+
+Run code analysis:
+
+```shell
+make type-check
+```
+
+```shell
+make lint
+```
 
 # REST API
 
@@ -211,17 +250,8 @@ erDiagram
 
 ### Articles
 
-| HTTP Method | Description                                                 | Resource                                          | Success Code | Failure Code |
-|-------------|-------------------------------------------------------------|---------------------------------------------------|--------------|--------------|
-| GET         | [List articles for a user](#get---list-articles-for-a-user) | /\<version\>/users/\<username\>/articles          | 200          | 400          |
-| GET         | [Article](#get---article)                                   | /\<version\>/articles/\<slug/>                    |              |              |
-
-<details>
 
 <summary>GET - List articles for a user</summary>
-<br/>
-
-Pagination is achieved with the `?page=<number>&limit=<number>` query parameters.
 
 #### Request
 
@@ -288,68 +318,6 @@ _*Response Body*_
       "status": 400,
       "type": "Bad Request"
    }
-}
-```
-
-</details>
-
-<details>
-
-<summary>GET - Article</summary>
-
-#### Request
-
-```shell
-curl -X GET \
-https://api.talel.io/v1/articles/<slug>
-```
-
-#### Success Response
-
-_*Response Body*_
-
-```shell
-200: OK
-
-{
-  "meta": {
-    "adjacent_articles": {
-      "next": {
-        "title": "Next Article",
-        "slug": "next-article"
-      },
-      "prev": {
-        "title": "Previous Article",
-        "slug": "previous-article"
-      }
-    }
-  },
-  "article": {
-    "id": 2,
-    "created_at": "1986-06-05T00:00:00.000000",
-    "updated_at": null,
-    "title": "Hello World Article",
-    "slug": "hello-world-article",
-    "body": "# Hello World",
-    "meta_description": "An article published on talel.io",
-    "html": "<h1>Hello World</h1>",
-    "featured_image": "/url/to/featured_image.jpg",
-    "url": "https://www.talel.io/articles/hello-world-article"
-  }
-}
-```
-
-#### Error Response
-
-```shell
-404: NOT FOUND
-
-{
-  "error": {
-    "message": "Article not found",
-    "status": 404,
-    "type": "Not Found"
-  }
 }
 ```
 
