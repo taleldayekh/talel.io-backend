@@ -22,6 +22,7 @@ def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_de
 
             new_article = Article(title, body, meta_description)
             new_article.convert_body_to_html
+            new_article.generate_table_of_contents
 
             if featured_image:
                 new_article.featured_image = featured_image
