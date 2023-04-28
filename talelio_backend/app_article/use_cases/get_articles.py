@@ -34,8 +34,8 @@ def get_articles_for_user(
 
         next_link = (f'/users/{username}/articles?page={page + 1}&limit={limit}'
                      if not last_page else None)
-        prev_link = (f'/users/{username}/articles?page={page - 1}&limit={limit}'
-                     if page - 1 != 0 else None)
+        prev_link = (f'/users/{username}/articles?page={page - 1}&limit={limit}' if page -
+                     1 != 0 else None)
 
         return {
             'user': user,
