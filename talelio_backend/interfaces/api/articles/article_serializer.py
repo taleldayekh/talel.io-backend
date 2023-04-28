@@ -25,6 +25,7 @@ class ArticleSchema(Schema):
     body = fields.Str()
     meta_description = fields.Str()
     html = fields.Str()
+    table_of_contents = fields.Str()
     featured_image = fields.Str()
     url = fields.Str()
 

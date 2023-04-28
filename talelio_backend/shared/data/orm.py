@@ -39,7 +39,8 @@ article_table = Table('article', metadata,
                       Column('updated_at', DateTime, onupdate=func.now()), Column('title', String),
                       Column('slug', String, unique=True), Column('body', Text),
                       Column('meta_description', Text), Column('html', Text),
-                      Column('featured_image', String), Column('url', String))
+                      Column('table_of_contents', Text), Column('featured_image', String),
+                      Column('url', String))
 
 
 def start_mappers() -> None:
