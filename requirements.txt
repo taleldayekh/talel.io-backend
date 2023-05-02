@@ -19,7 +19,7 @@ markdown==3.4.1
 markupsafe==2.1.2 ; python_version >= '3.7'
 marshmallow==3.19.0
 mypy-boto3-s3==1.26.104
-packaging==23.0 ; python_version >= '3.7'
+packaging==23.1 ; python_version >= '3.7'
 pillow==9.3.0
 psycopg2==2.9.5
 pyjwt==2.6.0
