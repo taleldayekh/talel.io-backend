@@ -1,15 +1,28 @@
 from os import getenv
+
 import psycopg2
 
-DB_URI = getenv('DB_URI')
+db_connection_values = {
+    'db_host': getenv('DB_HOST'),
+    'db_port': getenv('DB_PORT'),
+    'db_name': getenv('DB_NAME'),
+    'db_user': getenv('DB_USER'),
+    'db_password': getenv('DB_PASSWORD')
+}
 
-if not isinstance(DB_URI, str):
-    raise TypeError('No database URI provided')
+for key, value in db_connection_values.items():
+    if not isinstance(value, str):
+        raise TypeError(f'No {value} env variable available')
 
-connection = psycopg2.connect(DB_URI)
+connection = psycopg2.connect(f'''
+    host={db_connection_values['db_host']}
+    port={db_connection_values['db_port']}
+    dbname={db_connection_values['db_name']}
+    user={db_connection_values['db_user']}
+    password={db_connection_values['db_password']}
+    ''')
 
-CREATE_ACCOUNT_TABLE = (
-    """
+CREATE_ACCOUNT_TABLE = ("""
     CREATE TABLE IF NOT EXISTS account
     (
         id SERIAL,
@@ -19,8 +32,7 @@ CREATE_ACCOUNT_TABLE = (
         password VARCHAR(255),
         verified BOOLEAN
     );
-    """
-)
+    """)
 
 # CREATE_USER_TABLE = (
 #     """
@@ -71,6 +83,7 @@ CREATE_ACCOUNT_TABLE = (
 #     );
 #     """
 # )
+
 
 def create_tables() -> None:
     with connection:
