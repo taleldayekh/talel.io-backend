@@ -12,7 +12,7 @@ db_connection_values = {
 
 for key, value in db_connection_values.items():
     if not isinstance(value, str):
-        raise TypeError(f'No {value} env variable available')
+        raise TypeError(f'No {key} env variable available')
 
 connection = psycopg2.connect(f'''
     host={db_connection_values['db_host']}
@@ -30,24 +30,28 @@ CREATE_ACCOUNT_TABLE = ("""
         updated_at TIMESTAMP WITH TIME ZONE,
         email VARCHAR(255),
         password VARCHAR(255),
-        verified BOOLEAN
+        verified BOOLEAN,
+        CONSTRAINT id_key PRIMARY KEY (id),
+        CONSTRAINT email_unique UNIQUE (email)
     );
     """)
 
-# CREATE_USER_TABLE = (
-#     """
-#     CREATE TABLE IF NOT EXISTS user
-#     (
-#         id SERIAL,
-#         account_id,
-#         created_at TIMESTAMP WITH TIME ZONE,
-#         updated_at TIMESTAMP WITH TIME ZONE,
-#         username VARCHAR(255),
-#         location VARCHAR(255),
-#         avatar_url VARCHAR(255)
-#     );
-#     """
-# )
+CREATE_USER_TABLE = (
+    """
+    CREATE TABLE IF NOT EXISTS user
+    (
+        id SERIAL,
+        account_id INTEGER,
+        created_at TIMESTAMP WITH TIME ZONE,
+        updated_at TIMESTAMP WITH TIME ZONE,
+        username VARCHAR(255),
+        location VARCHAR(255),
+        avatar_url VARCHAR(255),
+        REFERENCES account (id),
+        CONSTRAINT id_key PRIMARY KEY (id)
+    );
+    """
+)
 
 # CREATE_PROJECT_TABLE = (
 #     """
@@ -89,6 +93,6 @@ def create_tables() -> None:
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(CREATE_ACCOUNT_TABLE)
-            # cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_USER_TABLE)
             # cursor.execute(CREATE_PROJECT_TABLE)
             # cursor.execute(CREATE_ARTICLE_TABLE)
