@@ -57,7 +57,7 @@ CREATE_ARTICLE_TABLE = (f"""
         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
         updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
         title VARCHAR(255) NOT NULL,
-        slug TEXT NOT NULL,
+        slug TEXT UNIQUE NOT NULL,
         body TEXT NOT NULL,
         html TEXT NOT NULL,
         meta_description TEXT NOT NULL,
