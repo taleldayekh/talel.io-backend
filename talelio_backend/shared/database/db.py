@@ -22,36 +22,50 @@ connection = psycopg2.connect(f'''
     password={db_connection_values['db_password']}
     ''')
 
-CREATE_ACCOUNT_TABLE = ("""
+TIME_ZONE = 'Europe/Berlin'
+
+CREATE_ACCOUNT_TABLE = (f"""
     CREATE TABLE IF NOT EXISTS account
     (
-        id SERIAL,
-        created_at TIMESTAMP WITH TIME ZONE,
-        updated_at TIMESTAMP WITH TIME ZONE,
-        email VARCHAR(255),
-        password VARCHAR(255),
-        verified BOOLEAN,
-        CONSTRAINT id_key PRIMARY KEY (id),
-        CONSTRAINT email_unique UNIQUE (email)
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        email VARCHAR(255) UNIQUE NOT NULL,
+        password VARCHAR(134) NOT NULL,
+        verified BOOLEAN NOT NULL DEFAULT TRUE
     );
     """)
 
-CREATE_USER_TABLE = (
-    """
-    CREATE TABLE IF NOT EXISTS user
+CREATE_USER_TABLE = (f"""
+    CREATE TABLE IF NOT EXISTS "user"
     (
-        id SERIAL,
-        account_id INTEGER,
-        created_at TIMESTAMP WITH TIME ZONE,
-        updated_at TIMESTAMP WITH TIME ZONE,
-        username VARCHAR(255),
-        location VARCHAR(255),
-        avatar_url VARCHAR(255),
-        REFERENCES account (id),
-        CONSTRAINT id_key PRIMARY KEY (id)
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        account_id INTEGER REFERENCES account (id) ON DELETE CASCADE UNIQUE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        username VARCHAR(20) UNIQUE NOT NULL,
+        location VARCHAR(50),
+        avatar_url VARCHAR(255)
     );
-    """
-)
+    """)
+
+CREATE_ARTICLE_TABLE = (f"""
+    CREATE TABLE IF NOT EXISTS article
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        title VARCHAR(255) NOT NULL,
+        slug TEXT NOT NULL,
+        body TEXT NOT NULL,
+        html TEXT NOT NULL,
+        meta_description TEXT NOT NULL,
+        table_of_contents TEXT NOT NULL,
+        featured_image VARCHAR(255) NOT NULL,
+        url TEXT NOT NULL
+    );
+    """)
 
 # CREATE_PROJECT_TABLE = (
 #     """
@@ -68,31 +82,10 @@ CREATE_USER_TABLE = (
 #     """
 # )
 
-# CREATE_ARTICLE_TABLE = (
-#     """
-#     CREATE TABLE IF NOT EXISTS article
-#     (
-#         id,
-#         user_id,
-#         created_at,
-#         updated_at,
-#         title,
-#         slug,
-#         body,
-#         meta_description,
-#         html,
-#         table_of_contents,
-#         featured_image,
-#         url
-#     );
-#     """
-# )
-
 
 def create_tables() -> None:
     with connection:
         with connection.cursor() as cursor:
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
-            # cursor.execute(CREATE_PROJECT_TABLE)
-            # cursor.execute(CREATE_ARTICLE_TABLE)
+            cursor.execute(CREATE_ARTICLE_TABLE)
