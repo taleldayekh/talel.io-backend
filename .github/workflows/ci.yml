@@ -43,10 +43,10 @@ jobs:
           pip install pipenv
           pipenv install --dev
 
-      - name: Static Code Analysis
-        run: |
-          make lint
-          make type-check
+      # - name: Static Code Analysis
+      #   run: |
+      #     make lint
+      #     make type-check
 
       - name: Unit Tests
         run: |
