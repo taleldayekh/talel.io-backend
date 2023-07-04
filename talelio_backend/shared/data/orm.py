@@ -15,8 +15,9 @@ mapper_registry = registry()
 
 account_table = Table('account', metadata,
                       Column('id', Integer, primary_key=True, autoincrement=True),
-                      Column('email', String), Column('password', String),
-                      Column('verified', Boolean))
+                      Column('created_at', DateTime, server_default=''),
+                      Column('updated_at', DateTime, server_default=''), Column('email', String),
+                      Column('password', String), Column('verified', Boolean))
 
 user_table = Table('user', metadata, Column('id', Integer, primary_key=True, autoincrement=True),
                    Column('account_id', Integer, ForeignKey('account.id')),
@@ -34,6 +35,8 @@ article_table = Table('article', metadata,
                       Column('id', Integer, primary_key=True, autoincrement=True),
                       Column('user_id', Integer, ForeignKey('user.id')), Column('title', String),
                       Column('slug', String, unique=True), Column('body', Text),
+                      Column('created_at', DateTime, server_default=''),
+                      Column('updated_at', DateTime, server_default=''),
                       Column('meta_description', Text), Column('html', Text),
                       Column('table_of_contents', Text), Column('featured_image', String),
                       Column('url', String))
