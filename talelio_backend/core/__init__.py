@@ -11,7 +11,9 @@ from talelio_backend.interfaces.api.health.health_controller import health_v1
 from talelio_backend.interfaces.api.projects.project_controller import projects_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
 from talelio_backend.shared.data.orm import start_mappers
+from talelio_backend.shared.database.db import create_tables
 
+create_tables()
 start_mappers()
 
 
