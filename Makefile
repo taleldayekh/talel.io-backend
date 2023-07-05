@@ -3,7 +3,8 @@ SRC_DIR = talelio_backend/
 start-dev-dbs:
 	export DB_URI=postgresql://test_user:test_password@localhost:5432/test_db && \
 	docker compose up -d && \
-	until pg_isready -h localhost -p 5432 -U test_user ; do echo "Waiting for PostgreSQL" ; done
+	until pg_isready -h localhost -p 5432 -U test_user ; do echo "Waiting for PostgreSQL" ; done && \
+	cd $(SRC_DIR) && alembic upgrade head
 
 stop-dev-dbs:
 	docker compose down
