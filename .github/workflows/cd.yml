@@ -76,7 +76,7 @@ jobs:
         id: talelio-backend-api-image
         env:
           ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-          ECR_REPOSITORY: talel.io-backend-api
+          ECR_REPOSITORY: talelio-backend-api
           IMAGE_TAG: ${{ github.sha }}
         run: |
           docker build \
@@ -99,13 +99,13 @@ jobs:
         uses: aws-actions/amazon-ecs-render-task-definition@v1
         with:
           task-definition: .aws/talelio-backend-api-task-definition.json
-          container-name: talelio-backend
+          container-name: talelio-backend-api
           image: ${{ steps.talelio-backend-api-image.outputs.image }}
 
       - name: Deploy talel.io Backend API Task Definition
         uses: aws-actions/amazon-ecs-deploy-task-definition@v1
         with:
           task-definition: ${{ steps.task-definition.outputs.task-definition }}
-          service: talelio-backend-api-service
-          cluster: talelio
+          service: talelio-backend-api
+          cluster: talelio-cluster
           wait-for-service-stability: true
