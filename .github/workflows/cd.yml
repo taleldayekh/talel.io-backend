@@ -19,23 +19,12 @@ jobs:
           POSTGRES_PASSWORD: test_password
           POSTGRES_DB: test_db
 
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 5
-
       redis:
         image: redis:6.2.4-alpine
         ports:
           - 6379:6379
 
     env:
-      DB_HOST: localhost
-      DB_PORT: 5435
-      DB_NAME: test_db
-      DB_USER: test_user
-      DB_PASSWORD: test_password
       HOST: localhost
       SECRET_KEY: test
       DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
@@ -57,66 +46,66 @@ jobs:
       - name: Unit Tests
         run: make test-unit
 
-      # - name: Integration Tests
-      #   run: make test-integration
+      - name: Integration Tests
+        run: make test-integration
 
-      # - name: E2E Tests
-      #   run: make test-e2e
+      - name: E2E Tests
+        run: make test-e2e
 
-  # deploy-talelio-backend-api:
-  #   name: Deploy talel.io Backend API to AWS
-  #   runs-on: ubuntu-latest
-  #   needs: test
+  deploy-talelio-backend-api:
+    name: Deploy talel.io Backend API to AWS
+    runs-on: ubuntu-latest
+    needs: test
 
-  #   steps:
-  #     - name: Checkout Code
-  #       uses: actions/checkout@v2
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
 
-  #     - name: Configure AWS Credentials
-  #       uses: aws-actions/configure-aws-credentials@v1
-  #       with:
-  #         aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-  #         aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-  #         aws-region: us-east-1
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          aws-region: us-east-1
 
-  #     - name: Login to AWS ECR
-  #       id: ecr-login
-  #       uses: aws-actions/amazon-ecr-login@v1
+      - name: Login to AWS ECR
+        id: ecr-login
+        uses: aws-actions/amazon-ecr-login@v1
 
-  #     - name: Build and Push talel.io Backend API Image to AWS ECR
-  #       id: talelio-backend-api-image
-  #       env:
-  #         ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
-  #         ECR_REPOSITORY: talel.io-backend-api
-  #         IMAGE_TAG: ${{ github.sha }}
-  #       run: |
-  #         docker build \
-  #         -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
-  #         --build-arg ENV=${{ secrets.ENV }} \
-  #         --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
-  #         --build-arg WHITELISTED_EMAILS=${{ secrets.WHITELISTED_EMAILS }} \
-  #         --build-arg EMAIL_USER=${{ secrets.EMAIL_USER }} \
-  #         --build-arg EMAIL_PASS=${{ secrets.EMAIL_PASS }} \
-  #         --build-arg EMAIL_SERVER=${{ secrets.EMAIL_SERVER }} \
-  #         --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
-  #         --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
-  #         --build-arg DB_URI=${{ secrets.DB_URI }} \
-  #         --build-arg HOST=${{ secrets.HOST }} \
-  #         -f docker/talelio_backend.Dockerfile .
-  #         docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
-  #         echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
-  #     - name: Add Image ID to talel.io Backend API Task Definition
-  #       id: task-definition
-  #       uses: aws-actions/amazon-ecs-render-task-definition@v1
-  #       with:
-  #         task-definition: .aws/talelio-backend-api-task-definition.json
-  #         container-name: talelio-backend
-  #         image: ${{ steps.talelio-backend-api-image.outputs.image }}
+      - name: Build and Push talel.io Backend API Image to AWS ECR
+        id: talelio-backend-api-image
+        env:
+          ECR_REGISTRY: ${{ steps.ecr-login.outputs.registry }}
+          ECR_REPOSITORY: talelio-backend-api
+          IMAGE_TAG: ${{ github.sha }}
+        run: |
+          docker build \
+          -t $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG \
+          --build-arg ENV=${{ secrets.ENV }} \
+          --build-arg SECRET_KEY=${{ secrets.SECRET_KEY }} \
+          --build-arg WHITELISTED_EMAILS=${{ secrets.WHITELISTED_EMAILS }} \
+          --build-arg EMAIL_USER=${{ secrets.EMAIL_USER }} \
+          --build-arg EMAIL_PASS=${{ secrets.EMAIL_PASS }} \
+          --build-arg EMAIL_SERVER=${{ secrets.EMAIL_SERVER }} \
+          --build-arg EMAIL_SENDER=${{ secrets.EMAIL_SENDER }} \
+          --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
+          --build-arg DB_URI=${{ secrets.DB_URI }} \
+          --build-arg HOST=${{ secrets.HOST }} \
+          -f docker/talelio_backend.Dockerfile .
+          docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
+          echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
+      - name: Add Image ID to talel.io Backend API Task Definition
+        id: task-definition
+        uses: aws-actions/amazon-ecs-render-task-definition@v1
+        with:
+          task-definition: .aws/talelio-backend-api-task-definition.json
+          container-name: talelio-backend-api
+          image: ${{ steps.talelio-backend-api-image.outputs.image }}
 
-  #     - name: Deploy talel.io Backend API Task Definition
-  #       uses: aws-actions/amazon-ecs-deploy-task-definition@v1
-  #       with:
-  #         task-definition: ${{ steps.task-definition.outputs.task-definition }}
-  #         service: talelio-backend-api-service
-  #         cluster: talelio
-  #         wait-for-service-stability: true
+      - name: Deploy talel.io Backend API Task Definition
+        uses: aws-actions/amazon-ecs-deploy-task-definition@v1
+        with:
+          task-definition: ${{ steps.task-definition.outputs.task-definition }}
+          service: talelio-backend-api
+          cluster: talelio-cluster
+          wait-for-service-stability: true

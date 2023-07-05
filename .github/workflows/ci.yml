@@ -25,11 +25,6 @@ jobs:
           - 6379:6379
 
     env:
-      DB_HOST: localhost
-      DB_PORT: 5435
-      DB_NAME: test_db
-      DB_USER: test_user
-      DB_PASSWORD: test_password
       HOST: localhost
       SECRET_KEY: test
       DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
