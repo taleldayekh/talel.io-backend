@@ -4,35 +4,35 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-alembic = "==1.8.1"
-flask = "==2.2.2"
-flask-cors = "==3.0.10"
-gunicorn = "==20.1.0"
-psycopg2 = "==2.9.5"
+alembic = "==1.11.1"
+flask = "==2.3.2"
+flask-cors = "==4.0.0"
+gunicorn = "==21.1.0"
+psycopg2 = "==2.9.6"
 marshmallow = "==3.19.0"
-sqlalchemy = "==1.4.44"
-markdown = "==3.4.1"
-pyjwt = "==2.6.0"
-boto3 = "==1.24.87"
-pillow = "==9.3.0"
-redis = "==4.5.4"
-boto3-stubs = {version = "==1.26.104", extras = ["s3"]}
+sqlalchemy = "==2.0.19"
+markdown = "==3.4.3"
+pyjwt = "==2.8.0"
+boto3 = "==1.28.5"
+pillow = "==10.0.0"
+redis = "==4.6.0"
+boto3-stubs = {version = "==1.28.5", extras = ["s3"]}
 
 [dev-packages]
 isort = "==5.12.0"
-mypy = "==1.0.1"
-pylint = "==2.15.6"
-pytest = "==7.2.2"
-pytest-cov = "==4.0.0"
+mypy = "==1.4.1"
+pylint = "==2.17.4"
+pytest = "==7.4.0"
+pytest-cov = "==4.1.0"
 python-dotenv = "==1.0.0"
-yapf = "==0.32.0"
-moto = {version = "==4.0.6", extras = ["s3"]}
+yapf = "==0.40.1"
 freezegun = "==1.2.2"
-fakeredis = "==1.9.3"
-types-redis = "==4.5.1.4"
-types-markdown = "==3.4.2"
+fakeredis = "==2.17.0"
+types-redis = "==4.6.0.2"
+types-markdown = "==3.4.2.9"
 types-freezegun = "==1.1.10"
 sqlalchemy = {extras = ["mypy"], version = "*"}
+moto = {version = "==4.1.13", extras = ["s3"]}
 
 [requires]
 python_version = "3.9"
