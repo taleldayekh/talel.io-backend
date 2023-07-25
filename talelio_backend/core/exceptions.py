@@ -1,3 +1,7 @@
+class DatabaseError(Exception):
+    pass
+
+
 class AuthorizationError(Exception):
     pass
 
