@@ -12,7 +12,6 @@ from talelio_backend.interfaces.api.health.health_controller import health_v1
 from talelio_backend.interfaces.api.projects.project_controller import projects_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
 from talelio_backend.libs.db_client import DbClient
-from talelio_backend.shared.data.orm import start_mappers
 
 
 def create_db_tables() -> None:

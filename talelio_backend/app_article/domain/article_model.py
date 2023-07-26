@@ -23,7 +23,7 @@ class Article:
         self.featured_image = featured_image
         self.url = self.__article_base_url + self.slug
 
-        self.__markdown = Markdown(extensions=['attr_list', 'toc', 'fenced_code'])
+        self.__markdown = Markdown(extensions=['attr_list', 'tables', 'toc', 'fenced_code'])
 
     @property
     def convert_body_to_html(self) -> None:

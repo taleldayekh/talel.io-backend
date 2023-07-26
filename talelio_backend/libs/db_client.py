@@ -25,10 +25,10 @@ class DbClient:
 
         self.db_connection_values = connection_values
 
-    @staticmethod
-    def get_connection():
+    @property
+    def get_connection(self):
         try:
-            connection = connect(**db_connection_values)
+            connection = connect(**self.db_connection_values)
             return connection
         except OperationalError:
             raise DatabaseError('Failed to connect to database')
