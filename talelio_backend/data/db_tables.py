@@ -11,3 +11,8 @@ CREATE_ACCOUNT_TABLE = (f"""
         verified BOOLEAN NOT NULL DEFAULT FALSE
     )
     """)
+
+CREATE_USER_TABLE = (f"""
+    CREATE TABLE IF NOT EXISTS "user"
+    ()
+    """)

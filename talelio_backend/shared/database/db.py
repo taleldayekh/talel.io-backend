@@ -22,20 +22,6 @@ connection = psycopg2.connect(f'''
     password={db_connection_values['db_password']}
     ''')
 
-TIME_ZONE = 'Europe/Berlin'
-
-CREATE_ACCOUNT_TABLE = (f"""
-    CREATE TABLE IF NOT EXISTS account
-    (
-        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        email VARCHAR(255) UNIQUE NOT NULL,
-        password VARCHAR(134) NOT NULL,
-        verified BOOLEAN NOT NULL DEFAULT TRUE
-    );
-    """)
-
 CREATE_USER_TABLE = (f"""
     CREATE TABLE IF NOT EXISTS "user"
     (
