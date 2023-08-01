@@ -25,7 +25,7 @@ pylint = "==2.15.6"
 pytest = "==7.2.2"
 pytest-cov = "==4.0.0"
 python-dotenv = "==1.0.0"
-yapf = "==0.32.0"
+yapf = "==0.40.1"
 moto = {version = "==4.0.6", extras = ["s3"]}
 freezegun = "==1.2.2"
 fakeredis = "==1.9.3"
