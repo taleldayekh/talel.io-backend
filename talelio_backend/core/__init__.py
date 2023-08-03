@@ -3,7 +3,8 @@ from os import getenv
 from flask import Flask
 from flask_cors import CORS  # type: ignore
 
-from talelio_backend.data.db_tables import CREATE_ACCOUNT_TABLE, CREATE_USER_TABLE
+from talelio_backend.data.db_tables import (CREATE_ACCOUNT_TABLE, CREATE_ARTICLE_TABLE,
+                                            CREATE_USER_TABLE)
 from talelio_backend.interfaces.api.accounts.account_controller import accounts_v1
 from talelio_backend.interfaces.api.articles.article_controller import articles_v1
 from talelio_backend.interfaces.api.assets.asset_controller import assets_v1
@@ -22,6 +23,7 @@ def create_db_tables() -> None:
         with connection.cursor() as cursor:
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_ARTICLE_TABLE)
 
     connection.close()
 

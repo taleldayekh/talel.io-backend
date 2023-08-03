@@ -22,24 +22,6 @@ connection = psycopg2.connect(f'''
     password={db_connection_values['db_password']}
     ''')
 
-CREATE_ARTICLE_TABLE = (f"""
-    CREATE TABLE IF NOT EXISTS article
-    (
-        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE,
-        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        title VARCHAR(255) NOT NULL,
-        slug TEXT UNIQUE NOT NULL,
-        body TEXT NOT NULL,
-        html TEXT NOT NULL,
-        meta_description TEXT NOT NULL,
-        table_of_contents TEXT NOT NULL,
-        featured_image VARCHAR(255) NOT NULL,
-        url TEXT NOT NULL
-    );
-    """)
-
 # CREATE_PROJECT_TABLE = (
 #     """
 #     CREATE TABLE IF NOT EXISTS project
