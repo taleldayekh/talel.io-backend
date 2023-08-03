@@ -32,6 +32,7 @@ class AccountRepository(BaseRepository):
                    account.created_at,
                    account.updated_at,
                    account.email,
+                   account.password,
                    account.verified,
                    "user".id,
                    "user".username,
@@ -50,11 +51,23 @@ class AccountRepository(BaseRepository):
 
     def get_by_email(self, email: str):
         QUERY = (f"""
-            SELECT * FROM account WHERE email = %s;
+            SELECT account.id,
+                   account.created_at,
+                   account.updated_at,
+                   account.email,
+                   account.password,
+                   account.verified,
+                   "user".id,
+                   "user".username,
+                   "user".location,
+                   "user".avatar_url
+            FROM account JOIN "user"
+            ON account.id = "user".account_id
+            WHERE account.email = %s;
             """)
 
         with self.session as session:
             with session.cursor() as cursor:
                 cursor.execute(QUERY, (email, ))
 
-                return cursor.fetchall()
+                return cursor.fetchone()

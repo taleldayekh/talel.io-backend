@@ -15,7 +15,7 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         raise AccountRegistrationError('Email not whitelisted')
 
     with uow:
-        if len(uow.account.get_by_email(email)):
+        if uow.account.get_by_email(email) is not None:
             raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
         if len(uow.user.get_by_username(username)):
@@ -38,12 +38,12 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
             "created_at": account_record[1],
             "updated_at": account_record[2],
             "email": account_record[3],
-            "verified": account_record[4],
+            "verified": account_record[5],
             "user": {
-                "id": account_record[5],
-                "username": account_record[6],
-                "location": account_record[7],
-                "avatar_url": account_record[8]
+                "id": account_record[6],
+                "username": account_record[7],
+                "location": account_record[8],
+                "avatar_url": account_record[9]
             }
         }
 

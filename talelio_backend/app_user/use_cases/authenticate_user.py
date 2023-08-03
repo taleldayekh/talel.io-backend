@@ -17,17 +17,19 @@ def get_access_token(uow: UnitOfWork, email: str, password: str) -> str:
     error_msg = 'Invalid username or password'
 
     with uow:
-        account_record = uow.account.get(Account, email=email)
+        account_record = uow.account.get_by_email(email)
 
         if account_record is None:
             raise AccountError(error_msg)
 
-        password_hash = account_record.password
+        password_hash = account_record[4]
+        user_id = account_record[6]
+        username = account_record[7]
 
         if not Authentication().check_password_hash(password, password_hash):
             raise AccountError(error_msg)
 
-        access_token = generate_access_token(account_record.user.id, account_record.user.username)
+        access_token = generate_access_token(user_id, username)
 
         return access_token
 
