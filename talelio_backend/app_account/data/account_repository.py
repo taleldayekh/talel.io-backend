@@ -26,6 +26,15 @@ class AccountRepository(BaseRepository):
 
                 return cursor.fetchone()[0]
 
+    def get_by_id(self, id: int):
+        QUERY = (f"""
+                //
+            """)
+
+        with self.session as session:
+            with session.cursor() as cursor:
+                pass
+
     def get_by_email(self, email: str):
         QUERY = (f"""
             SELECT * FROM account WHERE email = %s;

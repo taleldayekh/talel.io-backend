@@ -1,16 +1,15 @@
-from typing import Any
-
 from talelio_backend.shared.data.repository import BaseRepository
 
 
 class UserRepository(BaseRepository):
 
-    def get(self, model: Any, **kwargs: Any) -> Any:
-        query: Any
+    def get_by_username(self, username: str):
+        QUERY = (f"""
+            SELECT * FROM "user" WHERE username = %s;
+            """)
 
-        if 'id' in kwargs:
-            query = self.session.query(model).filter_by(id=kwargs.get('id')).first()
-        if 'username' in kwargs:
-            query = self.session.query(model).filter_by(username=kwargs.get('username')).first()
+        with self.session as session:
+            with session.cursor() as cursor:
+                cursor.execute(QUERY, (username, ))
 
-        return query
+                return cursor.fetchall()

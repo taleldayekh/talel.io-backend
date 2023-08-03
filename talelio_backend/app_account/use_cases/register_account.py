@@ -18,40 +18,26 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         if len(uow.account.get_by_email(email)):
             raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
+        if len(uow.user.get_by_username(username)):
+            raise AccountRegistrationError(
+                f"Account with the username '{username}' already exists")
+
         password_hash = Authentication().generate_password_hash(password)
 
         user = User(username)
         account = Account(email, password_hash)
 
-        uow.account.create(account, user)
+        account_id = uow.account.create(account, user)
+        account = uow.account.get_by_id(account_id)
 
+        verification_token = account.generate_verification_token
+        account.send_registration_email(verification_token)
+
+        # TODO: Return account record
         return {}
 
-    # with uow:
-    # if uow.account.get(Account, email=email) is not None:
-    #     raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
-    #     # if uow.user.get(User, username=username):
-    #     #     raise AccountRegistrationError(
-    #     #         f"Account with the username '{username}' already exists")
-
-    #     password_hash = Authentication().generate_password_hash(password)
-    #     # user = User(username)
-    #     account = Account(email, password_hash)
-
-    #     uow.account.create(account)
-
-    #     # account_record = uow.account.add(account)
-    #     # uow.commit()
-
-    #     account_record = uow.account.get(Account, email=email)
-    #     verification_token = account.generate_verification_token
-    #     account.send_registration_email(verification_token)
-
-    #     # return account_record
-    #     return {}
-
-
+# TODO: Refactor to use SQL
 def verify_account(uow: UnitOfWork, token: str) -> Account:
     registration_details = Account.validate_verification_token(token)
     email = registration_details['email']
