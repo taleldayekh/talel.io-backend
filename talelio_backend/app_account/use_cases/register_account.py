@@ -9,10 +9,10 @@ from talelio_backend.identity_and_access.authentication import Authentication
 
 
 def register_account(uow: UnitOfWork, email: str, password: str, username: str) -> Account:
-    # whitelisted_emails = getenv('WHITELISTED_EMAILS')
+    whitelisted_emails = getenv('WHITELISTED_EMAILS')
 
-    # if whitelisted_emails is not None and email not in whitelisted_emails.split(','):
-    #     raise AccountRegistrationError('Email not whitelisted')
+    if whitelisted_emails is not None and email not in whitelisted_emails.split(','):
+        raise AccountRegistrationError('Email not whitelisted')
 
     with uow:
         if len(uow.account.get_by_email(email)):
@@ -28,13 +28,24 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         account = Account(email, password_hash)
 
         account_id = uow.account.create(account, user)
-        account = uow.account.get_by_id(account_id)
+        account_record = uow.account.get_by_id(account_id)
 
         verification_token = account.generate_verification_token
         account.send_registration_email(verification_token)
 
-        # TODO: Return account record
-        return {}
+        return {
+            "id": account_record[0],
+            "created_at": account_record[1],
+            "updated_at": account_record[2],
+            "email": account_record[3],
+            "verified": account_record[4],
+            "user": {
+                "id": account_record[5],
+                "username": account_record[6],
+                "location": account_record[7],
+                "avatar_url": account_record[8]
+            }
+        }
 
 
 # TODO: Refactor to use SQL

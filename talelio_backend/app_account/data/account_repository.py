@@ -28,12 +28,25 @@ class AccountRepository(BaseRepository):
 
     def get_by_id(self, id: int):
         QUERY = (f"""
-                //
+            SELECT account.id,
+                   account.created_at,
+                   account.updated_at,
+                   account.email,
+                   account.verified,
+                   "user".id,
+                   "user".username,
+                   "user".location,
+                   "user".avatar_url
+            FROM account JOIN "user"
+            ON account.id = "user".account_id
+            WHERE account.id = %s;
             """)
 
         with self.session as session:
             with session.cursor() as cursor:
-                pass
+                cursor.execute(QUERY, (id, ))
+
+                return cursor.fetchone()
 
     def get_by_email(self, email: str):
         QUERY = (f"""

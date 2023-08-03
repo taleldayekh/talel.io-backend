@@ -4,12 +4,14 @@ from types import TracebackType
 from typing import Any, Optional, Type
 
 from talelio_backend.app_account.data.account_repository import AccountRepository
+from talelio_backend.app_user.data.user_repository import UserRepository
 from talelio_backend.libs.db_client import DbClient
 
 
 class UnitOfWork:
     session: Any
     account: AccountRepository
+    user: UserRepository
 
     def __init__(self, db_client: DbClient = DbClient) -> None:
         self.db_client = db_client()
@@ -17,6 +19,7 @@ class UnitOfWork:
     def __enter__(self: UnitOfWork) -> UnitOfWork:
         self.session = self.db_client.get_connection
         self.account = AccountRepository(self.session)
+        self.user = UserRepository(self.session)
 
         return self
 

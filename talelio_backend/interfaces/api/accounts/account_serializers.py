@@ -9,4 +9,4 @@ class AccountSchema(Schema):
     updated_at = fields.DateTime()
     verified = fields.Bool()
     email = fields.Str()
-    user = fields.Nested(UserSchema)
+    user = fields.Nested(UserSchema(only=["id", "username", "location", "avatar_url"]))
