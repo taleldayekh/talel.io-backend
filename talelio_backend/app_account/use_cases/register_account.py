@@ -9,7 +9,15 @@ from talelio_backend.identity_and_access.authentication import Authentication
 
 
 def register_account(uow: UnitOfWork, email: str, password: str, username: str) -> Account:
+    # whitelisted_emails = getenv('WHITELISTED_EMAILS')
+
+    # if whitelisted_emails is not None and email not in whitelisted_emails.split(','):
+    #     raise AccountRegistrationError('Email not whitelisted')
+
     with uow:
+        if len(uow.account.get_by_email(email)):
+            raise AccountRegistrationError(f"Account with the email '{email}' already exists")
+
         password_hash = Authentication().generate_password_hash(password)
 
         user = User(username)
@@ -19,14 +27,9 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
 
         return {}
 
-    # whitelisted_emails = getenv('WHITELISTED_EMAILS')
-
-    # if whitelisted_emails is not None and email not in whitelisted_emails.split(','):
-    #     raise AccountRegistrationError('Email not whitelisted')
-
     # with uow:
-    #     # if uow.account.get(Account, email=email) is not None:
-    #     #     raise AccountRegistrationError(f"Account with the email '{email}' already exists")
+    # if uow.account.get(Account, email=email) is not None:
+    #     raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
     #     # if uow.user.get(User, username=username):
     #     #     raise AccountRegistrationError(
