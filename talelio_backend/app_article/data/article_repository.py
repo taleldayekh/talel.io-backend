@@ -72,7 +72,41 @@ class ArticleRepository(BaseRepository):
 
     def get_by_slug(self, slug: str):
         QUERY = (f"""
+            WITH selected_article AS
+                (
+                    SELECT 
+                           article.id,
+                           article.created_at,
+                           article.updated_at,
+                           article.title,
+                           article.slug,
+                           article.body,
+                           article.html,
+                           article.meta_description,
+                           article.table_of_contents,
+                           article.featured_image,
+                           article.url,
+                           "user".id,
+                           "user".username,
+                           "user".location,
+                           "user".avatar_url,
+                           LAG(title) OVER(ORDER BY article.created_at) as prev_title,
+                           LAG(slug) OVER(ORDER BY article.created_at) as prev_slug,
+                           LEAD(title) OVER(ORDER BY article.created_at) as next_title,
+                           LEAD(slug) OVER(ORDER BY article.created_at) as next_slug
+                    FROM article
+                    JOIN "user" ON user_id = "user".id
+                )
+            SELECT *
+            FROM selected_article
+            WHERE slug = %s;
         """)
+
+        with self.session as session:
+            with session.cursor() as cursor:
+                cursor.execute(QUERY, (slug, ))
+
+                return cursor.fetchone()
 
     def get_all_for_user(self, username: str, limit: int, offset: int):
         QUERY = (f"""
@@ -110,39 +144,3 @@ class ArticleRepository(BaseRepository):
                 cursor.execute(QUERY, (username, limit, offset))
 
                 return cursor.fetchall()
-
-    def get(self, model: Any, **kwargs: Any) -> Any:
-        if not kwargs:
-            query_res = self.session.query(model).order_by(model.id.desc()).first()
-
-            return query_res
-        if 'slug' in kwargs:
-            # TODO: Improve querying to be more efficient instead of making multiple queries.
-            slug = kwargs.get('slug')
-
-            article_query_res = self.session.query(model).filter_by(slug=slug).first()
-
-            if article_query_res is not None:
-                next_article_query = self.session.query(model).with_entities(
-                    model.title, model.slug)
-                next_article_query = next_article_query.order_by(model.id.asc())
-                next_article_query_res = next_article_query.where(
-                    model.id > article_query_res.id).first()
-
-                prev_article_query = self.session.query(model).with_entities(
-                    model.title, model.slug)
-                prev_article_query = prev_article_query.order_by(model.id.desc())
-                prev_article_query_res = prev_article_query.where(
-                    model.id < article_query_res.id).first()
-            else:
-                next_article_query_res = None
-                prev_article_query_res = None
-
-            return {
-                'article': article_query_res,
-                'next_article_meta': next_article_query_res,
-                'prev_article_meta': prev_article_query_res
-            }
-
-        # TODO: Raise exception and return 404.
-        return {}
