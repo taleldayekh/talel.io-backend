@@ -18,7 +18,7 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         if uow.account.get_by_email(email) is not None:
             raise AccountRegistrationError(f"Account with the email '{email}' already exists")
 
-        if len(uow.user.get_by_username(username)):
+        if uow.user.get_by_username(username) is not None:
             raise AccountRegistrationError(
                 f"Account with the username '{username}' already exists")
 
@@ -34,11 +34,13 @@ def register_account(uow: UnitOfWork, email: str, password: str, username: str) 
         account.send_registration_email(verification_token)
 
         return {
-            "id": account_record[0],
-            "created_at": account_record[1],
-            "updated_at": account_record[2],
-            "email": account_record[3],
-            "verified": account_record[5],
+            "account": {
+                "id": account_record[0],
+                "created_at": account_record[1],
+                "updated_at": account_record[2],
+                "email": account_record[3],
+                "verified": account_record[5],
+            },
             "user": {
                 "id": account_record[6],
                 "username": account_record[7],

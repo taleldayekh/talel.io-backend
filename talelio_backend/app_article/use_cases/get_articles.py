@@ -16,18 +16,12 @@ def get_articles_for_user(
 
         offset = Pagination.calculate_offset(page, limit)
 
-        user_articles_record = uow.articles.get(User,
-                                                username=username,
-                                                limit=limit,
-                                                offset=offset)
+        articles_record = uow.article.get_all_for_user(username, limit, offset)
 
-        if len(user_articles_record) == 0:
+        if not len(articles_record):
             return {}
 
-        user_articles_record = user_articles_record[0]._asdict()
-
-        user = user_articles_record['User']
-        total_articles_count = user_articles_record['total_articles_count']
+        total_articles_count = articles_record[0][15]
 
         pages = Pagination.total_pages(total_articles_count, limit)
         last_page = page == pages
@@ -37,7 +31,29 @@ def get_articles_for_user(
         prev_link = (f'/users/{username}/articles?page={page - 1}&limit={limit}' if page -
                      1 != 0 else None)
 
+        articles = [{
+            'id': article_record[0],
+            'created_at': article_record[1],
+            'updated_at': article_record[2],
+            'title': article_record[3],
+            'slug': article_record[4],
+            'body': article_record[5],
+            'html': article_record[6],
+            'meta_description': article_record[7],
+            'table_of_contents': article_record[8],
+            'featured_image': article_record[9],
+            'url': article_record[10],
+        } for article_record in articles_record]
+
+        user = {
+            'id': articles_record[0][11],
+            'username': articles_record[0][12],
+            'location': articles_record[0][13],
+            'avatar_url': articles_record[0][14],
+        }
+
         return {
+            'articles': articles,
             'user': user,
             'total_articles_count': total_articles_count,
             'next_link': next_link,

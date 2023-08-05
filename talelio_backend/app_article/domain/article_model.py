@@ -9,11 +9,7 @@ from talelio_backend.shared.utils.slug import generate_slug
 class Article:
     __article_base_url = 'https://www.talel.io/articles/'
 
-    def __init__(self,
-                 title: str,
-                 body: str,
-                 meta_description: str,
-                 featured_image: Optional[Union[str, None]] = None) -> None:
+    def __init__(self, title: str, body: str, meta_description: str, featured_image: str) -> None:
         self.title = title
         self.slug = generate_slug(title)
         self.body = body

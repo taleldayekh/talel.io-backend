@@ -16,7 +16,7 @@ from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.identity_and_access.token_store import TokenStore
-from talelio_backend.interfaces.api.accounts.account_serializers import AccountSchema
+from talelio_backend.interfaces.api.accounts.account_serializers import SerializeAccount
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
 
@@ -36,7 +36,7 @@ def register_account_endpoint() -> Tuple[Response, int]:
         username = request.json['username']
 
         registered_account = register_account(uow, email, password, username)
-        res_body = AccountSchema().dump(registered_account)
+        res_body = SerializeAccount().dump(registered_account)
 
         return res_body, 201
     except KeyError as error:
@@ -51,7 +51,7 @@ def verify_account_endpoint(token: str) -> Tuple[Response, int]:
         uow = UnitOfWork()
 
         verified_account = verify_account(uow, token)
-        res_body = AccountSchema().dump(verified_account)
+        res_body = SerializeAccount().dump(verified_account)
 
         return res_body, 200
     except InvalidSignatureError as error:
