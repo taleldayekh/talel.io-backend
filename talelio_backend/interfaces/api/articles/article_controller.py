@@ -38,7 +38,7 @@ def create_article_endpoint() -> Tuple[Response, int]:
 
             created_article = create_article(uow, user_id, title, body, meta_description,
                                              featured_image)
-            print(created_article)
+
             res_body = SerializeArticle().dump(created_article)
 
             return res_body, 201
@@ -59,9 +59,12 @@ def get_article_endpoint(slug: str) -> Tuple[Response, int]:
         article = get_article(uow, slug)
         meta = {'adjacent_articles': article['adjacent_articles']}
 
-        # res_body = ArticleResponseSchema().dump({'meta': meta, 'article': article['article']})
+        res_body = SerializeArticle().dump({
+            'meta': meta,
+            'article': article['article'],
+            'user': article['user']
+        })
 
-        # return res_body, 200
-        return 200
+        return res_body, 200
     except ArticleError as error:
         raise APIError(str(error), 404) from error
