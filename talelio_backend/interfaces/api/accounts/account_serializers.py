@@ -1,12 +1,9 @@
 from marshmallow import Schema, fields
 
-from talelio_backend.interfaces.api.users.user_serializers import UserSchema
+from talelio_backend.interfaces.api.accounts.account_schema import AccountSchema
+from talelio_backend.interfaces.api.users.user_schema import UserSchema
 
 
-class AccountSchema(Schema):
-    id = fields.Int()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
-    verified = fields.Bool()
-    email = fields.Str()
-    user = fields.Nested(UserSchema(only=["id", "username", "location", "avatar_url"]))
+class SerializeAccount(Schema):
+    account = fields.Nested(AccountSchema)
+    user = fields.Nested(UserSchema(only=['id', 'username', 'location', 'avatar_url']))
