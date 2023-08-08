@@ -5,20 +5,29 @@ from unittest.mock import patch
 import pytest
 from flask.testing import FlaskClient
 
-from talelio_backend.core.db import engine
-from talelio_backend.shared.data.orm import metadata
+from talelio_backend.libs.db_client import DbClient
 from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, ARTICLES_BASE_URL, PROJECTS_BASE_URL
 from talelio_backend.tests.mocks.accounts import talel_login_data, talel_registration_data
 from talelio_backend.tests.mocks.articles import articles
-from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
+# TODO: Uncomment when projects are implemented
+# from talelio_backend.tests.mocks.projects import talelio_client_project, talelio_server_project
 from talelio_backend.tests.utils import generate_authorization_header
 
 
-@pytest.fixture(scope='class', autouse=True)
+@pytest.yield_fixture(scope='class', autouse=True)
 def test_db() -> Generator:
-    metadata.create_all(engine)
     yield
-    metadata.drop_all(engine)
+
+    db_client = DbClient()
+    connection = db_client.get_connection
+
+    with connection:
+        with connection.cursor() as cursor:
+            QUERY = (f"""
+                DROP OWNED BY test_user CASCADE;
+            """)
+
+            cursor.execute(QUERY)
 
 
 @pytest.fixture(scope='class', name='authorization_header')
@@ -32,10 +41,11 @@ def populate_db_account(api_server: FlaskClient) -> None:
         api_server.post(f'{ACCOUNTS_BASE_URL}/register', json=talel_registration_data)
 
 
-@pytest.fixture(scope='class')
-def populate_db_projects(api_server: FlaskClient, authorization_header: Dict[str, str]) -> None:
-    for project in [talelio_server_project, talelio_client_project]:
-        api_server.post(PROJECTS_BASE_URL, headers=authorization_header, json=project)
+# TODO: Uncomment when projects are implemented
+# @pytest.fixture(scope='class')
+# def populate_db_projects(api_server: FlaskClient, authorization_header: Dict[str, str]) -> None:
+#     for project in [talelio_server_project, talelio_client_project]:
+#         api_server.post(PROJECTS_BASE_URL, headers=authorization_header, json=project)
 
 
 @pytest.fixture(scope='class')
