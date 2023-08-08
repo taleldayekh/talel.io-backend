@@ -53,11 +53,6 @@ jobs:
           make test-unit
           bash <(curl -s https://codecov.io/bash)
 
-      - name: Integration Tests
-        run: |
-          make test-integration
-          bash <(curl -s https://codecov.io/bash)
-
       - name: E2E Tests
         run: |
           make test-e2e

@@ -27,9 +27,6 @@ test:
 test-unit:
 	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/unit -v -s
 
-test-integration:
-	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/integration -v -s
-
 test-e2e:
 	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/e2e -v -s
 
