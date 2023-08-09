@@ -18,39 +18,26 @@ class TestCreateArticle(RequestHelper):
         res_data = json.loads(res.data)
 
         assert res.status_code == 201
-        assert res_data['title'] == art_to_engineering_article['title']
-        assert res_data['body'] == art_to_engineering_article['body']
-        assert res_data['meta_description'] == art_to_engineering_article['meta_description']
+        assert res_data['article']['title'] == art_to_engineering_article['title']
+        assert res_data['article']['body'] == art_to_engineering_article['body']
+        assert res_data['article']['meta_description'] == art_to_engineering_article[
+            'meta_description']
+        assert res_data['article']['featured_image'] == art_to_engineering_article[
+            'featured_image']
 
-    def test_can_generate_slug_with_id_on_conflict(self, authorization_header: Dict[str,
-                                                                                    str]) -> None:
+    def test_can_generate_slug_with_incremental_number_suffix_on_conflict(
+            self, authorization_header: Dict[str, str]) -> None:
         res_one = self.create_article_request(authorization_header, private_blockchain_article)
-        res_one_slug = json.loads(res_one.data)['slug']
+        res_one_slug = json.loads(res_one.data)['article']['slug']
 
         res_two = self.create_article_request(authorization_header, private_blockchain_article)
         res_two_data = json.loads(res_two.data)
-        res_two_id = res_two_data['id']
 
-        assert res_two_data['slug'] == f'{res_one_slug}-{res_two_id}'
+        res_three = self.create_article_request(authorization_header, private_blockchain_article)
+        res_three_data = json.loads(res_three.data)
 
-    def test_can_create_article_with_featured_image(self, authorization_header: Dict[str,
-                                                                                     str]) -> None:
-        provided_featured_image = 'https://url/to/provided-featured-image.jpg'
-
-        art_to_engineering_article_copy = dict(art_to_engineering_article)
-        art_to_engineering_article_copy['featured_image'] = provided_featured_image
-
-        res = self.create_article_request(authorization_header, art_to_engineering_article_copy)
-        res_data = json.loads(res.data)
-
-        assert res_data['featured_image'] == provided_featured_image
-
-    def test_can_create_article_with_no_featured_image(
-            self, authorization_header: Dict[str, str]) -> None:
-        res = self.create_article_request(authorization_header, art_to_engineering_article)
-        res_data = json.loads(res.data)
-
-        assert not res_data['featured_image']
+        assert res_two_data['article']['slug'] == f'{res_one_slug}-2'
+        assert res_three_data['article']['slug'] == f'{res_one_slug}-3'
 
     def test_cannot_create_article_when_missing_details(
             self, authorization_header: Dict[str, str]) -> None:
