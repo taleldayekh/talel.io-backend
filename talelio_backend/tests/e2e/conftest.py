@@ -5,6 +5,8 @@ from unittest.mock import patch
 import pytest
 from flask.testing import FlaskClient
 
+from talelio_backend.data.db_tables import (CREATE_ACCOUNT_TABLE, CREATE_ARTICLE_TABLE,
+                                            CREATE_USER_TABLE)
 from talelio_backend.libs.db_client import DbClient
 from talelio_backend.tests.constants import ACCOUNTS_BASE_URL, ARTICLES_BASE_URL, PROJECTS_BASE_URL
 from talelio_backend.tests.mocks.accounts import talel_login_data, talel_registration_data
@@ -14,20 +16,31 @@ from talelio_backend.tests.mocks.articles import articles
 from talelio_backend.tests.utils import generate_authorization_header
 
 
-@pytest.yield_fixture(scope='class', autouse=True)
+@pytest.fixture(scope='class', autouse=True)
 def test_db() -> Generator:
-    yield
-
     db_client = DbClient()
     connection = db_client.get_connection
 
     with connection:
         with connection.cursor() as cursor:
+            cursor.execute(CREATE_ACCOUNT_TABLE)
+            cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_ARTICLE_TABLE)
+
+    # connection.close()
+
+    yield
+    with connection:
+        with connection.cursor() as cursor:
             QUERY = (f"""
-                DROP OWNED BY test_user CASCADE;
+                DROP TABLE account CASCADE;
+                DROP TABLE "user" CASCADE;
+                DROP TABLE article;
             """)
 
             cursor.execute(QUERY)
+
+    connection.close()
 
 
 @pytest.fixture(scope='class', name='authorization_header')
