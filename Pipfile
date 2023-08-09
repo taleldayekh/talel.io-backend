@@ -4,13 +4,11 @@ verify_ssl = true
 name = "pypi"
 
 [packages]
-alembic = "==1.11.1"
 flask = "==2.3.2"
 flask-cors = "==4.0.0"
 gunicorn = "==21.1.0"
 psycopg2 = "==2.9.6"
 marshmallow = "==3.19.0"
-sqlalchemy = "==2.0.19"
 markdown = "==3.4.3"
 pyjwt = "==2.8.0"
 boto3 = "==1.28.5"
@@ -31,7 +29,6 @@ fakeredis = "==2.17.0"
 types-redis = "==4.6.0.2"
 types-markdown = "==3.4.2.9"
 types-freezegun = "==1.1.10"
-sqlalchemy = {extras = ["mypy"], version = "*"}
 moto = {version = "==4.1.13", extras = ["s3"]}
 
 [requires]

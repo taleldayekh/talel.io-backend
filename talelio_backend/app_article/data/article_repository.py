@@ -1,9 +1,3 @@
-from typing import Any
-
-from sqlalchemy.orm import contains_eager
-from sqlalchemy.sql import text
-from sqlalchemy.sql.expression import func
-
 from talelio_backend.app_article.domain.article_model import Article
 from talelio_backend.shared.data.repository import BaseRepository
 
