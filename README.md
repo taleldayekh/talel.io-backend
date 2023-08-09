@@ -63,7 +63,7 @@ pipenv shell
 Install PostgreSQL:
 
 ```shell
-brew install postgresql@14
+brew install postgresql@<version>
 ```
 
 Install dependencies and dev dependencies by navigating to the project root and running:

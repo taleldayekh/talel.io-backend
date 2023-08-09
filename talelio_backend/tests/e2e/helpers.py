@@ -31,10 +31,10 @@ class RequestHelper:
         return self.api.post(f'{ACCOUNTS_BASE_URL}/login', json=request_payload)  # type: ignore
 
     def new_access_token_request(self, refresh_token_data: Union[str, None] = None) -> Response:
-        self.api.cookie_jar.clear_session_cookies()  # type: ignore
+        self.api.delete_cookie('refresh_token')  # type: ignore
 
         if refresh_token_data:
-            self.api.set_cookie('', 'refresh_token', refresh_token_data)  # type: ignore
+            self.api.set_cookie('refresh_token', refresh_token_data)  # type: ignore
 
         return self.api.post(  # type: ignore
             f'{ACCOUNTS_BASE_URL}/token')

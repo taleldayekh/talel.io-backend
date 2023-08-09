@@ -2,15 +2,15 @@ version: '3'
 
 services:
   postgres-development:
-    build:
-      context: ./docker
-      dockerfile: talelio_db_development.Dockerfile
+    image: postgres:15.3-alpine
+    environment:
+      - POSTGRES_USER=test_user
+      - POSTGRES_PASSWORD=test_password
+      - POSTGRES_DB=test_db
     ports:
       - 5432:5432
 
   redis-development:
-    build:
-      context: ./docker
-      dockerfile: talelio_redis.Dockerfile
+    image: redis:7.0.11-alpine
     ports:
       - 6379:6379
