@@ -53,14 +53,15 @@ def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Res
         raise APIError('Expected numeric query parameters', 400) from error
 
 
-@users_v1.get('/<string:username>/projects')
-def get_user_projects_endpoint(username: str) -> Tuple[Response, int]:
-    try:
-        uow = UnitOfWork()
+# TODO: Uncomment when ready for implementation
+# @users_v1.get('/<string:username>/projects')
+# def get_user_projects_endpoint(username: str) -> Tuple[Response, int]:
+#     try:
+#         uow = UnitOfWork()
 
-        user_projects = get_user_projects(uow, username)
-        res_body = ProjectSchema(many=True).dump(user_projects)
+#         user_projects = get_user_projects(uow, username)
+#         res_body = ProjectSchema(many=True).dump(user_projects)
 
-        return jsonify(res_body), 200
-    except UserError as error:
-        raise APIError(str(error), 400) from error
+#         return jsonify(res_body), 200
+#     except UserError as error:
+#         raise APIError(str(error), 400) from error

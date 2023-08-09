@@ -45,21 +45,22 @@ def register_account_endpoint() -> Tuple[Response, int]:
         raise APIError(str(error), 400) from error
 
 
-@accounts_v1.get('/verify/<string:token>')
-def verify_account_endpoint(token: str) -> Tuple[Response, int]:
-    try:
-        uow = UnitOfWork()
+# TODO: Add once account PUT is implemented in repository
+# @accounts_v1.get('/verify/<string:token>')
+# def verify_account_endpoint(token: str) -> Tuple[Response, int]:
+#     try:
+#         uow = UnitOfWork()
 
-        verified_account = verify_account(uow, token)
-        res_body = SerializeAccount().dump(verified_account)
+#         verified_account = verify_account(uow, token)
+#         res_body = SerializeAccount().dump(verified_account)
 
-        return res_body, 200
-    except InvalidSignatureError as error:
-        raise APIError(str(error), 400) from error
-    except AccountError as error:
-        raise APIError(str(error), 400) from error
-    except AccountVerificationError as error:
-        raise APIError(str(error), 400) from error
+#         return res_body, 200
+#     except InvalidSignatureError as error:
+#         raise APIError(str(error), 400) from error
+#     except AccountError as error:
+#         raise APIError(str(error), 400) from error
+#     except AccountVerificationError as error:
+#         raise APIError(str(error), 400) from error
 
 
 @accounts_v1.post('/login')
