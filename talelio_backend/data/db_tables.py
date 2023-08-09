@@ -1,3 +1,5 @@
+from talelio_backend.libs.db_client import DbClient
+
 TIME_ZONE = 'Europe/Berlin'
 
 CREATE_ACCOUNT_TABLE = (f"""
@@ -42,3 +44,33 @@ CREATE_ARTICLE_TABLE = (f"""
         url TEXT NOT NULL
     );
     """)
+
+
+def create_db_tables():
+    db_client = DbClient()
+    connection = db_client.get_connection
+
+    with connection:
+        with connection.cursor() as cursor:
+            cursor.execute(CREATE_ACCOUNT_TABLE)
+            cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_ARTICLE_TABLE)
+
+    return connection
+
+
+def drop_db_tables():
+    db_client = DbClient()
+    connection = db_client.get_connection
+
+    with connection:
+        with connection.cursor() as cursor:
+            QUERY = (f"""
+                DROP TABLE account CASCADE;
+                DROP TABLE "user" CASCADE;
+                DROP TABLE article;
+            """)
+
+            cursor.execute(QUERY)
+
+    return connection
