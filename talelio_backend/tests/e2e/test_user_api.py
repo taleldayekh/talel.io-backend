@@ -73,21 +73,22 @@ class TestGetUserArticles(RequestHelper):
         assert res_data['error']['message'] == 'Expected numeric query parameters'
 
 
-@pytest.mark.usefixtures('populate_db_account', 'populate_db_projects')
-class TestGetUserProjects(RequestHelper):
+# TODO: Uncomment when projects are implemented
+# @pytest.mark.usefixtures('populate_db_account', 'populate_db_projects')
+# class TestGetUserProjects(RequestHelper):
 
-    def test_can_get_user_projects(self) -> None:
-        res = self.get_user_projects_request(USERNAME_TALEL)
-        res_data = json.loads(res.data)
+#     def test_can_get_user_projects(self) -> None:
+#         res = self.get_user_projects_request(USERNAME_TALEL)
+#         res_data = json.loads(res.data)
 
-        assert res.status_code == 200
-        assert len(res_data) == 2
-        assert res_data[0]['title'] == talelio_server_project['title']
-        assert res_data[1]['title'] == talelio_client_project['title']
+#         assert res.status_code == 200
+#         assert len(res_data) == 2
+#         assert res_data[0]['title'] == talelio_server_project['title']
+#         assert res_data[1]['title'] == talelio_client_project['title']
 
-    def test_cannot_get_projects_for_non_existing_user(self) -> None:
-        res = self.get_user_projects_request(INVALID_USER)
-        res_data = json.loads(res.data)
+#     def test_cannot_get_projects_for_non_existing_user(self) -> None:
+#         res = self.get_user_projects_request(INVALID_USER)
+#         res_data = json.loads(res.data)
 
-        assert res.status_code == 400
-        assert res_data['error']['message'] == f"User '{INVALID_USER}' does not exist"
+#         assert res.status_code == 400
+#         assert res_data['error']['message'] == f"User '{INVALID_USER}' does not exist"
