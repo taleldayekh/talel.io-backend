@@ -4,7 +4,6 @@ from typing import Dict
 
 from jwt import InvalidSignatureError
 
-from talelio_backend.app_user.domain.user_model import User
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER,
                                               ENV)

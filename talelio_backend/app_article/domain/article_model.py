@@ -1,5 +1,4 @@
 # pylint: disable=R0902
-from typing import Optional, Union
 
 from markdown import Markdown
 

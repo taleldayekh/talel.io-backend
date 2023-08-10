@@ -1,12 +1,14 @@
+from typing import Any
+
 from talelio_backend.app_account.domain.account_model import Account
 from talelio_backend.app_user.domain.user_model import User
-from talelio_backend.shared.data.repository import BaseRepository
+from talelio_backend.data.repository import BaseRepository
 
 
 class AccountRepository(BaseRepository):
 
     def create(self, account: Account, user: User) -> int:
-        QUERY = (f"""
+        query = """
             WITH created_account AS
             (
                 INSERT INTO account (email, password)
@@ -17,17 +19,17 @@ class AccountRepository(BaseRepository):
             SELECT %s, %s, %s, id
             FROM created_account
             RETURNING account_id;
-            """)
+            """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(QUERY, (account.email, account.password, user.username,
+                cursor.execute(query, (account.email, account.password, user.username,
                                        user.location, user.avatar_url))
 
                 return cursor.fetchone()[0]
 
-    def get_by_id(self, id: int):
-        QUERY = (f"""
+    def get_by_id(self, account_id: int) -> tuple[Any, ...]:
+        query = """
             SELECT account.id,
                    account.created_at,
                    account.updated_at,
@@ -41,16 +43,16 @@ class AccountRepository(BaseRepository):
             FROM account JOIN "user"
             ON account.id = "user".account_id
             WHERE account.id = %s;
-            """)
+            """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(QUERY, (id, ))
+                cursor.execute(query, (account_id, ))
 
                 return cursor.fetchone()
 
-    def get_by_email(self, email: str):
-        QUERY = (f"""
+    def get_by_email(self, email: str) -> tuple[Any, ...]:
+        query = """
             SELECT account.id,
                    account.created_at,
                    account.updated_at,
@@ -64,10 +66,10 @@ class AccountRepository(BaseRepository):
             FROM account JOIN "user"
             ON account.id = "user".account_id
             WHERE account.email = %s;
-            """)
+            """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(QUERY, (email, ))
+                cursor.execute(query, (email, ))
 
                 return cursor.fetchone()

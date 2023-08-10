@@ -1,9 +1,9 @@
 from os import getenv
 from typing import Dict, Union
 
-from psycopg2 import OperationalError, connect
+from psycopg2 import OperationalError, connect, connection
 
-from talelio_backend.core.exceptions import DatabaseError
+from talelio_backend.shared.exceptions import DatabaseError
 
 connection_values = {
     'dbname': getenv('DB_NAME'),
@@ -26,9 +26,9 @@ class DbClient:
         self.db_connection_values = connection_values
 
     @property
-    def get_connection(self):
+    def get_connection(self) -> connection:
         try:
-            connection = connect(**self.db_connection_values)
-            return connection
-        except OperationalError:
-            raise DatabaseError('Failed to connect to database')
+            conn = connect(**self.db_connection_values)
+            return conn
+        except OperationalError as error:
+            raise DatabaseError('Failed to connect to database') from error

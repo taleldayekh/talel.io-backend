@@ -1,15 +1,16 @@
-from typing import Dict, Optional, Union, cast
+from typing import Dict, List, Optional, Union
 
 from talelio_backend.app_article.domain.article_model import Article
-from talelio_backend.app_user.domain.user_model import User
-from talelio_backend.core.exceptions import ArticleError
 from talelio_backend.data.uow import UnitOfWork
+from talelio_backend.shared.exceptions import ArticleError
 from talelio_backend.shared.utils.pagination import Pagination
 
 
 def get_articles_for_user(
-        uow: UnitOfWork, username: str, page: Optional[Union[int, None]],
-        limit: Optional[Union[int, None]]) -> Union[Dict, Dict[str, Union[User, int, str, None]]]:
+    uow: UnitOfWork, username: str, page: Optional[Union[int, None]], limit: Optional[Union[int,
+                                                                                            None]]
+) -> Union[Dict, Dict[str, Union[List[Dict[str, Union[str, int]]], Dict, str, None]]]:
+
     with uow:
         page = page if page and page != 0 else 1
         limit = limit if limit and limit != 0 else 10
@@ -18,7 +19,7 @@ def get_articles_for_user(
 
         articles_record = uow.article.get_all_for_user(username, limit, offset)
 
-        if not len(articles_record):
+        if len(articles_record) == 0:
             return {}
 
         total_articles_count = articles_record[0][15]
@@ -55,7 +56,7 @@ def get_articles_for_user(
         return {
             'articles': articles,
             'user': user,
-            'total_articles_count': total_articles_count,
+            'total_articles_count': str(total_articles_count),
             'next_link': next_link,
             'prev_link': prev_link
         }

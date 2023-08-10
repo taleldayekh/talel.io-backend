@@ -3,15 +3,12 @@ from typing import Tuple, cast
 from flask import Blueprint, Response, current_app, jsonify, request
 from jwt import DecodeError, InvalidSignatureError
 
-from talelio_backend.app_account.use_cases.register_account import register_account, verify_account
+from talelio_backend.app_account.use_cases.register_account import register_account
 from talelio_backend.app_user.use_cases.authenticate_user import (delete_refresh_token,
                                                                   generate_access_token,
                                                                   get_access_token,
                                                                   set_refresh_token,
                                                                   verify_refresh_token)
-from talelio_backend.core.exceptions import (AccountError, AccountRegistrationError,
-                                             AccountVerificationError, AuthorizationError,
-                                             TokenError)
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
@@ -19,6 +16,9 @@ from talelio_backend.identity_and_access.token_store import TokenStore
 from talelio_backend.interfaces.api.accounts.account_serializers import SerializeAccount
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
+from talelio_backend.shared.exceptions import (AccountError, AccountRegistrationError,
+                                               AccountVerificationError, AuthorizationError,
+                                               TokenError)
 
 accounts_v1 = Blueprint('accounts_v1', __name__)
 

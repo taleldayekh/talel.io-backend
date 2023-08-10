@@ -15,7 +15,7 @@ class UnitOfWork:
     user: UserRepository
     article: ArticleRepository
 
-    def __init__(self, db_client: DbClient = DbClient) -> None:
+    def __init__(self, db_client: type[DbClient] = DbClient) -> None:
         self.db_client = db_client()
 
     def __enter__(self: UnitOfWork) -> UnitOfWork:

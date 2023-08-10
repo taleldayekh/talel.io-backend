@@ -1,8 +1,10 @@
+from psycopg2 import connection
+
 from talelio_backend.libs.db_client import DbClient
 
 TIME_ZONE = 'Europe/Berlin'
 
-CREATE_ACCOUNT_TABLE = (f"""
+create_account_table = f"""
     CREATE TABLE IF NOT EXISTS account
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -12,9 +14,9 @@ CREATE_ACCOUNT_TABLE = (f"""
         password VARCHAR(134) NOT NULL,
         verified BOOLEAN NOT NULL DEFAULT FALSE
     );
-    """)
+    """
 
-CREATE_USER_TABLE = (f"""
+create_user_table = f"""
     CREATE TABLE IF NOT EXISTS "user"
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -25,9 +27,9 @@ CREATE_USER_TABLE = (f"""
         location VARCHAR(50),
         avatar_url VARCHAR(255)
     );
-    """)
+    """
 
-CREATE_ARTICLE_TABLE = (f"""
+create_article_table = f"""
     CREATE TABLE IF NOT EXISTS article
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -43,34 +45,34 @@ CREATE_ARTICLE_TABLE = (f"""
         featured_image VARCHAR(255) NOT NULL,
         url TEXT NOT NULL
     );
-    """)
+    """
 
 
-def create_db_tables():
+def create_db_tables() -> connection:
     db_client = DbClient()
-    connection = db_client.get_connection
+    conn = db_client.get_connection
 
-    with connection:
-        with connection.cursor() as cursor:
-            cursor.execute(CREATE_ACCOUNT_TABLE)
-            cursor.execute(CREATE_USER_TABLE)
-            cursor.execute(CREATE_ARTICLE_TABLE)
+    with conn:
+        with conn.cursor() as cursor:
+            cursor.execute(create_account_table)
+            cursor.execute(create_user_table)
+            cursor.execute(create_article_table)
 
-    return connection
+    return conn
 
 
-def drop_db_tables():
+def drop_db_tables() -> connection:
     db_client = DbClient()
-    connection = db_client.get_connection
+    conn = db_client.get_connection
 
-    with connection:
-        with connection.cursor() as cursor:
-            QUERY = (f"""
+    with conn:
+        with conn.cursor() as cursor:
+            query = """
                 DROP TABLE account CASCADE;
                 DROP TABLE "user" CASCADE;
                 DROP TABLE article;
-            """)
+            """
 
-            cursor.execute(QUERY)
+            cursor.execute(query)
 
-    return connection
+    return conn

@@ -4,13 +4,13 @@ from flask import Blueprint, Response, request
 
 from talelio_backend.app_article.use_cases.create_article import create_article
 from talelio_backend.app_article.use_cases.get_articles import get_article
-from talelio_backend.core.exceptions import ArticleError, AuthorizationError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.articles.article_serializer import SerializeArticle
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
+from talelio_backend.shared.exceptions import ArticleError, AuthorizationError
 
 articles_v1 = Blueprint('articles_v1', __name__)
 

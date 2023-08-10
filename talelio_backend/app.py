@@ -1,4 +1,4 @@
-from talelio_backend.core import create_app
+from talelio_backend import create_app
 
 app = create_app()
 

@@ -30,6 +30,7 @@ types-redis = "==4.6.0.2"
 types-markdown = "==3.4.2.9"
 types-freezegun = "==1.1.10"
 moto = {version = "==4.1.13", extras = ["s3"]}
+types-psycopg2 = "==2.9.21.11"
 
 [requires]
 python_version = "3.9"

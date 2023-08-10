@@ -1,17 +1,19 @@
+from typing import Any, List
+
 from talelio_backend.app_article.domain.article_model import Article
-from talelio_backend.shared.data.repository import BaseRepository
+from talelio_backend.data.repository import BaseRepository
 
 
 class ArticleRepository(BaseRepository):
 
-    def create(self, article: Article, user_id: int):
-        SEARCH_QUERY = (f"""
+    def create(self, article: Article, user_id: int) -> tuple[Any, ...]:
+        search_query = """
             SELECT *
             FROM article
             WHERE slug LIKE %s;
-            """)
+            """
 
-        INSERT_QUERY = (f"""
+        insert_query = """
             WITH created_article AS
             (
                 INSERT INTO article 
@@ -46,26 +48,26 @@ class ArticleRepository(BaseRepository):
                    "user".avatar_url
             FROM created_article JOIN "user"
             ON created_article.user_id = "user".id;
-            """)
+            """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(SEARCH_QUERY, ('%' + article.slug + '%', ))
+                cursor.execute(search_query, ('%' + article.slug + '%', ))
 
                 conflicting_slug = len(cursor.fetchall())
 
                 if conflicting_slug > 0:
                     article.slug = article.slug + '-' + str(conflicting_slug + 1)
 
-                cursor.execute(INSERT_QUERY,
+                cursor.execute(insert_query,
                                (user_id, article.title, article.slug, article.body, article.html,
                                 article.meta_description, article.table_of_contents,
                                 article.featured_image, article.url))
 
                 return cursor.fetchone()
 
-    def get_by_slug(self, slug: str):
-        QUERY = (f"""
+    def get_by_slug(self, slug: str) -> tuple[Any, ...]:
+        query = """
             WITH selected_article AS
                 (
                     SELECT 
@@ -94,16 +96,16 @@ class ArticleRepository(BaseRepository):
             SELECT *
             FROM selected_article
             WHERE slug = %s;
-        """)
+        """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(QUERY, (slug, ))
+                cursor.execute(query, (slug, ))
 
                 return cursor.fetchone()
 
-    def get_all_for_user(self, username: str, limit: int, offset: int):
-        QUERY = (f"""
+    def get_all_for_user(self, username: str, limit: int, offset: int) -> List[tuple[Any, ...]]:
+        query = """
             SELECT article.id,
                    article.created_at,
                    article.updated_at,
@@ -131,10 +133,10 @@ class ArticleRepository(BaseRepository):
             ORDER BY article.created_at DESC
             LIMIT %s
             OFFSET %s;
-            """)
+            """
 
         with self.session as session:
             with session.cursor() as cursor:
-                cursor.execute(QUERY, (username, limit, offset))
+                cursor.execute(query, (username, limit, offset))
 
                 return cursor.fetchall()

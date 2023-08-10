@@ -1,9 +1,11 @@
+from typing import Dict, Union
+
 from talelio_backend.app_article.domain.article_model import Article
 from talelio_backend.data.uow import UnitOfWork
 
 
 def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_description: str,
-                   featured_image: str) -> Article:
+                   featured_image: str) -> Dict[str, Dict[str, Union[str, int]]]:
     with uow:
         article = Article(title, body, meta_description, featured_image)
         article.convert_body_to_html

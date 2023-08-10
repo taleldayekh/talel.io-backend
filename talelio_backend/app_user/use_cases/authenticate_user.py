@@ -1,8 +1,7 @@
-from talelio_backend.app_account.domain.account_model import Account
-from talelio_backend.core.exceptions import AccountError, TokenError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.token_store import TokenStore
+from talelio_backend.shared.exceptions import AccountError, TokenError
 from talelio_backend.shared.utils.time import generate_time_from_now
 
 
