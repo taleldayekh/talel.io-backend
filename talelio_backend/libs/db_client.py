@@ -1,7 +1,7 @@
 from os import getenv
 from typing import Dict, Union
 
-from psycopg2 import OperationalError, connect, connection
+from psycopg2 import OperationalError, connect
 
 from talelio_backend.shared.exceptions import DatabaseError
 
@@ -26,7 +26,7 @@ class DbClient:
         self.db_connection_values = connection_values
 
     @property
-    def get_connection(self) -> connection:
+    def get_connection(self):
         try:
             conn = connect(**self.db_connection_values)
             return conn
