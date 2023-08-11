@@ -17,8 +17,7 @@ from talelio_backend.interfaces.api.accounts.account_serializers import Serializ
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
 from talelio_backend.shared.exceptions import (AccountError, AccountRegistrationError,
-                                               AccountVerificationError, AuthorizationError,
-                                               TokenError)
+                                               AuthorizationError, TokenError)
 
 accounts_v1 = Blueprint('accounts_v1', __name__)
 

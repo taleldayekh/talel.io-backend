@@ -1,3 +1,5 @@
+from psycopg2.extensions import connection
+
 from talelio_backend.libs.db_client import DbClient
 
 TIME_ZONE = 'Europe/Berlin'
@@ -46,7 +48,7 @@ create_article_table = f"""
     """
 
 
-def create_db_tables():
+def create_db_tables() -> connection:
     db_client = DbClient()
     conn = db_client.get_connection
 
@@ -59,7 +61,7 @@ def create_db_tables():
     return conn
 
 
-def drop_db_tables():
+def drop_db_tables() -> connection:
     db_client = DbClient()
     conn = db_client.get_connection
 

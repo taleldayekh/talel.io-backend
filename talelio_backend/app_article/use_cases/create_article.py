@@ -1,3 +1,4 @@
+# pylint: disable=W0104
 from typing import Dict, Union
 
 from talelio_backend.app_article.domain.article_model import Article
