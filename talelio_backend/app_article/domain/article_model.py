@@ -27,5 +27,5 @@ class Article:
 
     @property
     def generate_table_of_contents(self) -> None:
-        table_of_contents = self.__markdown.toc
+        table_of_contents = self.__markdown.toc  # type: ignore # pylint: disable=E1101
         self.table_of_contents = table_of_contents

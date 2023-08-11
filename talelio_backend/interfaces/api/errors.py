@@ -22,8 +22,13 @@ class APIError(Exception):
 
     @property
     def error_response(self) -> ErrorResponseType:
-        return ErrorResponseType(
-            dict(error=dict(status=self.status_code, type=self.status_type, message=self.message)))
+        return ErrorResponseType({
+            "error": {
+                "status": self.status_code,
+                "type": self.status_type,
+                "message": self.message
+            }
+        })
 
 
 def error_handlers(app: Flask) -> None:
