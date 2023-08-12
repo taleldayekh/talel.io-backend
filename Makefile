@@ -3,8 +3,7 @@ SRC_DIR = talelio_backend/
 start-dev-dbs:
 	export DB_URI=postgresql://test_user:test_password@localhost:5432/test_db && \
 	docker compose up -d && \
-	until pg_isready -h localhost -p 5432 -U test_user ; do echo "Waiting for PostgreSQL" ; done && \
-	cd $(SRC_DIR) && alembic upgrade head
+	until pg_isready -h localhost -p 5432 -U test_user ; do echo "Waiting for PostgreSQL" ; done
 
 stop-dev-dbs:
 	docker compose down
@@ -27,9 +26,6 @@ test:
 
 test-unit:
 	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/unit -v -s
-
-test-integration:
-	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/integration -v -s
 
 test-e2e:
 	pipenv run python3 -m pytest --cov-report=xml --cov-report term --cov=. ./$(SRC_DIR)/tests/e2e -v -s

@@ -1,30 +1,10 @@
-from os import getenv
+from psycopg2.extensions import connection
 
-import psycopg2
-
-db_connection_values = {
-    'db_host': getenv('DB_HOST'),
-    'db_port': getenv('DB_PORT'),
-    'db_name': getenv('DB_NAME'),
-    'db_user': getenv('DB_USER'),
-    'db_password': getenv('DB_PASSWORD')
-}
-
-for key, value in db_connection_values.items():
-    if not isinstance(value, str):
-        raise TypeError(f'No {key} env variable available')
-
-connection = psycopg2.connect(f'''
-    host={db_connection_values['db_host']}
-    port={db_connection_values['db_port']}
-    dbname={db_connection_values['db_name']}
-    user={db_connection_values['db_user']}
-    password={db_connection_values['db_password']}
-    ''')
+from talelio_backend.libs.db_client import DbClient
 
 TIME_ZONE = 'Europe/Berlin'
 
-CREATE_ACCOUNT_TABLE = (f"""
+create_account_table = f"""
     CREATE TABLE IF NOT EXISTS account
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -32,11 +12,11 @@ CREATE_ACCOUNT_TABLE = (f"""
         updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
         email VARCHAR(255) UNIQUE NOT NULL,
         password VARCHAR(134) NOT NULL,
-        verified BOOLEAN NOT NULL DEFAULT TRUE
+        verified BOOLEAN NOT NULL DEFAULT FALSE
     );
-    """)
+    """
 
-CREATE_USER_TABLE = (f"""
+create_user_table = f"""
     CREATE TABLE IF NOT EXISTS "user"
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -47,9 +27,9 @@ CREATE_USER_TABLE = (f"""
         location VARCHAR(50),
         avatar_url VARCHAR(255)
     );
-    """)
+    """
 
-CREATE_ARTICLE_TABLE = (f"""
+create_article_table = f"""
     CREATE TABLE IF NOT EXISTS article
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -65,27 +45,34 @@ CREATE_ARTICLE_TABLE = (f"""
         featured_image VARCHAR(255) NOT NULL,
         url TEXT NOT NULL
     );
-    """)
-
-# CREATE_PROJECT_TABLE = (
-#     """
-#     CREATE TABLE IF NOT EXISTS project
-#     (
-#         id,
-#         user_id,
-#         created_at,
-#         updated_at,
-#         title,
-#         body,
-#         html
-#     );
-#     """
-# )
+    """
 
 
-def create_tables() -> None:
-    with connection:
-        with connection.cursor() as cursor:
-            cursor.execute(CREATE_ACCOUNT_TABLE)
-            cursor.execute(CREATE_USER_TABLE)
-            cursor.execute(CREATE_ARTICLE_TABLE)
+def create_db_tables() -> connection:
+    db_client = DbClient()
+    conn = db_client.get_connection
+
+    with conn:
+        with conn.cursor() as cursor:
+            cursor.execute(create_account_table)
+            cursor.execute(create_user_table)
+            cursor.execute(create_article_table)
+
+    return conn
+
+
+def drop_db_tables() -> connection:
+    db_client = DbClient()
+    conn = db_client.get_connection
+
+    with conn:
+        with conn.cursor() as cursor:
+            query = """
+                DROP TABLE account CASCADE;
+                DROP TABLE "user" CASCADE;
+                DROP TABLE article;
+            """
+
+            cursor.execute(query)
+
+    return conn

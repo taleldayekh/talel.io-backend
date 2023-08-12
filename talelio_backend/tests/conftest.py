@@ -8,7 +8,7 @@ from boto3 import client
 from flask.testing import FlaskClient
 from moto import mock_s3
 
-from talelio_backend.core import create_app
+from talelio_backend import create_app
 from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL,
                                              S3_TEST_BUCKET)
 

@@ -5,8 +5,8 @@ from typing import List
 from uuid import uuid4
 
 from talelio_backend.app_assets.domain.asset_model import Asset
-from talelio_backend.core.exceptions import ImageError
 from talelio_backend.shared.constants import MAX_IMAGE_FILE_SIZE
+from talelio_backend.shared.exceptions import ImageError
 
 
 class Image(Asset):

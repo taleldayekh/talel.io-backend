@@ -1,8 +1,8 @@
 from functools import wraps
 from typing import Any, Union
 
-from talelio_backend.core.exceptions import AuthorizationError
 from talelio_backend.identity_and_access.authentication import Authentication
+from talelio_backend.shared.exceptions import AuthorizationError
 
 
 def authorization_required(authorization_header: Union[str, None]) -> Any:

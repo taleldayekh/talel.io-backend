@@ -27,7 +27,11 @@ jobs:
     env:
       HOST: localhost
       SECRET_KEY: test
-      DB_URI: postgresql://test_user:test_password@localhost:5432/test_db
+      DB_HOST: localhost
+      DB_PORT: 5432
+      DB_NAME: test_db
+      DB_USER: test_user
+      DB_PASSWORD: test_password
 
     steps:
       - name: Checkout Code
@@ -43,19 +47,14 @@ jobs:
           pip install pipenv
           pipenv install --dev
 
-      # - name: Static Code Analysis
-      #   run: |
-      #     make lint
-      #     make type-check
+      - name: Static Code Analysis
+        run: |
+          make lint
+          make type-check
 
       - name: Unit Tests
         run: |
           make test-unit
-          bash <(curl -s https://codecov.io/bash)
-
-      - name: Integration Tests
-        run: |
-          make test-integration
           bash <(curl -s https://codecov.io/bash)
 
       - name: E2E Tests

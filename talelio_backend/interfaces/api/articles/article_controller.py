@@ -4,14 +4,13 @@ from flask import Blueprint, Response, request
 
 from talelio_backend.app_article.use_cases.create_article import create_article
 from talelio_backend.app_article.use_cases.get_articles import get_article
-from talelio_backend.core.exceptions import ArticleError, AuthorizationError
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
-from talelio_backend.interfaces.api.articles.article_serializer import (ArticleResponseSchema,
-                                                                        ArticleSchema)
+from talelio_backend.interfaces.api.articles.article_serializer import SerializeArticle
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
+from talelio_backend.shared.exceptions import ArticleError, AuthorizationError
 
 articles_v1 = Blueprint('articles_v1', __name__)
 
@@ -35,11 +34,12 @@ def create_article_endpoint() -> Tuple[Response, int]:
             title = request.json['title']
             body = request.json['body']
             meta_description = request.json['meta_description']
-            featured_image = request.json.get('featured_image') or None
+            featured_image = request.json.get('featured_image')
 
             created_article = create_article(uow, user_id, title, body, meta_description,
                                              featured_image)
-            res_body = ArticleSchema().dump(created_article)
+
+            res_body = SerializeArticle().dump(created_article)
 
             return res_body, 201
         except KeyError as error:
@@ -59,7 +59,11 @@ def get_article_endpoint(slug: str) -> Tuple[Response, int]:
         article = get_article(uow, slug)
         meta = {'adjacent_articles': article['adjacent_articles']}
 
-        res_body = ArticleResponseSchema().dump({'meta': meta, 'article': article['article']})
+        res_body = SerializeArticle().dump({
+            'meta': meta,
+            'article': article['article'],
+            'user': article['user']
+        })
 
         return res_body, 200
     except ArticleError as error:

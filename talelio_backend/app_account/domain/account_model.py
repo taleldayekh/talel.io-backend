@@ -4,7 +4,6 @@ from typing import Dict
 
 from jwt import InvalidSignatureError
 
-from talelio_backend.app_user.domain.user_model import User
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.shared.constants import (EMAIL_PASS, EMAIL_SENDER, EMAIL_SERVER, EMAIL_USER,
                                               ENV)
@@ -15,10 +14,9 @@ DEV_VERIFICATION_URL = 'http://localhost:5000/v1/accounts/verify'
 
 class Account:
 
-    def __init__(self, email: str, password: str, user: User, verified: bool = False) -> None:
+    def __init__(self, email: str, password: str, verified: bool = False) -> None:
         self.email = email
         self.password = password
-        self.user = user
         self.verified = verified
 
     @property

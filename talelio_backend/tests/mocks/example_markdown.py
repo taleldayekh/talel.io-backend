@@ -40,7 +40,6 @@ PRIVATE_BLOCKCHAIN_ARTICLE_BODY = f'''
 ![private blockchain featured image]({PRIVATE_BLOCKCHAIN_FEATURED_IMAGE_URL})
 '''
 
-# TODO: Understand why featured image is required for test to not fail
 BACKUP_POSTGRES_ARTICLE_BODY = '''
 ![featured image]()
 '''

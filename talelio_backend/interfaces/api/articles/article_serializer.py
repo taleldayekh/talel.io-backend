@@ -1,35 +1,15 @@
 from marshmallow import Schema, fields
 
-
-class NextAndPrevArticleSchema(Schema):
-    title = fields.Str()
-    slug = fields.Str()
+from talelio_backend.interfaces.api.articles.article_schema import ArticleMetaSchema, ArticleSchema
+from talelio_backend.interfaces.api.users.user_schema import UserSchema
 
 
-class AdjacentArticlesSchema(Schema):
-    next = fields.Nested(NextAndPrevArticleSchema)
-    prev = fields.Nested(NextAndPrevArticleSchema)
-
-
-class ArticleMetaSchema(Schema):
-    adjacent_articles = fields.Nested(AdjacentArticlesSchema)
-
-
-class ArticleSchema(Schema):
-    id = fields.Int()
-    user_id = fields.Int()
-    created_at = fields.DateTime()
-    updated_at = fields.DateTime()
-    title = fields.Str()
-    slug = fields.Str()
-    body = fields.Str()
-    meta_description = fields.Str()
-    html = fields.Str()
-    table_of_contents = fields.Str()
-    featured_image = fields.Str()
-    url = fields.Str()
-
-
-class ArticleResponseSchema(Schema):
+class SerializeArticle(Schema):
     meta = fields.Nested(ArticleMetaSchema)
     article = fields.Nested(ArticleSchema)
+    user = fields.Nested(UserSchema(only=['id', 'username', 'location', 'avatar_url']))
+
+
+class SerializeArticles(Schema):
+    articles = fields.Nested(ArticleSchema, many=True)
+    user = fields.Nested(UserSchema(only=['id', 'username', 'location', 'avatar_url']))

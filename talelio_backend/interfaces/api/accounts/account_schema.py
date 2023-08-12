@@ -1,11 +1,9 @@
 from marshmallow import Schema, fields
 
 
-class ProjectSchema(Schema):
+class AccountSchema(Schema):
     id = fields.Int()
-    user_id = fields.Int()
     created_at = fields.DateTime()
     updated_at = fields.DateTime()
-    title = fields.Str()
-    body = fields.Str()
-    html = fields.Str()
+    verified = fields.Bool()
+    email = fields.Str()

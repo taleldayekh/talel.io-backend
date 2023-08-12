@@ -3,8 +3,8 @@ from unittest.mock import patch
 import pytest
 
 from talelio_backend.app_assets.domain.image_model import Image
-from talelio_backend.core.exceptions import ImageError
 from talelio_backend.shared.constants import MAX_IMAGE_FILE_SIZE
+from talelio_backend.shared.exceptions import ImageError
 from talelio_backend.tests.mocks.data import generate_file_streams
 
 

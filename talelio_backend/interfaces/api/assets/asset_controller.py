@@ -5,12 +5,12 @@ from flask import Blueprint, Response, current_app, jsonify, request
 
 from talelio_backend.app_assets.data.asset_store import AssetStore
 from talelio_backend.app_assets.use_cases.upload_images import upload_images
-from talelio_backend.core.exceptions import AuthorizationError, ImageError
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.utils import (extract_access_token_from_authorization_header,
                                                   get_streams_from_request_files)
+from talelio_backend.shared.exceptions import AuthorizationError, ImageError
 
 assets_v1 = Blueprint('assets_v1', __name__)
 
