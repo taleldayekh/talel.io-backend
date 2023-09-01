@@ -8,7 +8,7 @@ botocore-stubs==1.31.39
 click==8.1.7
 flask==2.3.2
 flask-cors==4.0.0
-gunicorn==21.1.0
+gunicorn==21.2.0
 importlib-metadata==6.8.0
 itsdangerous==2.1.2
 jinja2==3.1.2
