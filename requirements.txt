@@ -19,7 +19,7 @@ marshmallow==3.19.0
 mypy-boto3-s3==1.28.36
 packaging==23.1
 pillow==10.0.0
-psycopg2==2.9.6
+psycopg2==2.9.7
 pyjwt==2.8.0
 python-dateutil==2.8.2
 redis==4.6.0
