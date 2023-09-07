@@ -35,3 +35,7 @@ def create_article(uow: UnitOfWork, user_id: int, title: str, body: str, meta_de
                 "avatar_url": article_record[14],
             }
         }
+
+
+def create_paid_article():
+    pass

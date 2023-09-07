@@ -51,6 +51,37 @@ def create_article_endpoint() -> Tuple[Response, int]:
         raise APIError(str(error), 403) from error
 
 
+@articles_v1.post('/paid')
+def create_paid_article_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_create_paid_article_endpoint() -> Tuple[Response, int]:
+        try:
+            if not request.json:
+                raise APIError('Missing request body', 400)
+
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
+            uow = UnitOfWork()
+
+            user = Authentication().get_jwt_identity(access_token)
+            user_id = int(user['user_id'])
+            article_id = request.json['article_id']
+            body = request.json['body']
+
+            # TODO: Add use case
+
+            return 'Dummy Response', 201
+        except KeyError as error:
+            raise APIError(f'Expected {error} key', 400) from error
+
+    try:
+        return protected_create_paid_article_endpoint()
+    except AuthorizationError as error:
+        raise APIError(str(error), 403) from error
+
+
 @articles_v1.get('/<string:slug>')
 def get_article_endpoint(slug: str) -> Tuple[Response, int]:
     try:
