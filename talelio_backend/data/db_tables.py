@@ -47,6 +47,19 @@ create_article_table = f"""
     );
     """
 
+create_paid_article_table = f"""
+    CREATE TABLE IF NOT EXISTS paid_article
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE,
+        article_id INTEGER REFERENCES article (id) ON DELETE CASCADE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        body TEXT NOT NULL,
+        html TEXT NOT NULL,
+    )
+    """
+
 
 def create_db_tables() -> connection:
     db_client = DbClient()
@@ -57,6 +70,7 @@ def create_db_tables() -> connection:
             cursor.execute(create_account_table)
             cursor.execute(create_user_table)
             cursor.execute(create_article_table)
+            cursor.execute(create_paid_article_table)
 
     return conn
 
