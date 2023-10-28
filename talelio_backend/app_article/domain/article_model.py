@@ -1,7 +1,7 @@
 # pylint: disable=R0902
-
 from markdown import Markdown
 
+from talelio_backend.shared.markdown_extensions import ElementAttributesExtension
 from talelio_backend.shared.utils.slug import generate_slug
 
 
@@ -18,7 +18,9 @@ class Article:
         self.featured_image = featured_image
         self.url = self.__article_base_url + self.slug
 
-        self.__markdown = Markdown(extensions=['attr_list', 'tables', 'toc', 'fenced_code'])
+        self.__markdown = Markdown(
+            extensions=['attr_list', 'tables', 'toc', 'fenced_code',
+                        ElementAttributesExtension()])
 
     @property
     def convert_body_to_html(self) -> None:
