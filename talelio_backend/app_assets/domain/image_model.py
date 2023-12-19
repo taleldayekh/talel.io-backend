@@ -16,7 +16,7 @@ class Image(Asset):
 
     @property
     def validate_type(self) -> bool:
-        allowed_image_types = ['gif', 'jpeg', 'png']
+        allowed_image_types = ['gif', 'jpeg', 'png', 'webp']
 
         if not self.image_streams:
             return False
