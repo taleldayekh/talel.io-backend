@@ -92,6 +92,11 @@ jobs:
           --build-arg S3_BUCKET=${{ secrets.S3_BUCKET }} \
           --build-arg DB_URI=${{ secrets.DB_URI }} \
           --build-arg HOST=${{ secrets.HOST }} \
+          --build-art DB_HOST=${{ secrets.DB_HOST }} \
+          --build-art DB_PORT=${{ secrets.DB_PORT }} \
+          --build-art DB_NAME=${{ secrets.DB_NAME }} \
+          --build-art DB_USER=${{ secrets.DB_USER }} \
+          --build-art DB_PASSWORD=${{ secrets.DB_PASSWORD }} \
           -f docker/talelio_backend.Dockerfile .
           docker push $ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG
           echo "::set-output name=image::$ECR_REGISTRY/$ECR_REPOSITORY:$IMAGE_TAG"
