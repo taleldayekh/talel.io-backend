@@ -19,7 +19,7 @@ class Article:
         self.url = self.__article_base_url + self.slug
 
         self.__markdown = Markdown(
-            extensions=['attr_list', 'tables', 'toc', 'fenced_code',
+            extensions=['attr_list', 'tables', 'toc', 'fenced_code', 'md_in_html',
                         ElementAttributesExtension()])
 
     @property
