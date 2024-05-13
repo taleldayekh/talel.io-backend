@@ -55,9 +55,7 @@ jobs:
       - name: Unit Tests
         run: |
           make test-unit
-          bash <(curl -s https://codecov.io/bash)
 
       - name: E2E Tests
         run: |
           make test-e2e
-          bash <(curl -s https://codecov.io/bash)
