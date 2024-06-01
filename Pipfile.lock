@@ -1,7 +1,7 @@
 {
     "_meta": {
         "hash": {
-            "sha256": "e061bb895b4349cb9182afe772f6bcc3d9f75fc24f136edd97e73cbe6029b098"
+            "sha256": "2c57b198b3f3b53bc05a9ba5f73681b8df8ff2ac86993485f6f7a63865de26d7"
         },
         "pipfile-spec": 6,
         "requires": {
@@ -211,11 +211,12 @@
         },
         "marshmallow": {
             "hashes": [
-                "sha256:4c1daff273513dc5eb24b219a8035559dc573c8f322558ef85f5438ddd1236dd",
-                "sha256:c21d4b98fee747c130e6bc8f45c4b3199ea66bc00c12ee1f639f0aeca034d5e9"
+                "sha256:70b54a6282f4704d12c0a41599682c5c5450e843b9ec406308653b47c59648a1",
+                "sha256:82408deadd8b33d56338d2182d455db632c6313aa2af61916672146bb32edc56"
             ],
             "index": "pypi",
-            "version": "==3.20.2"
+            "markers": "python_version >= '3.8'",
+            "version": "==3.21.2"
         },
         "mypy-boto3-s3": {
             "hashes": [
