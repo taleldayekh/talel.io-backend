@@ -24,15 +24,6 @@ class AssetStore:
     def __init__(self, s3: S3Client = s3_client) -> None:
         self.s3 = s3
 
-    def _get_object_url(self, bucket: str, key: str) -> str:
-        bucket_location = self.s3.get_bucket_location(Bucket=bucket)['LocationConstraint']
-        region = ''
-
-        if bucket_location:
-            region = f'-{bucket_location}'
-
-        return f'https://s3{region}.amazonaws.com/{bucket}/{key}'
-
     def upload(self, file: BytesIO, user_id: int, options: Dict[str, str]) -> str:
         try:
             bucket = options['bucket']
@@ -44,3 +35,15 @@ class AssetStore:
             return self._get_object_url(bucket, key)
         except self.s3.exceptions.ClientError as error:
             raise error
+
+    def download():
+        pass
+
+    def _get_object_url(self, bucket: str, key: str) -> str:
+        bucket_location = self.s3.get_bucket_location(Bucket=bucket)['LocationConstraint']
+        region = ''
+
+        if bucket_location:
+            region = f'-{bucket_location}'
+
+        return f'https://s3{region}.amazonaws.com/{bucket}/{key}'
