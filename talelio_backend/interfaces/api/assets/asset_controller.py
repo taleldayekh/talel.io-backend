@@ -5,6 +5,7 @@ from flask import Blueprint, Response, current_app, jsonify, request
 
 from talelio_backend.app_assets.data.asset_store import AssetStore
 from talelio_backend.app_assets.use_cases.upload_images import upload_images
+from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
@@ -22,6 +23,8 @@ def upload_images_endpoint() -> Tuple[Response, int]:
     @authorization_required(authorization_header)
     def protected_upload_images_endpoint() -> Tuple[Response, int]:
         try:
+            uow = UnitOfWork()
+
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
             user = Authentication().get_jwt_identity(access_token)
@@ -31,7 +34,7 @@ def upload_images_endpoint() -> Tuple[Response, int]:
             user_id = int(user['user_id'])
             bucket = current_app.config['S3_BUCKET']
 
-            image_objects_urls = upload_images(asset_store, image_streams, user_id, bucket)
+            image_objects_urls = upload_images(uow, asset_store, image_streams, user_id, bucket)
 
             return jsonify(image_objects_urls), 200
         except ImageError as error:

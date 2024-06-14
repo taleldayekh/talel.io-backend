@@ -5,7 +5,7 @@ from talelio_backend.data.repository import BaseRepository
 
 class UserRepository(BaseRepository):
 
-    def get_by_id(self, user_id: str) -> tuple[Any, ...]:
+    def get_by_id(self, user_id: int) -> tuple[Any, ...]:
         query = """
             SELECT * FROM "user" WHERE id = %s;
             """
