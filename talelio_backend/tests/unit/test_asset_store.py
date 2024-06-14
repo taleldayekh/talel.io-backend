@@ -1,3 +1,5 @@
+from io import BytesIO
+
 import pytest
 from mypy_boto3_s3.client import S3Client
 
@@ -45,16 +47,20 @@ def test_can_get_object_url_with_region(mocked_s3: S3Client) -> None:
 
 
 @pytest.mark.parametrize('mocked_s3', [None], indirect=True)
-def test_can_download_user_asset_as_binary_date():
-    # Upload image file
-    # Call download and pass valid user id with filename and options
-    # Save the downloaded result in a variable and assert that it is binary data
-    print('RUNS TEST')
+def test_can_download_user_asset_as_binary_data(mocked_s3: S3Client) -> None:
+    with generate_file_streams(images) as file_streams:
+        asset_store = AssetStore(mocked_s3)
+        file = file_streams[0]
+
+        asset_store.upload(file, INITIAL_USER_ID, options)
+        binary_data = asset_store.download(file.name, INITIAL_USER_ID, options)
+
+        assert isinstance(binary_data, BytesIO)
 
 
 @pytest.mark.parametrize('mocked_s3', [None], indirect=True)
-def test_cannot_download_non_existing_user_asset():
-    # Upload image file
-    # Call download and pass valid user id but non exiting filename
-    # Assert that an exception is raised
-    print('RUNS TEST 2')
+def test_cannot_download_non_existing_user_asset(mocked_s3: S3Client) -> None:
+    asset_store = AssetStore(mocked_s3)
+
+    with pytest.raises(mocked_s3.exceptions.ClientError):
+        asset_store.download('non-existing-user-asset', INITIAL_USER_ID, options)
