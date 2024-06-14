@@ -1,7 +1,9 @@
 import json
+import mimetypes
 from typing import Tuple, Union, cast
 
-from flask import Blueprint, Response, current_app, jsonify, request
+from boto3 import client
+from flask import Blueprint, Response, current_app, jsonify, request, send_file
 
 from talelio_backend.app_article.use_cases.get_articles import get_articles_for_user
 from talelio_backend.app_assets.data.asset_store import AssetStore
@@ -9,6 +11,7 @@ from talelio_backend.app_assets.use_cases.download_image import download_image
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.interfaces.api.articles.article_serializer import SerializeArticles
 from talelio_backend.interfaces.api.errors import APIError
+from talelio_backend.shared.exceptions import UserError
 
 users_v1 = Blueprint('users_v1', __name__)
 
@@ -60,6 +63,13 @@ def get_user_image_endpoint(username: str, image_file_name: str):
         asset_store = AssetStore()
         bucket = current_app.config['S3_BUCKET']
 
-        download_image(uow, asset_store, image_file_name, username, bucket)
-    except:
-        pass
+        image_file_stream = download_image(uow, asset_store, image_file_name, username, bucket)
+        mimetype = mimetypes.guess_type(image_file_name)[0] or 'application/octet-stream'
+
+        res = Response(image_file_stream, status=200, mimetype=mimetype)
+
+        return res
+    except UserError as error:
+        raise APIError(str(error), 404) from error
+    except client('s3').exceptions.ClientError as error:
+        raise APIError(str(error), 400) from error
