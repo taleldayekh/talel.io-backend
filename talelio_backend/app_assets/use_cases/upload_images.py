@@ -26,7 +26,8 @@ def upload_images(uow: UnitOfWork, asset_store: AssetStore, image_streams: List[
             for renamed_image in renamed_images:
                 asset_store.upload(renamed_image, user_id, options)
 
-                image_object_url = f'{api_base_url}/{api_version}/users/{username}/images/{renamed_image.name}'
+                image_object_url = (
+                    f'{api_base_url}/{api_version}/users/{username}/images/{renamed_image.name}')
                 image_objects_urls.append(image_object_url)
 
         return {'image_objects_urls': image_objects_urls}

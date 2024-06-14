@@ -20,8 +20,8 @@ class TestUploadImages(RequestHelper):
     images = [('image.jpeg', 0)]
 
     @patch(ASSET_STORE_UPLOAD)
-    def test_can_upload_single_image(self, mocked_asset_store_upload: MagicMock,
-                                     authorization_header: Dict[str, str]) -> None:
+    def test_can_upload_single_image(self, _: MagicMock, authorization_header: Dict[str,
+                                                                                    str]) -> None:
         with generate_file_streams(self.images) as file_streams:
             image_file = {'image_file': file_streams[0]}
 
@@ -35,7 +35,7 @@ class TestUploadImages(RequestHelper):
                 'image_objects_urls'][0]
 
     @patch(ASSET_STORE_UPLOAD)
-    def test_can_upload_multiple_images(self, mocked_asset_store_upload: MagicMock,
+    def test_can_upload_multiple_images(self, _: MagicMock,
                                         authorization_header: Dict[str, str]) -> None:
         images = [('one.jpeg', 0), ('two.png', 0)]
 
@@ -49,10 +49,10 @@ class TestUploadImages(RequestHelper):
             image_two_filename_without_extension = path.splitext(file_streams[1].name)[0]
 
             assert res.status_code == 200
-            assert f'{IMAGE_ASSET_API_BASE_URL}/{image_one_filename_without_extension}_' in res_data[
-                'image_objects_urls'][0]
-            assert f'{IMAGE_ASSET_API_BASE_URL}/{image_two_filename_without_extension}_' in res_data[
-                'image_objects_urls'][1]
+            assert (f'{IMAGE_ASSET_API_BASE_URL}/{image_one_filename_without_extension}_'
+                    in res_data['image_objects_urls'][0])
+            assert (f'{IMAGE_ASSET_API_BASE_URL}/{image_two_filename_without_extension}_'
+                    in res_data['image_objects_urls'][1])
 
     @patch(ASSET_STORE_UPLOAD)
     def test_can_catch_s3_errors(self, mocked_asset_store_upload: MagicMock,

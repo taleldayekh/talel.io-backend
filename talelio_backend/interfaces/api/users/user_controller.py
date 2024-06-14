@@ -3,7 +3,7 @@ import mimetypes
 from typing import Tuple, Union, cast
 
 from boto3 import client
-from flask import Blueprint, Response, current_app, jsonify, request, send_file
+from flask import Blueprint, Response, current_app, jsonify, request
 
 from talelio_backend.app_article.use_cases.get_articles import get_articles_for_user
 from talelio_backend.app_assets.data.asset_store import AssetStore
@@ -56,7 +56,8 @@ def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Res
 
 
 @users_v1.get('/<string:username>/images/<string:image_file_name>')
-def get_user_image_endpoint(username: str, image_file_name: str):
+def get_user_image_endpoint(username: str,
+                            image_file_name: str) -> Union[Tuple[Response, int], Response]:
     try:
         uow = UnitOfWork()
 

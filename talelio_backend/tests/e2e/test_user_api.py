@@ -1,4 +1,3 @@
-from io import BytesIO
 from re import findall
 from unittest.mock import MagicMock, patch
 
