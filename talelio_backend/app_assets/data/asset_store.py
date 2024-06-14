@@ -36,8 +36,20 @@ class AssetStore:
         except self.s3.exceptions.ClientError as error:
             raise error
 
-    def download():
-        pass
+    def download(self, file_name: str, user_id: int, options: Dict[str, str]) -> BytesIO:
+        try:
+            file_stream = BytesIO()
+
+            bucket = options['bucket']
+            asset_type = options['asset_type']
+            key = f'{user_id}/{asset_type}/{file_name}'
+
+            self.s3.download_fileobj(bucket, key, file_stream)
+            file_stream.seek(0)
+
+            return file_stream
+        except self.s3.exceptions.ClientError as error:
+            raise error
 
     def _get_object_url(self, bucket: str, key: str) -> str:
         bucket_location = self.s3.get_bucket_location(Bucket=bucket)['LocationConstraint']

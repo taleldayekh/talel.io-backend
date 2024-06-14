@@ -4,7 +4,6 @@ from boto3 import client
 from flask import Blueprint, Response, current_app, jsonify, request
 
 from talelio_backend.app_assets.data.asset_store import AssetStore
-from talelio_backend.app_assets.use_cases.download_image import download_image
 from talelio_backend.app_assets.use_cases.upload_images import upload_images
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
@@ -44,11 +43,3 @@ def upload_images_endpoint() -> Tuple[Response, int]:
         return protected_upload_images_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error
-
-
-@assets_v1.get('/images/<>')
-def download_image_endpoint():
-    try:
-        pass
-    except:
-        pass

@@ -1,9 +1,11 @@
 import json
 from typing import Tuple, Union, cast
 
-from flask import Blueprint, Response, jsonify, request
+from flask import Blueprint, Response, current_app, jsonify, request
 
 from talelio_backend.app_article.use_cases.get_articles import get_articles_for_user
+from talelio_backend.app_assets.data.asset_store import AssetStore
+from talelio_backend.app_assets.use_cases.download_image import download_image
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.interfaces.api.articles.article_serializer import SerializeArticles
 from talelio_backend.interfaces.api.errors import APIError
@@ -48,3 +50,16 @@ def get_user_articles_endpoint(username: str) -> Union[Tuple[Response, int], Res
 
     except ValueError as error:
         raise APIError('Expected numeric query parameters', 400) from error
+
+
+@users_v1.get('/<string:username>/images/<string:image_file_name>')
+def get_user_image_endpoint(username: str, image_file_name: str):
+    try:
+        uow = UnitOfWork()
+
+        asset_store = AssetStore()
+        bucket = current_app.config['S3_BUCKET']
+
+        download_image(uow, asset_store, image_file_name, username, bucket)
+    except:
+        pass
