@@ -83,3 +83,7 @@ class RequestHelper:
             headers=authorization_header,
             data=image_streams,
             content_type='multipart/form-data')
+
+    def download_image_request(self, username: str, image_file_name: str) -> Response:
+        return self.api.get(  # type: ignore
+            f'{USERS_BASE_URL}/{username}/images/{image_file_name}')

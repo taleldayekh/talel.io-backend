@@ -1,3 +1,4 @@
+from os import path
 from typing import Dict
 from unittest.mock import MagicMock, patch
 
@@ -5,11 +6,13 @@ import pytest
 from boto3 import client
 from flask import json
 
+from talelio_backend.tests.constants import USERNAME_TALEL
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.data import generate_file_streams
 from talelio_backend.tests.utils import generate_authorization_header
 
 ASSET_STORE_UPLOAD = 'talelio_backend.app_assets.data.asset_store.AssetStore.upload'
+IMAGE_ASSET_API_BASE_URL = f'https://api.talel.io/v1/users/{USERNAME_TALEL}/images'
 
 
 @pytest.mark.usefixtures('populate_db_account')
@@ -17,33 +20,39 @@ class TestUploadImages(RequestHelper):
     images = [('image.jpeg', 0)]
 
     @patch(ASSET_STORE_UPLOAD)
-    def test_can_upload_single_image(self, mocked_asset_store_upload: MagicMock,
-                                     authorization_header: Dict[str, str]) -> None:
-        image_object_url = 'aws_url'
-        mocked_asset_store_upload.return_value = image_object_url
-
+    def test_can_upload_single_image(self, _: MagicMock, authorization_header: Dict[str,
+                                                                                    str]) -> None:
         with generate_file_streams(self.images) as file_streams:
-            image_files = {'image_file': file_streams[0]}
-            res = self.upload_images_request(image_files, authorization_header)
+            image_file = {'image_file': file_streams[0]}
+
+            res = self.upload_images_request(image_file, authorization_header)
             res_data = json.loads(res.data)
 
+            filename_without_extension = path.splitext(file_streams[0].name)[0]
+
             assert res.status_code == 200
-            assert res_data['image_objects_urls'] == [image_object_url]
+            assert f'{IMAGE_ASSET_API_BASE_URL}/{filename_without_extension}_' in res_data[
+                'image_objects_urls'][0]
 
     @patch(ASSET_STORE_UPLOAD)
-    def test_can_upload_multiple_images(self, mocked_asset_store_upload: MagicMock,
+    def test_can_upload_multiple_images(self, _: MagicMock,
                                         authorization_header: Dict[str, str]) -> None:
-        image_objects_urls = ['aws_url_one', 'aws_url_two']
-        mocked_asset_store_upload.side_effect = image_objects_urls
-        images = [('image.jpeg', 0), ('image.png', 0)]
+        images = [('one.jpeg', 0), ('two.png', 0)]
 
         with generate_file_streams(images) as file_streams:
             image_files = {'image_file_one': file_streams[0], 'image_file_two': file_streams[1]}
+
             res = self.upload_images_request(image_files, authorization_header)
             res_data = json.loads(res.data)
 
+            image_one_filename_without_extension = path.splitext(file_streams[0].name)[0]
+            image_two_filename_without_extension = path.splitext(file_streams[1].name)[0]
+
             assert res.status_code == 200
-            assert res_data['image_objects_urls'] == image_objects_urls
+            assert (f'{IMAGE_ASSET_API_BASE_URL}/{image_one_filename_without_extension}_'
+                    in res_data['image_objects_urls'][0])
+            assert (f'{IMAGE_ASSET_API_BASE_URL}/{image_two_filename_without_extension}_'
+                    in res_data['image_objects_urls'][1])
 
     @patch(ASSET_STORE_UPLOAD)
     def test_can_catch_s3_errors(self, mocked_asset_store_upload: MagicMock,

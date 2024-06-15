@@ -1,11 +1,16 @@
 from re import findall
+from unittest.mock import MagicMock, patch
 
 import pytest
+from boto3 import client
 from flask import json
 
 from talelio_backend.tests.constants import INVALID_USER, USERNAME_TALEL
 from talelio_backend.tests.e2e.helpers import RequestHelper
 from talelio_backend.tests.mocks.articles import fixed_or_rotary_wing_article, hiking_gear_article
+from talelio_backend.tests.mocks.data import generate_file_streams
+
+ASSET_STORE_DOWNLOAD = 'talelio_backend.app_assets.data.asset_store.AssetStore.download'
 
 
 @pytest.mark.usefixtures('populate_db_account', 'populate_db_articles')
@@ -70,3 +75,42 @@ class TestGetUserArticles(RequestHelper):
 
         assert res.status_code == 400
         assert res_data['error']['message'] == 'Expected numeric query parameters'
+
+
+@pytest.mark.usefixtures('populate_db_account')
+class TestGetUserAssets(RequestHelper):
+    images = [('image.jpeg', 0)]
+
+    @patch(ASSET_STORE_DOWNLOAD)
+    def test_can_get_user_image(self, mocked_asset_store_download: MagicMock) -> None:
+        with generate_file_streams(self.images) as file_streams:
+            image_file = file_streams[0]
+            image_filename = image_file.name
+
+            mocked_asset_store_download.return_value = image_file
+
+            res = self.download_image_request(USERNAME_TALEL, image_filename)
+            res_data = res.data
+
+            assert res.status_code == 200
+            assert isinstance(res_data, bytes)
+
+    def test_cannot_get_image_for_non_existing_user(self) -> None:
+        non_existing_user = 'non_existing_user'
+
+        res = self.download_image_request(non_existing_user, 'image.jpeg')
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 404
+        assert res_data['error'][
+            'message'] == f"User with username '{non_existing_user}' does not exist"
+
+    @patch(ASSET_STORE_DOWNLOAD)
+    def test_can_catch_s3_errors(self, mocked_asset_store_download: MagicMock) -> None:
+        mocked_asset_store_download.side_effect = client('s3').exceptions.ClientError({'': ''}, '')
+
+        res = self.download_image_request(USERNAME_TALEL, 'image.jpeg')
+        res_data = json.loads(res.data)
+
+        assert res.status_code == 400
+        assert 'An error occurred' in res_data['error']['message']

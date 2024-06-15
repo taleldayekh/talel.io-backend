@@ -3,20 +3,31 @@ from typing import Dict, List
 
 from talelio_backend.app_assets.data.asset_store import Asset, AssetStore
 from talelio_backend.app_assets.domain.image_model import Image
+from talelio_backend.data.uow import UnitOfWork
 
 
-def upload_images(asset_store: AssetStore, image_streams: List[BytesIO], user_id: int,
-                  bucket: str) -> Dict[str, List[str]]:
-    image_objects_urls = []
-    images = Image(image_streams)
+def upload_images(uow: UnitOfWork, asset_store: AssetStore, image_streams: List[BytesIO],
+                  user_id: int, bucket: str) -> Dict[str, List[str]]:
+    with uow:
+        user_record = uow.user.get_by_id(user_id)
+        username = user_record[4]
 
-    if images.validate:
-        renamed_images = images.generate_new_filenames
+        api_base_url = 'https://api.talel.io'
+        api_version = 'v1'
 
-        options = {'bucket': bucket, 'asset_type': Asset.IMAGES.value}
+        image_objects_urls = []
+        images = Image(image_streams)
 
-        for renamed_image in renamed_images:
-            image_object_url = asset_store.upload(renamed_image, user_id, options)
-            image_objects_urls.append(image_object_url)
+        if images.validate:
+            renamed_images = images.generate_new_filenames
 
-    return {'image_objects_urls': image_objects_urls}
+            options = {'bucket': bucket, 'asset_type': Asset.IMAGES.value}
+
+            for renamed_image in renamed_images:
+                asset_store.upload(renamed_image, user_id, options)
+
+                image_object_url = (
+                    f'{api_base_url}/{api_version}/users/{username}/images/{renamed_image.name}')
+                image_objects_urls.append(image_object_url)
+
+        return {'image_objects_urls': image_objects_urls}
