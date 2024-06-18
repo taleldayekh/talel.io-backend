@@ -4,6 +4,8 @@ __pycache__
 
 # testing
 coverage.xml
+unit-coverage.xml
+e2e-coverage.xml
 .coverage
 
 # env
