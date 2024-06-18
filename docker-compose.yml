@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   postgres-development:
     image: postgres:15.3-alpine

@@ -7,13 +7,11 @@ from talelio_backend.data.uow import UnitOfWork
 
 
 def upload_images(uow: UnitOfWork, asset_store: AssetStore, image_streams: List[BytesIO],
-                  user_id: int, bucket: str) -> Dict[str, List[str]]:
+                  user_id: int, bucket: str, api_base_url: str,
+                  api_version: str) -> Dict[str, List[str]]:
     with uow:
         user_record = uow.user.get_by_id(user_id)
         username = user_record[4]
-
-        api_base_url = 'https://api.talel.io'
-        api_version = 'v1'
 
         image_objects_urls = []
         images = Image(image_streams)

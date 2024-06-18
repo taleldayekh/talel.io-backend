@@ -12,7 +12,7 @@ from talelio_backend.tests.mocks.data import generate_file_streams
 from talelio_backend.tests.utils import generate_authorization_header
 
 ASSET_STORE_UPLOAD = 'talelio_backend.app_assets.data.asset_store.AssetStore.upload'
-IMAGE_ASSET_API_BASE_URL = f'https://api.talel.io/v1/users/{USERNAME_TALEL}/images'
+IMAGE_ASSET_API_BASE_URL = f'http://127.0.0.1:5000/v1/users/{USERNAME_TALEL}/images'
 
 
 @pytest.mark.usefixtures('populate_db_account')
