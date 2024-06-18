@@ -33,8 +33,11 @@ def upload_images_endpoint() -> Tuple[Response, int]:
             image_streams = get_streams_from_request_files(request.files)
             user_id = int(user['user_id'])
             bucket = current_app.config['S3_BUCKET']
+            api_base_url = current_app.config['API_BASE_URL']
+            api_version = 'v1'
 
-            image_objects_urls = upload_images(uow, asset_store, image_streams, user_id, bucket)
+            image_objects_urls = upload_images(uow, asset_store, image_streams, user_id, bucket,
+                                               api_base_url, api_version)
 
             return jsonify(image_objects_urls), 200
         except ImageError as error:

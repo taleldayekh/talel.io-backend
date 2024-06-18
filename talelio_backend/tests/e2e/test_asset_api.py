@@ -4,7 +4,7 @@ from unittest.mock import MagicMock, patch
 
 import pytest
 from boto3 import client
-from flask import json
+from flask import current_app, json
 
 from talelio_backend.tests.constants import USERNAME_TALEL
 from talelio_backend.tests.e2e.helpers import RequestHelper
@@ -12,7 +12,7 @@ from talelio_backend.tests.mocks.data import generate_file_streams
 from talelio_backend.tests.utils import generate_authorization_header
 
 ASSET_STORE_UPLOAD = 'talelio_backend.app_assets.data.asset_store.AssetStore.upload'
-IMAGE_ASSET_API_BASE_URL = f'https://api.talel.io/v1/users/{USERNAME_TALEL}/images'
+IMAGE_ASSET_API_BASE_URL = f'{current_app.config["API_BASE_URL"]}/v1/users/{USERNAME_TALEL}/images'
 
 
 @pytest.mark.usefixtures('populate_db_account')
