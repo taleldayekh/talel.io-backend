@@ -26,7 +26,7 @@ python-dotenv = "==1.0.0"
 yapf = "==0.40.2"
 freezegun = "==1.2.2"
 fakeredis = "==2.23.2"
-types-redis = "==4.6.0.11"
+types-redis = "==4.6.0.20240726"
 types-markdown = "==3.6.0.20240316"
 types-freezegun = "==1.1.10"
 moto = {version = "==4.1.13", extras = ["s3"]}
