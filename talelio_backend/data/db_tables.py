@@ -4,7 +4,7 @@ from talelio_backend.libs.db_client import DbClient
 
 TIME_ZONE = 'Europe/Berlin'
 
-create_account_table = f"""
+CREATE_ACCOUNT_TABLE = f"""
     CREATE TABLE IF NOT EXISTS account
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -16,7 +16,7 @@ create_account_table = f"""
     );
     """
 
-create_user_table = f"""
+CREATE_USER_TABLE = f"""
     CREATE TABLE IF NOT EXISTS "user"
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -29,7 +29,7 @@ create_user_table = f"""
     );
     """
 
-create_article_table = f"""
+CREATE_ARTICLE_TABLE = f"""
     CREATE TABLE IF NOT EXISTS article
     (
         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
@@ -54,9 +54,9 @@ def create_db_tables() -> connection:
 
     with conn:
         with conn.cursor() as cursor:
-            cursor.execute(create_account_table)
-            cursor.execute(create_user_table)
-            cursor.execute(create_article_table)
+            cursor.execute(CREATE_ACCOUNT_TABLE)
+            cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_ARTICLE_TABLE)
 
     return conn
 

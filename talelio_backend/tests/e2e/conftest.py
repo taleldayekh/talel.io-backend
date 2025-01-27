@@ -45,6 +45,8 @@ def login_user_talel(api_server: FlaskClient) -> Dict[str, str]:
     cookie_header = res.headers['Set-Cookie'].split('=')[1]
     cookie_header_match = match('^.+?(?=;)', cookie_header)
 
+    refresh_token = ''
+
     if cookie_header_match:
         refresh_token = cookie_header_match.group(0)
 

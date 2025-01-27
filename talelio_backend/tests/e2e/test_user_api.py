@@ -107,7 +107,17 @@ class TestGetUserAssets(RequestHelper):
 
     @patch(ASSET_STORE_DOWNLOAD)
     def test_can_catch_s3_errors(self, mocked_asset_store_download: MagicMock) -> None:
-        mocked_asset_store_download.side_effect = client('s3').exceptions.ClientError({'': ''}, '')
+        mocked_asset_store_download.side_effect = client('s3').exceptions.ClientError(
+            {
+                'Error': {},
+                'ResponseMetadata': {
+                    'RequestId': '',
+                    'HostId': '',
+                    'RetryAttempts': 0,
+                    'HTTPStatusCode': 404,
+                    'HTTPHeaders': {},
+                }
+            }, '')
 
         res = self.download_image_request(USERNAME_TALEL, 'image.jpeg')
         res_data = json.loads(res.data)

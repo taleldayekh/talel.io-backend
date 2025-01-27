@@ -6,7 +6,7 @@ import pytest
 from _pytest.fixtures import FixtureRequest
 from boto3 import client
 from flask.testing import FlaskClient
-from moto import mock_s3
+from moto import mock_aws
 
 from talelio_backend import create_app
 from talelio_backend.tests.constants import (EMAIL_BIANCA, EMAIL_TALEL, INVALID_EMAIL,
@@ -31,7 +31,7 @@ def api_server(request: FixtureRequest) -> FlaskClient:
 
 @pytest.fixture
 def mocked_s3(request: FixtureRequest) -> Generator:
-    with mock_s3():
+    with mock_aws():
         s3 = client('s3')
 
         if request.param is None:  # type: ignore

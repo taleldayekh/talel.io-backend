@@ -57,7 +57,17 @@ class TestUploadImages(RequestHelper):
     @patch(ASSET_STORE_UPLOAD)
     def test_can_catch_s3_errors(self, mocked_asset_store_upload: MagicMock,
                                  authorization_header: Dict[str, str]) -> None:
-        mocked_asset_store_upload.side_effect = client('s3').exceptions.ClientError({'': ''}, '')
+        mocked_asset_store_upload.side_effect = client('s3').exceptions.ClientError(
+            {
+                'Error': {},
+                'ResponseMetadata': {
+                    'RequestId': '',
+                    'HostId': '',
+                    'RetryAttempts': 0,
+                    'HTTPStatusCode': 404,
+                    'HTTPHeaders': {},
+                }
+            }, '')
 
         with generate_file_streams(self.images) as file_streams:
             image_files = {'image_file': file_streams[0]}
