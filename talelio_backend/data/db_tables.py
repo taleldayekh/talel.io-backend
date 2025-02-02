@@ -82,6 +82,7 @@ def create_db_tables() -> connection:
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
             cursor.execute(CREATE_ARTICLE_TABLE)
+            cursor.execute(CREATE_ACTOR_TABLE)
 
     return conn
 
@@ -93,10 +94,10 @@ def drop_db_tables() -> connection:
     with conn:
         with conn.cursor() as cursor:
             query = """
-                DROP SCHEMA IF EXISTS activitypub CASCADE;
-                DROP TABLE IF EXISTS account CASCADE;
+                DROP TABLE IF EXISTS article CASCADE;
                 DROP TABLE IF EXISTS "user" CASCADE;
-                DROP TABLE IF EXISTS article;
+                DROP TABLE IF EXISTS account CASCADE;
+                DROP SCHEMA IF EXISTS activitypub CASCADE;
             """
 
             cursor.execute(query)
