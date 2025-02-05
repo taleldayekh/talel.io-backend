@@ -1,9 +1,24 @@
+from talelio_backend.app_social.domain.actor_model import Actor
 from talelio_backend.data.repository import BaseRepository
 
 
 class SocialRepository(BaseRepository):
 
-    def create_actor(self) -> None:
+    def get_actor_for_user(self, user_id: int) -> bool:
+        query = """
+            SELECT EXISTS (
+                SELECT 1 FROM activitypub.actor WHERE user_id = %s
+            );
+            """
+
+        with self.session as session:
+            with session.cursor() as cursor:
+                cursor.execute(query, (user_id, ))
+
+                return cursor.fetchone()[0]
+
+    # TODO: Return type
+    def create_actor(self, actor: Actor, user_id: int) -> None:
         insert_query = """
             WITH created_actor AS
             (
@@ -21,7 +36,7 @@ class SocialRepository(BaseRepository):
                     public_key,
                     private_key
                 )
-                VALUES ($s, $s, $s, $s, $s, $s, $s, $s, $s, $s, $s)
+                VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
                 RETURNING *
             )
             SELECT created_actor.id,
@@ -36,41 +51,23 @@ class SocialRepository(BaseRepository):
                    created_actor.following_url,
                    created_actor.liked_url,
                    created_actor.public_key
+            FROM created_actor;
             """
 
-        # insert_query = """
-        #     WITH created_article AS
-        #     (
-        #         INSERT INTO article
-        #         (
-        #             user_id,
-        #             title,
-        #             slug,
-        #             body,
-        #             html,
-        #             meta_description,
-        #             table_of_contents,
-        #             featured_image,
-        #             url
-        #         )
-        #         VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s)
-        #         RETURNING *
-        #     )
-        #     SELECT created_article.id,
-        #            created_article.created_at,
-        #            created_article.updated_at,
-        #            created_article.title,
-        #            created_article.slug,
-        #            created_article.body,
-        #            created_article.html,
-        #            created_article.meta_description,
-        #            created_article.table_of_contents,
-        #            created_article.featured_image,
-        #            created_article.url,
-        #            "user".id,
-        #            "user".username,
-        #            "user".location,
-        #            "user".avatar_url
-        #     FROM created_article JOIN "user"
-        #     ON created_article.user_id = "user".id;
-        #     """
+        with self.session as session:
+            with session.cursor() as cursor:
+                cursor.execute(insert_query, (
+                    user_id,
+                    actor.username,
+                    actor.type,
+                    actor.actor_url,
+                    actor.inbox_url,
+                    actor.outbox_url,
+                    actor.followers_url,
+                    actor.following_url,
+                    actor.liked_url,
+                    actor.public_key,
+                    actor.private_key,
+                ))
+
+                return cursor.fetchone()

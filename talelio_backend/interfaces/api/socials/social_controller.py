@@ -32,7 +32,7 @@ def webfinger() -> Tuple[Response, int]:
 
 @socials_v1.post('/actor')
 def create_actor_endpoint() -> Tuple[Response, int]:
-    authorization_header = request.header.get('Authorization')
+    authorization_header = request.headers.get('Authorization')
 
     @authorization_required(authorization_header)
     def protected_create_actor_endpoint() -> Tuple[Response, int]:
@@ -46,12 +46,15 @@ def create_actor_endpoint() -> Tuple[Response, int]:
 
             user_id = int(user['user_id'])
             username = request.json['username']
-
             uow = UnitOfWork()
 
             created_actor = create_actor(uow, user_id, username)
-        except:
-            pass
+
+            # TODO: Return proper response
+            return 'Hello World'
+        except Exception as error:
+            print(error)
+            return 'Hello World'
 
     try:
         return protected_create_actor_endpoint()
