@@ -3,6 +3,7 @@ from typing import Tuple, cast
 from flask import Blueprint, Response, request
 
 from talelio_backend.app_social.use_cases.create_actor import create_actor
+from talelio_backend.app_social.use_cases.get_actor import get_actor
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
@@ -11,6 +12,22 @@ from talelio_backend.interfaces.api.utils import extract_access_token_from_autho
 from talelio_backend.shared.exceptions import AuthorizationError
 
 socials_v1 = Blueprint('socials_v1', __name__)
+
+
+@socials_v1.get('/.well-known/webfinger')
+def webfinger() -> Tuple[Response, int]:
+    resource_query_param = request.args.get('resource')
+
+    # TODO: Delete
+    print(resource_query_param)
+
+    if not resource_query_param or not resource_query_param.startswith('acct:'):
+        raise APIError('Invalid WebFinger request', 400)
+
+    username = resource_query_param.split('acct:')[0].split('@')[0]
+    uow = UnitOfWork()
+
+    actor = get_actor(uow, username)
 
 
 @socials_v1.post('/actor')
