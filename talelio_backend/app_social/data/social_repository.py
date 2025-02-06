@@ -4,7 +4,7 @@ from talelio_backend.data.repository import BaseRepository
 
 class SocialRepository(BaseRepository):
 
-    def get_actor_for_user(self, user_id: int) -> bool:
+    def get_actor_by_user_id(self, user_id: int) -> bool:
         query = """
             SELECT EXISTS (
                 SELECT 1 FROM activitypub.actor WHERE user_id = %s
@@ -16,6 +16,18 @@ class SocialRepository(BaseRepository):
                 cursor.execute(query, (user_id, ))
 
                 return cursor.fetchone()[0]
+
+    # TODO: Return type
+    def get_actor_by_username(self, username: str) -> None:
+        query = """
+            SELECT * FROM activitypub.actor WHERE username = %s;
+            """
+
+        with self.session as session:
+            with session.cursor() as cursor:
+                cursor.execute(query, (username, ))
+
+                return cursor.fetchone()
 
     # TODO: Return type
     def create_actor(self, actor: Actor, user_id: int) -> None:

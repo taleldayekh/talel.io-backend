@@ -16,7 +16,7 @@ def create_actor(uow: UnitOfWork, user_id: int, username: str) -> None:
         )
 
     with uow:
-        actor_exists = uow.social.get_actor_for_user(user_id)
+        actor_exists = uow.social.get_actor_by_user_id(user_id)
 
         if actor_exists:
             raise UserError(f"Actor for user with id '{user_id}' already exists")
@@ -27,6 +27,7 @@ def create_actor(uow: UnitOfWork, user_id: int, username: str) -> None:
         actor_record = uow.social.create_actor(actor, user_id)
 
         # TODO: Include liked?
+        # TODO: Return directly
         actor_object = {
             '@context': 'https://www.w3.org/ns/activitystreams',
             'id': actor_record[5],

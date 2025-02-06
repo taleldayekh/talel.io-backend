@@ -29,6 +29,8 @@ def webfinger() -> Tuple[Response, int]:
 
     actor = get_actor(uow, username)
 
+    return 'Hello World'
+
 
 @socials_v1.post('/actor')
 def create_actor_endpoint() -> Tuple[Response, int]:
