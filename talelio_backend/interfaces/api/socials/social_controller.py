@@ -3,35 +3,39 @@ from typing import Tuple, cast
 from flask import Blueprint, Response, request
 
 from talelio_backend.app_social.use_cases.create_actor import create_actor
-from talelio_backend.app_social.use_cases.get_actor import get_actor
+from talelio_backend.app_social.use_cases.discover import webfinger_discover
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
+from talelio_backend.interfaces.api.socials.webfinger_serializer import SerializeWebFinger
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
-from talelio_backend.shared.exceptions import AuthorizationError
+from talelio_backend.shared.exceptions import AuthorizationError, UserError
 
 socials_v1 = Blueprint('socials_v1', __name__)
 
 
 @socials_v1.get('/.well-known/webfinger')
 def webfinger() -> Tuple[Response, int]:
-    resource_query_param = request.args.get('resource')
+    try:
+        resource_query_param = request.args.get('resource')
 
-    # TODO: Delete
-    print(resource_query_param)
+        if not resource_query_param or not resource_query_param.startswith('acct:'):
+            raise APIError('Invalid WebFinger request', 400)
 
-    if not resource_query_param or not resource_query_param.startswith('acct:'):
-        raise APIError('Invalid WebFinger request', 400)
+        username = resource_query_param.split('acct:')[1].split('@')[0]
+        uow = UnitOfWork()
 
-    username = resource_query_param.split('acct:')[0].split('@')[0]
-    uow = UnitOfWork()
+        webfinger = webfinger_discover(uow, username)
 
-    actor = get_actor(uow, username)
+        res_body = SerializeWebFinger().dump(webfinger)
 
-    return 'Hello World'
+        return res_body, 200
+    except UserError as error:
+        raise APIError(str(error), 404) from error
 
 
+# TODO
 @socials_v1.post('/actor')
 def create_actor_endpoint() -> Tuple[Response, int]:
     authorization_header = request.headers.get('Authorization')
