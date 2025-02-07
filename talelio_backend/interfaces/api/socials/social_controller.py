@@ -4,10 +4,12 @@ from flask import Blueprint, Response, request
 
 from talelio_backend.app_social.use_cases.create_actor import create_actor
 from talelio_backend.app_social.use_cases.discover import webfinger_discover
+from talelio_backend.app_social.use_cases.get_actor import get_actor
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
+from talelio_backend.interfaces.api.socials.actor_serializer import SerializeActor
 from talelio_backend.interfaces.api.socials.webfinger_serializer import SerializeWebFinger
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
 from talelio_backend.shared.exceptions import AuthorizationError, UserError
@@ -35,8 +37,8 @@ def webfinger() -> Tuple[Response, int]:
         raise APIError(str(error), 404) from error
 
 
-# TODO
-@socials_v1.post('/actor')
+# TODO: Reiterate
+@socials_v1.post('/actors')
 def create_actor_endpoint() -> Tuple[Response, int]:
     authorization_header = request.headers.get('Authorization')
 
@@ -66,3 +68,19 @@ def create_actor_endpoint() -> Tuple[Response, int]:
         return protected_create_actor_endpoint()
     except AuthorizationError as error:
         raise APIError(str(error), 403) from error
+
+
+@socials_v1.get('/actors/<string:username>')
+def get_actor_endpoint(username: str) -> Tuple[Response, int]:
+    try:
+        uow = UnitOfWork()
+
+        actor = get_actor(uow, username)
+
+        res_body = SerializeActor().dump(actor)
+
+        return res_body, 200
+    except ValueError as error:
+        raise APIError(str(error), 500) from error
+    except UserError as error:
+        raise APIError(str(error), 404) from error
