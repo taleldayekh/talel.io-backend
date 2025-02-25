@@ -51,6 +51,8 @@ CREATE_ARTICLE_TABLE = f"""
     );
     """
 
+# Tables Socials
+
 CREATE_ACTOR_TABLE = f"""
     CREATE TABLE IF NOT EXISTS activitypub.actor 
     (
@@ -68,6 +70,33 @@ CREATE_ACTOR_TABLE = f"""
         liked_url TEXT UNIQUE NOT NULL,
         public_key TEXT NOT NULL,
         private_key TEXT NOT NULL
+    );
+    """
+
+# TODO: Extend with attachments?
+CREATE_POST_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS activitypub.post
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        type VARCHAR(50) NOT NULL,
+        summary TEXT,
+        content TEXT NOT NULL
+    );
+    """
+
+# TODO: Extend with updated_at, last_interaction_at?
+CREATE_FOLLOWER_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS activitypub.follower
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        actor_url TEXT UNIQUE NOT NULL,
+        inbox_url TEXT UNIQUE NOT NULL,
+        platform VARCHAR(20) NOT NULL
     );
     """
 

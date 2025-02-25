@@ -37,6 +37,29 @@ def webfinger() -> Tuple[Response, int]:
         raise APIError(str(error), 404) from error
 
 
+@socials_v1.post('')
+def create_socials_post_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_create_socials_post_endpoint():
+        try:
+            if not request.json:
+                raise APIError('Missing request body', 400)
+
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
+            user = Authentication().get_jwt_identity(access_token)
+
+        except:
+            pass
+
+    try:
+        return protected_create_socials_post_endpoint()
+    except AuthorizationError as error:
+        raise APIError(str(error), 403) from error
+
+
 # TODO: Reiterate
 @socials_v1.post('/actors')
 def create_actor_endpoint() -> Tuple[Response, int]:
@@ -74,7 +97,6 @@ def create_actor_endpoint() -> Tuple[Response, int]:
 def get_actor_endpoint(username: str) -> Tuple[Response, int]:
     try:
         uow = UnitOfWork()
-
         actor = get_actor(uow, username)
 
         res_body = SerializeActor().dump(actor)

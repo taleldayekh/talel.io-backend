@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.serialization import (Encoding, NoEncryption
 def generate_master_encryption_key() -> str:
     master_encryption_key = Fernet.generate_key()
 
-    return b64encode(master_encryption_key).decode('utf-8')
+    return master_encryption_key.decode('utf-8')
 
 
 def generate_key_pair() -> Tuple[bytes, bytes]:
@@ -27,8 +27,8 @@ def generate_key_pair() -> Tuple[bytes, bytes]:
 
 
 def encrypt(data: bytes, encryption_key: bytes) -> bytes:
-    if len(encryption_key) != 32:
-        raise ValueError('Encryption key must be 32 bytes')
+    # if len(encryption_key) != 32:
+    #     raise ValueError('Encryption key must be 32 bytes')
 
     fernet = Fernet(encryption_key)
     encrypted_data = fernet.encrypt(data)
@@ -37,8 +37,8 @@ def encrypt(data: bytes, encryption_key: bytes) -> bytes:
 
 
 def decrypt(data: bytes, encryption_key: bytes) -> bytes:
-    if len(encryption_key) != 32:
-        raise ValueError('Encryption key must be 32 bytes')
+    # if len(encryption_key) != 32:
+    #     raise ValueError('Encryption key must be 32 bytes')
 
     fernet = Fernet(encryption_key)
     decrypted_data = fernet.decrypt(data)
