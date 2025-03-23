@@ -1,12 +1,4 @@
-class DatabaseError(Exception):
-    pass
-
-
-class AuthorizationError(Exception):
-    pass
-
-
-class TokenError(Exception):
+class ArticleError(Exception):
     pass
 
 
@@ -22,13 +14,25 @@ class AccountVerificationError(Exception):
     pass
 
 
+class AuthorizationError(Exception):
+    pass
+
+
+class DatabaseError(Exception):
+    pass
+
+
 class ImageError(Exception):
     pass
 
 
-class UserError(Exception):
+class SchemaValidationError(Exception):
     pass
 
 
-class ArticleError(Exception):
+class TokenError(Exception):
+    pass
+
+
+class UserError(Exception):
     pass

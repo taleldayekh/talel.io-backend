@@ -5,16 +5,62 @@ from flask import Blueprint, Response, request
 from talelio_backend.app_social.use_cases.create_actor import create_actor
 from talelio_backend.app_social.use_cases.discover import webfinger_discover
 from talelio_backend.app_social.use_cases.get_actor import get_actor
+from talelio_backend.app_social.use_cases.publish_post import publish_post
 from talelio_backend.data.uow import UnitOfWork
 from talelio_backend.identity_and_access.authentication import Authentication
 from talelio_backend.identity_and_access.authorization import authorization_required
 from talelio_backend.interfaces.api.errors import APIError
 from talelio_backend.interfaces.api.socials.actor_serializer import SerializeActor
+from talelio_backend.interfaces.api.socials.post_schema import CreatePostSchema
 from talelio_backend.interfaces.api.socials.webfinger_serializer import SerializeWebFinger
 from talelio_backend.interfaces.api.utils import extract_access_token_from_authorization_header
-from talelio_backend.shared.exceptions import AuthorizationError, UserError
+from talelio_backend.shared.exceptions import AuthorizationError, SchemaValidationError, UserError
 
 socials_v1 = Blueprint('socials_v1', __name__)
+
+
+# !
+@socials_v1.post('/users/outbox')
+def publish_post_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_publish_post_endpoint() -> Tuple[Response, int]:
+        try:
+            if not request.json:
+                raise APIError('Missing request body', 400)
+
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
+            user = Authentication().get_jwt_identity(access_token)
+
+            create_post_schema = CreatePostSchema()
+            validated_request_payload = create_post_schema.load(request.json)
+
+            platforms = validated_request_payload['platforms']
+            post = validated_request_payload['post']
+
+            publish_post(platforms, post)
+
+            # TODO:
+            # TODO: Pass user id to use case as well
+            print("This is the user")
+            print(user)
+
+            # TODO: Remove
+            return 'Hello World'
+        except KeyError as error:
+            raise APIError(f'Expected {error} key', 400) from error
+        except SchemaValidationError as error:
+            raise APIError(f'Schema validation failed: {error}', 400)
+
+    try:
+        return protected_publish_post_endpoint()
+    except AuthorizationError as error:
+        raise APIError(str(error), 403) from error
+
+
+# !
 
 
 @socials_v1.get('/.well-known/webfinger')
@@ -35,29 +81,6 @@ def webfinger() -> Tuple[Response, int]:
         return res_body, 200
     except UserError as error:
         raise APIError(str(error), 404) from error
-
-
-@socials_v1.post('')
-def create_socials_post_endpoint() -> Tuple[Response, int]:
-    authorization_header = request.headers.get('Authorization')
-
-    @authorization_required(authorization_header)
-    def protected_create_socials_post_endpoint():
-        try:
-            if not request.json:
-                raise APIError('Missing request body', 400)
-
-            access_token = extract_access_token_from_authorization_header(
-                cast(str, authorization_header))
-            user = Authentication().get_jwt_identity(access_token)
-
-        except:
-            pass
-
-    try:
-        return protected_create_socials_post_endpoint()
-    except AuthorizationError as error:
-        raise APIError(str(error), 403) from error
 
 
 # TODO: Reiterate
