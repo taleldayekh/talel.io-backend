@@ -1,9 +1,56 @@
 from talelio_backend.app_social.domain.actor_model import Actor
+from talelio_backend.app_social.domain.post_model import PostModel
 from talelio_backend.data.repository import BaseRepository
 
 
 class SocialRepository(BaseRepository):
 
+    def create_post(self, post: PostModel, identity_id: int):
+        post_insert_query = """
+            INSERT INTO social.post
+            (
+                identity_id,
+                content
+            )
+            VALUES (%s, %s)
+            RETURNING id;
+            """
+
+        media_insert_query = """
+            INSERT INTO social.media
+            (
+                post_id,
+                url,
+                alt,
+                type
+            )
+            VALUES (%s, %s, %s, %s);
+            """
+        
+        audience_insert_query = """
+            INSERT INTO social.audience
+            (
+                post_id,
+                recipient,
+                delivery
+            )
+            VALUES (%s, %s, %s);
+            """
+        
+        with self.session as session:
+            with session.cursor() as cursor:
+                pass
+
+
+
+
+
+
+
+
+
+
+    # TODO: Revise
     def get_actor_by_user_id(self, user_id: int) -> bool:
         query = """
             SELECT EXISTS (

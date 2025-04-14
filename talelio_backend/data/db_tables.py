@@ -5,7 +5,7 @@ from talelio_backend.libs.db_client import DbClient
 TIME_ZONE = 'Europe/Berlin'
 
 # Schemas
-CREATE_ACTIVITYPUB_SCHEMA = "CREATE SCHEMA IF NOT EXISTS activitypub;"
+CREATE_SOCIAL_SCHEMA = "CREATE SCHEMA IF NOT EXISTS social;"
 
 # Tables
 CREATE_ACCOUNT_TABLE = f"""
@@ -52,7 +52,48 @@ CREATE_ARTICLE_TABLE = f"""
     """
 
 # Tables Socials
+CREATE_POST_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.post
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        identity_id INTEGER REFERENCES social.identity (id) ON DELETE CASCADE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        content TEXT
+    )
+    """
 
+CREATE_MEDIA_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.media
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        url TEXT NOT NULL,
+        alt TEXT NOT NULL,
+        type VARCHAR(20) NOT NULL CHECK (type IN ('image', 'video'))
+    )
+    """
+
+CREATE_AUDIENCE_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.audience
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        recipient TEXT NOT NULL,
+        delivery VARCHAR(5) NOT NULL CHECK (delivery IN ('to', 'cc'))
+    )
+    """
+
+CREATE_PLATFORM_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.platform
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        platform VARCHAR(20) NOT NULL CHECK (platform IN ('bluesky', 'mastodon', 'pixelfed'))
+    )
+    """
+
+# TODO: Rework the below
 CREATE_ACTOR_TABLE = f"""
     CREATE TABLE IF NOT EXISTS activitypub.actor 
     (
@@ -74,18 +115,18 @@ CREATE_ACTOR_TABLE = f"""
     """
 
 # TODO: Extend with attachments?
-CREATE_POST_TABLE = f"""
-    CREATE TABLE IF NOT EXISTS activitypub.post
-    (
-        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
-        actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
-        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
-        type VARCHAR(50) NOT NULL,
-        summary TEXT,
-        content TEXT NOT NULL
-    );
-    """
+# CREATE_POST_TABLE = f"""
+#     CREATE TABLE IF NOT EXISTS activitypub.post
+#     (
+#         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+#         actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
+#         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+#         updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+#         type VARCHAR(50) NOT NULL,
+#         summary TEXT,
+#         content TEXT NOT NULL
+#     );
+#     """
 
 # TODO: Extend with updated_at, last_interaction_at?
 CREATE_FOLLOWER_TABLE = f"""
@@ -107,7 +148,7 @@ def create_db_tables() -> connection:
 
     with conn:
         with conn.cursor() as cursor:
-            cursor.execute(CREATE_ACTIVITYPUB_SCHEMA)
+            cursor.execute(CREATE_SOCIAL_SCHEMA)
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
             cursor.execute(CREATE_ARTICLE_TABLE)

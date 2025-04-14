@@ -33,14 +33,16 @@ def publish_post_endpoint() -> Tuple[Response, int]:
             access_token = extract_access_token_from_authorization_header(
                 cast(str, authorization_header))
             user = Authentication().get_jwt_identity(access_token)
+            user_id = int(user['user_id'])
 
             create_post_schema = CreatePostSchema()
             validated_request_payload = create_post_schema.load(request.json)
 
+            uow = UnitOfWork()
             platforms = validated_request_payload['platforms']
             post = validated_request_payload['post']
 
-            publish_post(platforms, post)
+            publish_post(uow, user_id, platforms, post)
 
             # TODO:
             # TODO: Pass user id to use case as well
