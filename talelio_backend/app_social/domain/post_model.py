@@ -1,6 +1,7 @@
 from dataclasses import dataclass, field
+from datetime import datetime
 from enum import Enum
-from typing import List, Optional, TypedDict
+from typing import List, Optional
 
 
 class Platform(str, Enum):
@@ -12,23 +13,6 @@ class Platform(str, Enum):
 class MediaType(str, Enum):
     IMAGE = 'image'
     VIDEO = 'video'
-
-
-class Media(TypedDict):
-    url: str
-    type: MediaType
-    alt: str
-
-
-class Audience(TypedDict):
-    to: List[str]
-    cc: List[str]
-
-
-class Post(TypedDict):
-    content: Optional[str]
-    media: List[Media]
-    audience: Audience
 
 
 @dataclass
@@ -50,6 +34,11 @@ class PostModel:
     content: Optional[str] = None
     media: List[MediaModel] = field(default_factory=list)
     audience: AudienceModel = field(default_factory=AudienceModel)
+
+    # Optional
+    id: Optional[int] = None
+    created_at: Optional[datetime] = None
+    updated_at: Optional[datetime] = None
 
     def __post_init__(self) -> None:
         '''
