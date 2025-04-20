@@ -5,6 +5,7 @@ from typing import Any, Optional, Type
 
 from talelio_backend.app_account.data.account_repository import AccountRepository
 from talelio_backend.app_article.data.article_repository import ArticleRepository
+from talelio_backend.app_social.data.social_repository import SocialRepository
 from talelio_backend.app_user.data.user_repository import UserRepository
 from talelio_backend.libs.db_client import DbClient
 
@@ -14,6 +15,7 @@ class UnitOfWork:
     account: AccountRepository
     user: UserRepository
     article: ArticleRepository
+    social: SocialRepository
 
     def __init__(self, db_client: type[DbClient] = DbClient) -> None:
         self.db_client = db_client()
@@ -23,6 +25,7 @@ class UnitOfWork:
         self.account = AccountRepository(self.session)
         self.user = UserRepository(self.session)
         self.article = ArticleRepository(self.session)
+        self.social = SocialRepository(self.session)
 
         return self
 

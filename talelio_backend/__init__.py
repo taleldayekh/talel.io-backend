@@ -9,6 +9,7 @@ from talelio_backend.interfaces.api.articles.article_controller import articles_
 from talelio_backend.interfaces.api.assets.asset_controller import assets_v1
 from talelio_backend.interfaces.api.errors import error_handlers
 from talelio_backend.interfaces.api.health.health_controller import health_v1
+from talelio_backend.interfaces.api.socials.social_controller import socials_v1
 from talelio_backend.interfaces.api.users.user_controller import users_v1
 
 create_db_tables_connection = create_db_tables()
@@ -25,6 +26,7 @@ def create_app() -> Flask:
     app.register_blueprint(articles_v1, url_prefix='/v1/articles')
     app.register_blueprint(assets_v1, url_prefix='/v1/assets')
     app.register_blueprint(users_v1, url_prefix='/v1/users')
+    app.register_blueprint(socials_v1, url_prefix='/v1/socials')
 
     CORS(app, resources={r'/*': app.config['CORS_ORIGIN_WHITELIST']}, supports_credentials=True)
     error_handlers(app)

@@ -4,6 +4,10 @@ from talelio_backend.libs.db_client import DbClient
 
 TIME_ZONE = 'Europe/Berlin'
 
+# Schemas
+CREATE_SOCIAL_SCHEMA = "CREATE SCHEMA IF NOT EXISTS social;"
+
+# Tables
 CREATE_ACCOUNT_TABLE = f"""
     CREATE TABLE IF NOT EXISTS account
     (
@@ -47,6 +51,96 @@ CREATE_ARTICLE_TABLE = f"""
     );
     """
 
+# Tables Socials
+CREATE_POST_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.post
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        identity_id INTEGER REFERENCES social.identity (id) ON DELETE CASCADE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        content TEXT
+    )
+    """
+
+CREATE_MEDIA_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.media
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        url TEXT NOT NULL,
+        alt TEXT NOT NULL,
+        type VARCHAR(20) NOT NULL CHECK (type IN ('image', 'video'))
+    )
+    """
+
+CREATE_AUDIENCE_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.audience
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        recipient TEXT NOT NULL,
+        delivery VARCHAR(5) NOT NULL CHECK (delivery IN ('to', 'cc'))
+    )
+    """
+
+CREATE_PLATFORM_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS social.platform
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        post_id INTEGER REFERENCES social.post (id) ON DELETE CASCADE,
+        platform VARCHAR(20) NOT NULL CHECK (platform IN ('bluesky', 'mastodon', 'pixelfed'))
+    )
+    """
+
+# TODO: Rework the below
+CREATE_ACTOR_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS activitypub.actor 
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        user_id INTEGER UNIQUE REFERENCES "user" (id),
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        username VARCHAR(20) UNIQUE NOT NULL,
+        type VARCHAR(50) NOT NULL DEFAULT 'Person',
+        actor_url TEXT UNIQUE NOT NULL,
+        inbox_url TEXT UNIQUE NOT NULL,
+        outbox_url TEXT UNIQUE NOT NULL,
+        followers_url TEXT UNIQUE NOT NULL,
+        following_url TEXT UNIQUE NOT NULL,
+        liked_url TEXT UNIQUE NOT NULL,
+        public_key TEXT NOT NULL,
+        private_key TEXT NOT NULL
+    );
+    """
+
+# TODO: Extend with attachments?
+# CREATE_POST_TABLE = f"""
+#     CREATE TABLE IF NOT EXISTS activitypub.post
+#     (
+#         id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+#         actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
+#         created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+#         updated_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+#         type VARCHAR(50) NOT NULL,
+#         summary TEXT,
+#         content TEXT NOT NULL
+#     );
+#     """
+
+# TODO: Extend with updated_at, last_interaction_at?
+CREATE_FOLLOWER_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS activitypub.follower
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        actor_id INTEGER REFERENCES activitypub.actor (id) ON DELETE CASCADE UNIQUE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        actor_url TEXT UNIQUE NOT NULL,
+        inbox_url TEXT UNIQUE NOT NULL,
+        platform VARCHAR(20) NOT NULL
+    );
+    """
+
 
 def create_db_tables() -> connection:
     db_client = DbClient()
@@ -54,9 +148,11 @@ def create_db_tables() -> connection:
 
     with conn:
         with conn.cursor() as cursor:
+            cursor.execute(CREATE_SOCIAL_SCHEMA)
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
             cursor.execute(CREATE_ARTICLE_TABLE)
+            cursor.execute(CREATE_ACTOR_TABLE)
 
     return conn
 
@@ -68,9 +164,10 @@ def drop_db_tables() -> connection:
     with conn:
         with conn.cursor() as cursor:
             query = """
-                DROP TABLE account CASCADE;
-                DROP TABLE "user" CASCADE;
-                DROP TABLE article;
+                DROP TABLE IF EXISTS article CASCADE;
+                DROP TABLE IF EXISTS "user" CASCADE;
+                DROP TABLE IF EXISTS account CASCADE;
+                DROP SCHEMA IF EXISTS activitypub CASCADE;
             """
 
             cursor.execute(query)
