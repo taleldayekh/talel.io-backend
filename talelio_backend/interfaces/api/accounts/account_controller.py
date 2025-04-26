@@ -62,6 +62,57 @@ def register_account_endpoint() -> Tuple[Response, int]:
 #         raise APIError(str(error), 400) from error
 
 
+@accounts_v1.get('/passkeys/register/options')
+def begin_passkey_registration_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_begin_passkey_registration_endpoint() -> Tuple[Response, int]:
+        try:
+            access_token = extract_access_token_from_authorization_header(
+                cast(str, authorization_header))
+
+            user = Authentication().get_jwt_identity(access_token)
+
+            print(user)
+
+            return 'Hello World', 200
+        except:
+            pass
+
+    try:
+        return protected_begin_passkey_registration_endpoint()
+    except AuthorizationError as error:
+        raise APIError(str(error), 403) from error
+
+
+@accounts_v1.post('/passkeys/register/verify')
+def complete_passkey_registration_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_complete_passkey_registration_endpoint() -> Tuple[Response, int]:
+        pass
+
+
+@accounts_v1.get('/passkeys/login/options')
+def begin_passkey_login_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_begin_passkey_login_endpoint() -> Tuple[Response, int]:
+        pass
+
+
+@accounts_v1.post('/passkeys/login/verify')
+def complete_passkey_login_endpoint() -> Tuple[Response, int]:
+    authorization_header = request.headers.get('Authorization')
+
+    @authorization_required(authorization_header)
+    def protected_complete_passkey_login_endpoint() -> Tuple[Response, int]:
+        pass
+
+
 @accounts_v1.post('/login')
 def login_endpoint() -> Tuple[Response, int]:
     try:

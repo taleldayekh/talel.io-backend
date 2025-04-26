@@ -29,6 +29,20 @@ CREATE_USER_TABLE = f"""
     );
     """
 
+CREATE_WEBAUTHN_CREDENTIAL_TABLE = f"""
+    CREATE TABLE IF NOT EXISTS webauthn_credential
+    (
+        id INTEGER GENERATED ALWAYS AS IDENTITY PRIMARY KEY,
+        user_id INTEGER REFERENCES "user" (id) ON DELETE CASCADE,
+        credential_id BYTEA NOT NULL UNIQUE,
+        created_at TIMESTAMP WITHOUT TIME ZONE NOT NULL DEFAULT (NOW() AT TIME ZONE '{TIME_ZONE}'),
+        last_used_at TIMESTAMP WITHOUT TIME ZONE,
+        device_name TEXT NOT NULL,
+        public_key BYTEA NOT NULL,
+        sign_count INTEGER NOT NULL
+    )
+    """
+
 CREATE_ARTICLE_TABLE = f"""
     CREATE TABLE IF NOT EXISTS article
     (
@@ -56,6 +70,7 @@ def create_db_tables() -> connection:
         with conn.cursor() as cursor:
             cursor.execute(CREATE_ACCOUNT_TABLE)
             cursor.execute(CREATE_USER_TABLE)
+            cursor.execute(CREATE_WEBAUTHN_CREDENTIAL_TABLE)
             cursor.execute(CREATE_ARTICLE_TABLE)
 
     return conn
@@ -68,9 +83,10 @@ def drop_db_tables() -> connection:
     with conn:
         with conn.cursor() as cursor:
             query = """
-                DROP TABLE account CASCADE;
-                DROP TABLE "user" CASCADE;
+                DROP TABLE IF EXISTS webauthn_credential;
                 DROP TABLE article;
+                DROP TABLE "user" CASCADE;
+                DROP TABLE account CASCADE;
             """
 
             cursor.execute(query)
