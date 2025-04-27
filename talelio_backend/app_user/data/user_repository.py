@@ -6,7 +6,7 @@ from talelio_backend.data.repository import BaseRepository
 
 class UserRecord(TypedDict):
     id: int
-    user_id: int
+    account_id: int
     created_at: datetime
     updated_at: datetime
     username: str
@@ -26,9 +26,12 @@ class UserRepository(BaseRepository):
                 cursor.execute(query, (user_id, ))
                 user_row = cursor.fetchone()
 
+                if not user_row:
+                    return None
+
                 record = {
                     'id': user_row[0],
-                    'user_id': user_row[1],
+                    'account_id': user_row[1],
                     'created_at': user_row[2],
                     'updated_at': user_row[3],
                     'username': user_row[4],
