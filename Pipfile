@@ -33,4 +33,4 @@ moto = {extras = ["s3"], version = "==5.0.27"}
 types-psycopg2 = "==2.9.21.20250121"
 
 [requires]
-python_version = "3.9"
+python_version = "3.11"
