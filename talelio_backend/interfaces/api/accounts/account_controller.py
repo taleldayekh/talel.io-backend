@@ -3,6 +3,8 @@ from typing import Tuple, cast
 from flask import Blueprint, Response, current_app, jsonify, request
 from jwt import DecodeError, InvalidSignatureError
 
+from talelio_backend.app_account.use_cases.get_passkey_registration_options import \
+    get_passkey_registration_options
 from talelio_backend.app_account.use_cases.register_account import register_account
 from talelio_backend.app_user.use_cases.authenticate_user import (delete_refresh_token,
                                                                   generate_access_token,
@@ -73,8 +75,10 @@ def begin_passkey_registration_endpoint() -> Tuple[Response, int]:
                 cast(str, authorization_header))
 
             user = Authentication().get_jwt_identity(access_token)
+            user_id = int(user['user_id'])
+            uow = UnitOfWork()
 
-            print(user)
+            get_passkey_registration_options(uow, user_id)
 
             return 'Hello World', 200
         except:
