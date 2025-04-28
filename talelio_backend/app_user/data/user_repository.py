@@ -16,7 +16,7 @@ class UserRecord(TypedDict):
 
 class UserRepository(BaseRepository):
 
-    def get_by_id(self, user_id: int) -> UserRecord:
+    def get_by_id(self, user_id: int) -> UserRecord | None:
         query = """
             SELECT * FROM "user" WHERE id = %s;
             """
