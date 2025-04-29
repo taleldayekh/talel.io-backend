@@ -1,7 +1,8 @@
-from talelio_backend.data.uow import UnitOfWork
-from talelio_backend.shared.exceptions import UserError
 from base64 import urlsafe_b64encode
 from os import getenv
+
+from talelio_backend.data.uow import UnitOfWork
+from talelio_backend.shared.exceptions import UserError
 
 
 def get_passkey_registration_options(uow: UnitOfWork, user_id: int):
@@ -10,8 +11,7 @@ def get_passkey_registration_options(uow: UnitOfWork, user_id: int):
 
     if not RELYING_PARTY_ID or not RELYING_PARTY_NAME:
         raise ValueError(
-            'Missing "RELYING_PARTY_ID" or "RELYING_PARTY_NAME" environment variables'
-        )
+            'Missing "RELYING_PARTY_ID" or "RELYING_PARTY_NAME" environment variables')
 
     with uow:
         user_record = uow.user.get_by_id(user_id)
@@ -19,7 +19,7 @@ def get_passkey_registration_options(uow: UnitOfWork, user_id: int):
         if not user_record:
             # TODO: Raise UserError
             pass
-        
+
         username = user_record['username']
         passkey_user = {
             'id': user_id,
@@ -28,28 +28,15 @@ def get_passkey_registration_options(uow: UnitOfWork, user_id: int):
         }
 
         webauthn_credential_record = uow.webauthn.get_credentials_by_user_id(user_id)
-        exclude_credentials = [
-            {
-                'id': urlsafe_b64encode(credential['credential_id']).rstrip(b'=').decode('utf-8'),
-                'type': 'public-key',
-            }
-            for credential in webauthn_credential_record
-        ]
-
-
-
-
+        exclude_credentials = [{
+            'id':
+            urlsafe_b64encode(credential['credential_id']).rstrip(b'=').decode('utf-8'),
+            'type':
+            'public-key',
+        } for credential in webauthn_credential_record]
 
         print('Exclude credentials')
         print(exclude_credentials)
-
-
-
-
-
-
-
-
 
 
 # For Article
