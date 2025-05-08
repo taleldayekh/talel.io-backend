@@ -11,7 +11,7 @@ def upload_images(uow: UnitOfWork, asset_store: AssetStore, image_streams: List[
                   api_version: str) -> Dict[str, List[str]]:
     with uow:
         user_record = uow.user.get_by_id(user_id)
-        username = user_record[4]
+        username = user_record['username']
 
         image_objects_urls = []
         images = Image(image_streams)

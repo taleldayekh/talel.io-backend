@@ -13,7 +13,7 @@ def download_image(uow: UnitOfWork, asset_store: AssetStore, image_file_name: st
         if not user_record:
             raise UserError(f"User with username '{username}' does not exist")
 
-        user_id = user_record[0]
+        user_id = user_record['id']
         options = {'bucket': bucket, 'asset_type': Asset.IMAGES.value}
 
         return asset_store.download(image_file_name, user_id, options)

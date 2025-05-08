@@ -8,6 +8,7 @@ HOST = getenv('HOST') or 'localhost'
 redis_client = Redis(host=HOST)
 
 
+# TODO: Refactor to use KeyValueStore
 class TokenStore:
 
     def __init__(self, redis: Redis = redis_client) -> None:
