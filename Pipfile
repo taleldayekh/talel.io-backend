@@ -5,7 +5,7 @@ name = "pypi"
 
 [packages]
 psycopg2 = "==2.9.10"
-markdown = "==3.7"
+markdown = "==3.8.1"
 pillow = "==11.1.0"
 flask = "==3.1.0"
 flask-cors = "==6.0.1"
